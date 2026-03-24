@@ -121,10 +121,21 @@ async function iniciarApp() {
         if (document.getElementById('wrapper-janela-pc')) document.getElementById('wrapper-janela-pc').style.display = 'flex';
         if (document.getElementById('wrapper-janela-mobile')) document.getElementById('wrapper-janela-mobile').style.display = 'flex';
 
+        // [DEBUG - Auditoria Tech Lead]
+        console.log("🔍 Verificando permissões de acesso...");
+        console.log("👤 Usuário:", userEmail);
+        console.log("🎭 Role detectada:", tipoUsuarioAtual);
+
         // Trava de segurança RBAC: Cadastro Geral
         const btnCadastro = document.getElementById('btn-cadastro-geral');
         if (btnCadastro) {
-            btnCadastro.style.display = (tipoUsuarioAtual === 'Admim') ? 'flex' : 'none';
+            // Normalização: trim() e toLowerCase() para evitar inconsistências no banco
+            const roleNormalizada = (tipoUsuarioAtual || "").toString().trim().toLowerCase();
+            const eAdmin = roleNormalizada === 'admim';
+
+            console.log("🛡️ RBAC Match ('admim'):", eAdmin);
+
+            btnCadastro.style.display = eAdmin ? 'flex' : 'none';
         }
     }
 
