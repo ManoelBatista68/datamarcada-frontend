@@ -1,0 +1,20 @@
+<div id="login-screen">
+    <div class="login-box">
+        <img src="https://hrwaytpbpbspgswlnesj.supabase.co/storage/v1/object/public/Cliente%201/Clinica/DataMarcada4.png"
+            class="login-logo">
+        <div class="login-title">Acesse sua Agenda</div>
+        <form id="form-login" onsubmit="event.preventDefault(); fazerLogin();" style="width: 100%;">
+            <div class="login-input-group">
+                <input type="email" id="login-email" class="login-input" placeholder="Seu e-mail" autocomplete="email"
+                    name="email" required>
+            </div>
+            <div class="login-input-group">
+                <input type="password" id="login-senha" class="login-input" placeholder="Sua senha"
+                    autocomplete="current-password" name="password" required>
+                <span class="material-icons toggle-pass" onclick="toggleSenha()">visibility</span>
+            </div>
+            <button type="submit" id="btn-entrar" class="btn-login">ENTRAR</button>
+        </form>
+        <span class="forgot-link" onclick="abrirModalRecuperar()">Esqueci minha senha</span>
+    </div>
+</div>

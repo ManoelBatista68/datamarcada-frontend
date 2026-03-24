@@ -1,0 +1,232 @@
+<div id="view-principal">
+
+    <div class="mobile-hamburger-bar mobile-only">
+        <button onclick="toggleMobileMenu('menu-principal')">
+            <span class="material-icons">menu</span> Filtros e Opções
+        </button>
+    </div>
+
+    <div id="menu-principal" class="menu-bar-container">
+        <div class="menu-content mobile-only">
+            <div style="display:flex; gap:10px; width:100%;">
+                <button class="btn-refresh" onclick="carregar(); fecharMenuSeMobile('menu-principal');"
+                    style="flex:1; justify-content:center;" title="Atualizar dados do servidor"><span
+                        class="material-icons" style="font-size:16px">refresh</span> Atualizar</button>
+                <button class="btn-periodo" onclick="alternarTela('periodo'); fecharMenuSeMobile('menu-principal');"
+                    style="flex:1; justify-content:center;" title="Abrir tela de Relatórios e Período"><span
+                        class="material-icons" style="font-size:16px">date_range</span> Por período</button>
+            </div>
+
+            <div class="mobile-col-2">
+                <div class="date-container" onclick="event.stopPropagation()">
+                    <span id="date-placeholder-mobile" class="date-placeholder-text">Filtre com data</span>
+                    <input type="date" class="input-data-visible input-control" id="filtro-data-mobile"
+                        onchange="atualizarPlaceholderData(); sincronizarFiltros('mobile');" style="width:100%;"
+                        title="Selecione uma data para filtrar">
+                </div>
+                <div class="status-select-wrapper" style="width:100%;">
+                    <div class="status-badge-float" id="qtd-cards-mobile" title="Quantidade listada">0</div>
+                    <select id="filtro-status-mobile" class="input-control input-status"
+                        onchange="sincronizarFiltros('mobile');" onclick="event.stopPropagation()"
+                        title="Filtrar por Status da Agenda">
+                        <option value="">Status: Todos</option>
+                        <option value="Disponível">Disponível</option>
+                        <option value="Indefinido">Indefinido</option>
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Não confirmado">Não confirmado</option>
+                        <option value="Atendido">Atendido</option>
+                        <option value="Cancelado">Cancelado</option>
+                        <option value="Arquivado">Arquivados</option>
+                    </select>
+                    <span class="material-icons expand-icon">expand_more</span>
+                </div>
+            </div>
+
+            <div id="wrapper-janela-mobile" class="status-wrapper" style="width:100%; display:none; margin-bottom:5px;">
+                <input type="number" id="janela-interacao-mobile" class="input-control" placeholder="Dias (Int.)"
+                    onchange="salvarJanelaUI(this.value)" style="width:100%; min-width: 90px;" min="0"
+                    title="Defina o número de dias que o cliente pode interagir após ser dado como Atendido">
+            </div>
+
+            <div style="display:flex; gap:5px; width:100%; align-items:center;">
+                <div class="input-busca-wrapper">
+                    <span class="material-icons search-icon">person_search</span>
+                    <input type="text" id="filtro-cliente-mobile" class="input-control input-busca"
+                        placeholder="Buscar cliente..." onkeyup="filtrarSugestoes(this.value)" autocomplete="off"
+                        onclick="event.stopPropagation()" title="Buscar por Nome do Cliente">
+                    <span class="material-icons clear-icon"
+                        onclick="limparFiltroCliente(); event.stopPropagation()">close</span>
+                    <div id="lista-sugestoes-mobile" class="suggestions-box"></div>
+                </div>
+                <label id="lbl-relatorio-mobile"
+                    style="display:none; align-items:center; justify-content:center; font-size:11px; cursor:pointer; color:#1a73e8; font-weight:bold; background:#e8f0fe; padding:0 8px; border-radius:4px; height:38px; margin:0; white-space:nowrap;"
+                    title="Visualizar relatório do cliente selecionado">
+                    <input type="checkbox" id="chk-relatorio-mobile" onchange="abrirRelatorio()"
+                        style="margin-right:4px;"> Relatório
+                </label>
+            </div>
+
+            <div class="input-busca-wrapper">
+                <span class="material-icons search-icon">medical_services</span>
+                <input type="text" id="filtro-especialidade-mobile" class="input-control input-busca"
+                    placeholder="Especialidade..." onkeyup="filtrarSugestoesEspecialidade(this.value)"
+                    autocomplete="off" onclick="event.stopPropagation()" title="Buscar pela Especialidade">
+                <span class="material-icons clear-icon"
+                    onclick="limparFiltroEspecialidade(); event.stopPropagation()">close</span>
+                <div id="lista-sugestoes-especialidade-mobile" class="suggestions-box"></div>
+            </div>
+
+            <div class="mobile-col-2">
+                <span id="badge-total-confirmado-mobile" class="total-badge total-confirmado"
+                    style="display:none; text-align:center; justify-content:center; padding: 8px 4px;"></span>
+                <span id="badge-total-atendido-mobile" class="total-badge total-atendido"
+                    style="display:none; text-align:center; justify-content:center; padding: 8px 4px;"></span>
+                <span id="badge-total-cancelado-mobile" class="total-badge total-cancelado"
+                    style="display:none; text-align:center; justify-content:center; padding: 8px 4px;"></span>
+            </div>
+
+            <div class="bell-area-mobile">
+                <div id="alert-unread-mobile" class="bell-wrapper bell-pink" onclick="filtrarPorSino('unread')"><span
+                        class="material-icons bell-icon">mark_chat_unread</span><span class="bell-count"
+                        id="bell-count-unread-mobile">0</span></div>
+                <div id="bell-overdue-mobile" class="bell-wrapper bell-red" onclick="filtrarPorSino('vencido')"><span
+                        class="material-icons bell-icon">notifications_active</span><span class="bell-count"
+                        id="bell-count-overdue-mobile">0</span></div>
+                <div id="bell-today-mobile" class="bell-wrapper bell-yellow" onclick="filtrarPorSino('hoje')"><span
+                        class="material-icons bell-icon">notifications</span><span class="bell-count"
+                        id="bell-count-today-mobile">0</span></div>
+                <div id="bell-24h-mobile" class="bell-wrapper bell-blue" onclick="filtrarPorSino('24h')"><span
+                        class="material-icons bell-icon">notifications</span><span class="bell-count"
+                        id="bell-count-24h-mobile">0</span></div>
+                <div id="bell-future-mobile" class="bell-wrapper bell-green" onclick="filtrarPorSino('futuro')"><span
+                        class="material-icons bell-icon">notifications</span><span class="bell-count"
+                        id="bell-count-future-mobile">0</span></div>
+            </div>
+        </div>
+
+        <div class="menu-content pc-only"
+            style="flex-direction: column; align-items: stretch; gap: 15px; padding: 20px;">
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; width: 100%;">
+                <button class="dash-btn-alert pink" id="btn-alert-unread" onclick="filtrarPorSino('unread')"
+                    title="Mostra os clientes que enviaram mensagens ainda não lidas">
+                    <div class="dash-alert-title">Não Lidas</div>
+                    <div class="dash-alert-body"><span class="material-icons">notifications_active</span><span
+                            class="dash-alert-count" id="bell-count-unread">0</span></div>
+                </button>
+                <button class="dash-btn-alert red" id="btn-alert-overdue" onclick="filtrarPorSino('vencido')"
+                    title="Mostra agendamentos confirmados que já passaram do horário">
+                    <div class="dash-alert-title">Atrasadas</div>
+                    <div class="dash-alert-body"><span class="material-icons">running_with_errors</span><span
+                            class="dash-alert-count" id="bell-count-overdue">0</span></div>
+                </button>
+                <button class="dash-btn-alert yellow" id="btn-alert-today" onclick="filtrarPorSino('hoje')"
+                    title="Filtra a agenda de hoje">
+                    <div class="dash-alert-title">Hoje</div>
+                    <div class="dash-alert-body"><span class="material-icons">today</span><span class="dash-alert-count"
+                            id="bell-count-today">0</span></div>
+                </button>
+                <button class="dash-btn-alert blue" id="btn-alert-24h" onclick="filtrarPorSino('24h')"
+                    title="Filtra a agenda do dia de amanhã">
+                    <div class="dash-alert-title">Amanhã</div>
+                    <div class="dash-alert-body"><span class="material-icons">today</span><span class="dash-alert-count"
+                            id="bell-count-24h">0</span></div>
+                </button>
+                <button class="dash-btn-alert green" id="btn-alert-future" onclick="filtrarPorSino('futuro')"
+                    title="Mostra os agendamentos marcados para os dias seguintes a amanhã">
+                    <div class="dash-alert-title">Futuro</div>
+                    <div class="dash-alert-body"><span class="material-icons">event_upcoming</span><span
+                            class="dash-alert-count" id="bell-count-future">0</span></div>
+                </button>
+                <button class="dash-btn-alert outline-blue" onclick="alternarTela('periodo')"
+                    title="Ir para a Tela de Relatórios e Busca por Período">
+                    <div class="dash-alert-title">Por Período</div>
+                    <div class="dash-alert-body" style="justify-content: center; width: 100%;"><span
+                            class="material-icons text-primary" style="font-size: 32px;">calendar_month</span></div>
+                </button>
+                <button class="dash-btn-alert action-add" onclick="abrirModalNovoBloco()"
+                    style="justify-content: center; align-items: center;" title="Criar novos blocos de agenda em lote">
+                    <div
+                        style="width: 40px; height: 40px; border-radius: 50%; background: #1a73e8; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(26,115,232,0.3);">
+                        <span class="material-icons" style="font-size: 24px; color: white;">add</span></div>
+                </button>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                <button class="btn-refresh" onclick="carregar()"
+                    style="height: 38px; padding: 0 15px; border-radius: 8px;"
+                    title="Atualizar servidor e limpar filtros"><span class="material-icons"
+                        style="font-size:20px">refresh</span></button>
+
+                <div class="input-group-wrapper pc-only" style="flex: 1.2;">
+                    <span class="material-icons"
+                        style="position: absolute; left: 10px; top: 10px; color: #1a73e8; font-size: 18px; z-index: 5;">calendar_today</span>
+                    <input type="date" id="filtro-data" class="input-control" onchange="sincronizarFiltros('pc')"
+                        style="height: 38px; width: 100%; border-radius: 8px; padding-left: 36px !important; color: #1a73e8; border-color: #bbdefb; background: #eff6ff; font-weight: 600; cursor: pointer;"
+                        title="Busca por data específica">
+                </div>
+
+                <div id="wrapper-janela-pc" class="input-group-wrapper pc-only status-wrapper"
+                    style="display:none; flex: 0.8;">
+                    <input type="number" id="janela-interacao-pc" class="input-control"
+                        style="height: 38px; width: 100%; border-radius: 8px;" placeholder="Dias (Int.)"
+                        onchange="salvarJanelaUI(this.value)" min="0"
+                        title="Defina o número de dias limite para o cliente acessar seu card">
+                </div>
+
+                <div class="input-group-wrapper pc-only status-select-wrapper" style="flex: 2; min-width: 160px;">
+                    <div class="status-badge-float" id="qtd-cards-pc" title="Quantidade listada na tela">0</div>
+                    <select id="filtro-status" class="input-control" onchange="sincronizarFiltros('pc')"
+                        title="Filtre a lista pelo Status do agendamento">
+                        <option value="">Status: Todos</option>
+                        <option value="Disponível">Disponível</option>
+                        <option value="Indefinido">Indefinido</option>
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Não confirmado">Não confirmado</option>
+                        <option value="Atendido">Atendido</option>
+                        <option value="Cancelado">Cancelado</option>
+                        <option value="Arquivado">Arquivados</option>
+                    </select>
+                    <span class="material-icons expand-icon">expand_more</span>
+                </div>
+
+                <div class="input-group-wrapper pc-only input-busca-wrapper" style="flex: 2; position:relative;">
+                    <span class="material-icons search-icon">person_search</span>
+                    <input type="text" id="filtro-cliente" class="input-control input-busca"
+                        placeholder="Buscar cliente..." onkeyup="filtrarSugestoes(this.value)" autocomplete="off"
+                        title="Busque pelo Nome do Cliente">
+                    <span class="material-icons clear-icon" onclick="limparFiltroCliente()"
+                        title="Limpar busca">close</span>
+                    <div id="lista-sugestoes" class="suggestions-box"></div>
+                </div>
+
+                <div class="input-group-wrapper pc-only input-busca-wrapper" style="flex: 2; position:relative;">
+                    <span class="material-icons search-icon">medical_services</span>
+                    <input type="text" id="filtro-especialidade" class="input-control input-busca"
+                        placeholder="Especialidade..." onkeyup="filtrarSugestoesEspecialidade(this.value)"
+                        autocomplete="off" title="Busque pela Especialidade">
+                    <span class="material-icons clear-icon" onclick="limparFiltroEspecialidade()"
+                        title="Limpar busca">close</span>
+                    <div id="lista-sugestoes-especialidade" class="suggestions-box"></div>
+                </div>
+
+                <label id="lbl-relatorio-pc"
+                    style="display:none; align-items:center; font-size:12px; cursor:pointer; color:#1a73e8; font-weight:bold; background:#e8f0fe; padding:0 10px; border-radius:8px; height:38px; margin:0;"
+                    title="Abrir o histórico de atendimentos do cliente buscado"><input type="checkbox"
+                        id="chk-relatorio-pc" onchange="abrirRelatorio()" style="margin-right:6px;"> Relatório</label>
+            </div>
+
+            <div class="header-totals pc-only" style="width: 100%; justify-content: flex-end; margin-top: 5px;">
+                <div id="row-total-confirmado" class="total-row-item"><span id="badge-total-confirmado"
+                        class="total-badge total-confirmado">Total (Confirmado): R$ 0,00</span></div>
+                <div id="row-total-atendido" class="total-row-item"><span id="badge-total-atendido"
+                        class="total-badge total-atendido">Total (Atendido): R$ 0,00</span></div>
+                <div id="row-total-cancelado" class="total-row-item"><span id="badge-total-cancelado"
+                        class="total-badge total-cancelado">Total (Cancelado): R$ 0,00</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-container">
+        <div id="cards-container">Carregando...</div>
+    </div>
+</div>

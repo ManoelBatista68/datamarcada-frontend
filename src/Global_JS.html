@@ -1,0 +1,1505 @@
+<script>
+    window.onerror = function (msg, url, line) {
+        console.error("Erro: " + msg + " na linha " + line);
+        const loader = document.getElementById('loader');
+        if (loader) loader.style.display = 'none';
+    };
+
+    let userEmail = "";
+    let tipoUsuarioAtual = "Especialista";
+    let userCodigoEmpresa = ""; // 🔥 VARIÁVEL GLOBAL DO CÓDIGO DA EMPRESA
+    let dadosGlobais = [];
+    let listaClientesUnicos = [];
+    let listaEspecialidadesUnicas = [];
+    let filtroSinoAtivo = null;
+    let debounceTimer;
+    let _funcaoConfirmacaoPendente = null;
+    let _funcaoConfirmacaoNao = null;
+    let clienteSelecionadoCelular = null;
+
+    const LOG_SEPARATOR = "\n---[LOG]---\n";
+    let logsAtuais = [];
+    let indiceEditando = -1;
+    let campoAlvo = "";
+    let idUnicoAberto = "";
+    let arquivoPendenteParaUpload = null;
+
+    let speechRec = null;
+    let logIndexSendoRespondido = -1;
+    let windowBloqueada = false;
+
+    let timerInatividade;
+    const TEMPO_INATIVIDADE = 60000;
+
+    window.onload = function () {
+        const salvoEmail = localStorage.getItem('appAgendaUserEmail');
+        const salvoTipo = localStorage.getItem('appAgendaUserTipo');
+        const salvoCodEmpresa = localStorage.getItem('appAgendaUserCodigoEmpresa');
+
+        if (salvoEmail && salvoTipo) {
+            userEmail = salvoEmail;
+            tipoUsuarioAtual = salvoTipo;
+            userCodigoEmpresa = salvoCodEmpresa || ""; // Recupera do storage
+            iniciarApp();
+        } else {
+            const loginScreen = document.getElementById('login-screen');
+            if (loginScreen) loginScreen.style.display = 'flex';
+        }
+    };
+
+    function isClient() { return tipoUsuarioAtual === "Cliente"; }
+
+    function resetarTimerInatividade() {
+        clearTimeout(timerInatividade);
+        if (userEmail) {
+            timerInatividade = setTimeout(function () {
+                let modais = document.querySelectorAll('.modal-overlay');
+                let algumModalAberto = false;
+                modais.forEach(function (m) { if (m.style.display === 'flex') algumModalAberto = true; });
+
+                if (algumModalAberto) { resetarTimerInatividade(); }
+                else { carregar(); }
+            }, TEMPO_INATIVIDADE);
+        }
+    }
+
+    function iniciarRastreadorInatividade() {
+        window.addEventListener('mousemove', resetarTimerInatividade);
+        window.addEventListener('mousedown', resetarTimerInatividade);
+        window.addEventListener('keypress', resetarTimerInatividade);
+        window.addEventListener('touchstart', resetarTimerInatividade);
+        window.addEventListener('scroll', resetarTimerInatividade);
+        resetarTimerInatividade();
+    }
+
+    function iniciarApp() {
+        const loginScreen = document.getElementById('login-screen');
+        if (loginScreen) loginScreen.style.display = 'none';
+
+        const appContent = document.getElementById('app-content');
+        if (appContent) appContent.style.display = 'block';
+
+        const dispUserEmail = document.getElementById('display-user-email');
+        if (dispUserEmail) dispUserEmail.textContent = "Usuário: " + userEmail + " (" + tipoUsuarioAtual + ")";
+
+        const dispUserEmailRep = document.getElementById('display-user-email-rep');
+        if (dispUserEmailRep) dispUserEmailRep.textContent = "Usuário: " + userEmail + " (" + tipoUsuarioAtual + ")";
+
+        if (isClient()) {
+            const opStatus = '<option value="">Status: Todos</option><option value="Confirmado">Confirmado</option><option value="Atendido">Atendido</option><option value="Adiado">Adiado</option>';
+            if (document.getElementById('filtro-status')) document.getElementById('filtro-status').innerHTML = opStatus;
+            if (document.getElementById('filtro-status-mobile')) document.getElementById('filtro-status-mobile').innerHTML = opStatus;
+            if (document.getElementById('filtro-status-periodo-mobile')) document.getElementById('filtro-status-periodo-mobile').innerHTML = opStatus;
+            if (document.getElementById('filtro-status-periodo')) document.getElementById('filtro-status-periodo').innerHTML = opStatus;
+
+            if (document.getElementById('filtro-cliente')) document.getElementById('filtro-cliente').placeholder = "Busca Especialista...";
+            if (document.getElementById('filtro-cliente-mobile')) document.getElementById('filtro-cliente-mobile').placeholder = "Busca Especialista...";
+
+            document.querySelectorAll('.btn-periodo, .dash-btn-alert.outline-blue, .dash-btn-alert.action-add, .fab, .header-totals').forEach(function (el) { el.style.display = 'none'; });
+
+            if (document.getElementById('wrapper-janela-pc')) document.getElementById('wrapper-janela-pc').style.display = 'none';
+            if (document.getElementById('wrapper-janela-mobile')) document.getElementById('wrapper-janela-mobile').style.display = 'none';
+        } else {
+            const opStatusEsp = '<option value="">Status: Todos</option><option value="Disponível">Disponível</option><option value="Indefinido">Indefinido</option><option value="Confirmado">Confirmado</option><option value="Não confirmado">Não confirmado</option><option value="Atendido">Atendido</option><option value="Adiado">Adiado</option><option value="Cancelado">Cancelado</option><option value="Arquivado">Arquivados</option>';
+            const opStatusRep = '<option value="">Status: Todos</option><option value="Confirmado">Confirmado</option><option value="Atendido">Atendido</option><option value="Cancelado">Cancelado</option><option value="Adiado">Adiado</option>';
+
+            if (document.getElementById('filtro-status')) document.getElementById('filtro-status').innerHTML = opStatusEsp;
+            if (document.getElementById('filtro-status-mobile')) document.getElementById('filtro-status-mobile').innerHTML = opStatusEsp;
+            if (document.getElementById('filtro-status-periodo-mobile')) document.getElementById('filtro-status-periodo-mobile').innerHTML = opStatusRep;
+            if (document.getElementById('filtro-status-periodo')) document.getElementById('filtro-status-periodo').innerHTML = opStatusRep;
+
+            if (document.getElementById('filtro-cliente')) document.getElementById('filtro-cliente').placeholder = "Busca Cliente...";
+            if (document.getElementById('filtro-cliente-mobile')) document.getElementById('filtro-cliente-mobile').placeholder = "Busca Cliente...";
+
+            document.querySelectorAll('.btn-periodo, .dash-btn-alert.outline-blue, .dash-btn-alert.action-add, .fab, .header-totals').forEach(function (el) { el.style.display = ''; });
+
+            if (document.getElementById('wrapper-janela-pc')) document.getElementById('wrapper-janela-pc').style.display = 'flex';
+            if (document.getElementById('wrapper-janela-mobile')) document.getElementById('wrapper-janela-mobile').style.display = 'flex';
+        }
+
+        carregar();
+        iniciarRastreadorInatividade();
+    }
+
+    function fazerLogin() {
+        const e = document.getElementById('login-email').value;
+        const s = document.getElementById('login-senha').value;
+        if (!e || !s) return alert("Preencha tudo");
+
+        const btnEntrar = document.getElementById('btn-entrar');
+        if (btnEntrar) btnEntrar.disabled = true;
+
+        google.script.run.withSuccessHandler(function (res) {
+            if (res.sucesso) {
+                userEmail = res.email;
+                tipoUsuarioAtual = res.tipoUsuario;
+                userCodigoEmpresa = res.codigoempresa || ""; // PEGA DA RESPOSTA DO BACKEND
+
+                localStorage.setItem('appAgendaUserEmail', userEmail);
+                localStorage.setItem('appAgendaUserTipo', tipoUsuarioAtual);
+                localStorage.setItem('appAgendaUserCodigoEmpresa', userCodigoEmpresa);
+
+                iniciarApp();
+            } else {
+                alert(res.erro);
+                if (document.getElementById('btn-entrar')) document.getElementById('btn-entrar').disabled = false;
+            }
+        }).withFailureHandler(function (err) {
+            alert("Erro de conexão");
+            if (document.getElementById('btn-entrar')) document.getElementById('btn-entrar').disabled = false;
+        }).verificarLogin(e, s);
+    }
+
+    function fazerLogout() {
+        localStorage.removeItem('appAgendaUserEmail');
+        localStorage.removeItem('appAgendaUserTipo');
+        localStorage.removeItem('appAgendaUserCodigoEmpresa');
+
+        userEmail = "";
+        tipoUsuarioAtual = "Especialista";
+        userCodigoEmpresa = "";
+        dadosGlobais = [];
+        clearTimeout(timerInatividade);
+        alternarTela('principal');
+
+        const appContent = document.getElementById('app-content');
+        if (appContent) appContent.style.display = 'none';
+
+        const loginScreen = document.getElementById('login-screen');
+        if (loginScreen) loginScreen.style.display = 'flex';
+
+        if (document.getElementById('login-senha')) document.getElementById('login-senha').value = '';
+        if (document.getElementById('btn-entrar')) document.getElementById('btn-entrar').disabled = false;
+    }
+
+    function salvarJanelaUI(val) {
+        if (document.getElementById('janela-interacao-pc')) document.getElementById('janela-interacao-pc').value = val;
+        if (document.getElementById('janela-interacao-mobile')) document.getElementById('janela-interacao-mobile').value = val;
+        google.script.run.salvarJanelaInteracao(userEmail, val);
+    }
+
+    function getHojeStr() { const h = new Date(); return h.getFullYear() + "-" + String(h.getMonth() + 1).padStart(2, '0') + "-" + String(h.getDate()).padStart(2, '0'); }
+    function formatarDataBr(d) { if (!d) return ""; const p = d.split('-'); if (p.length === 3) return p[2] + '/' + p[1] + '/' + p[0]; return d; }
+    function escapeHtml(text) { if (text === null || text === undefined) return ""; return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
+    function parseDate(d, h) { if (!d) return null; const p = d.split('-'); const hrStr = h || "00:00"; const t = hrStr.split(':'); return new Date(p[0], p[1] - 1, p[2], t[0], t[1]); }
+
+    function ordenarCards(a, b) {
+        const agoraSort = new Date();
+        const dtA = parseDate(String(a.data).substring(0, 10), a.h_ini);
+        const isVencidoA = dtA && dtA < agoraSort;
+        let rankA = 9;
+        if (a.status === 'Confirmado') { rankA = isVencidoA ? 2 : 1; }
+        else if (a.status === 'Atendido' || a.status === 'Aconteceu') rankA = 3;
+        else if (a.status === 'Cancelado' || a.status === 'Adiado') rankA = 4;
+        else if (a.status === 'Arquivado') rankA = 5;
+        else if (a.status === 'Não confirmado') rankA = 6;
+        else if (a.status === 'Disponível') rankA = 7;
+        else if (a.status === 'Indefinido') rankA = 8;
+
+        const dtB = parseDate(String(b.data).substring(0, 10), b.h_ini);
+        const isVencidoB = dtB && dtB < agoraSort;
+        let rankB = 9;
+        if (b.status === 'Confirmado') { rankB = isVencidoB ? 2 : 1; }
+        else if (b.status === 'Atendido' || b.status === 'Aconteceu') rankB = 3;
+        else if (b.status === 'Cancelado' || b.status === 'Adiado') rankB = 4;
+        else if (b.status === 'Arquivado') rankB = 5;
+        else if (b.status === 'Não confirmado') rankB = 6;
+        else if (b.status === 'Disponível') rankB = 7;
+        else if (b.status === 'Indefinido') rankB = 8;
+
+        if (rankA !== rankB) return rankA - rankB;
+        const strDataA = String(a.data).substring(0, 10);
+        const strDataB = String(b.data).substring(0, 10);
+        if (strDataA !== strDataB) return strDataA.localeCompare(strDataB);
+        const hrA = a.h_ini || ""; const hrB = b.h_ini || ""; return hrA.localeCompare(hrB);
+    }
+
+    function gV(id) { const el = document.getElementById(id); return el ? el.value : ""; }
+    function getValorNumerico(v) { if (!v) return 0; let s = v.toString().replace(/[R$\s]/g, "").replace(/\./g, "").replace(",", "."); return parseFloat(s) || 0; }
+    function copiarLink(id) { const el = document.getElementById(id); if (el && el.value) { navigator.clipboard.writeText(el.value).then(function () { const t = document.getElementById("toast-notification"); if (t) { t.className = "toast show"; setTimeout(function () { t.className = t.className.replace("show", ""); }, 3000); } }).catch(function (err) { el.select(); document.execCommand('copy'); }); } }
+
+    function mostrarConfirmacao(titulo, mensagem, funcaoSim, funcaoNao = null) {
+        if (document.getElementById('confirm-title')) document.getElementById('confirm-title').textContent = titulo;
+        if (document.getElementById('confirm-msg')) document.getElementById('confirm-msg').textContent = mensagem;
+        _funcaoConfirmacaoPendente = funcaoSim;
+        _funcaoConfirmacaoNao = funcaoNao;
+
+        if (document.getElementById('modal-confirmacao')) document.getElementById('modal-confirmacao').style.display = 'flex';
+
+        const btnSim = document.getElementById('btn-confirm-yes');
+        if (btnSim) {
+            const novoBtn = btnSim.cloneNode(true);
+            btnSim.parentNode.replaceChild(novoBtn, btnSim);
+            novoBtn.onclick = function () { if (_funcaoConfirmacaoPendente) _funcaoConfirmacaoPendente(); fecharModalConfirmacao(); };
+        }
+    }
+    function recusarConfirmacao() { if (_funcaoConfirmacaoNao) _funcaoConfirmacaoNao(); fecharModalConfirmacao(); }
+    function fecharModalConfirmacao() { if (document.getElementById('modal-confirmacao')) document.getElementById('modal-confirmacao').style.display = 'none'; _funcaoConfirmacaoPendente = null; _funcaoConfirmacaoNao = null; }
+    function mostrarMensagem(titulo, mensagem) {
+        if (document.getElementById('msg-title')) document.getElementById('msg-title').textContent = titulo;
+        if (document.getElementById('msg-content')) document.getElementById('msg-content').textContent = mensagem;
+        if (document.getElementById('modal-mensagem')) document.getElementById('modal-mensagem').style.display = 'flex';
+    }
+    function fecharModalMensagem() { if (document.getElementById('modal-mensagem')) document.getElementById('modal-mensagem').style.display = 'none'; }
+    function formatarTextoPopup(texto) { if (!texto) return "(Vazio)"; if (String(texto).includes("---[LOG]---")) { let logs = parseLogs(texto); return logs.map(function (l) { return (l.date ? "<b>📅 " + l.date + "</b><br>" : "<b>📅 Registro antigo</b><br>") + linkify(escapeHtml(l.text)); }).join("<br><br>"); } return String(texto).replace(/\*(.*?)\*/g, "<b>$1</b>").replace(/\n/g, "<br>"); }
+    function abrirModalInfo(titulo, idInput) {
+        const inputEl = document.getElementById(idInput);
+        const valorOriginal = inputEl ? inputEl.value : "";
+        if (document.getElementById('modal-info-title')) document.getElementById('modal-info-title').textContent = titulo;
+        if (document.getElementById('modal-info-content')) document.getElementById('modal-info-content').innerHTML = formatarTextoPopup(valorOriginal);
+        if (document.getElementById('modal-info')) document.getElementById('modal-info').style.display = 'flex';
+    }
+    function fecharModalInfo() { if (document.getElementById('modal-info')) document.getElementById('modal-info').style.display = 'none'; }
+
+    window.toggleCardEl = function (elemento) {
+        const card = elemento.closest('.card');
+        if (!card) return;
+        card.classList.toggle('expanded');
+        const icon = card.querySelector('.btn-expand-row .material-icons');
+        if (icon) {
+            icon.textContent = card.classList.contains('expanded') ? 'expand_less' : 'visibility';
+        }
+    };
+
+    function abrirModalRecuperar() {
+        if (document.getElementById('modal-recuperar')) document.getElementById('modal-recuperar').style.display = 'flex';
+        if (document.getElementById('recup-step-1')) document.getElementById('recup-step-1').style.display = 'block';
+        if (document.getElementById('recup-step-2')) document.getElementById('recup-step-2').style.display = 'none';
+        if (document.getElementById('recup-email')) document.getElementById('recup-email').value = "";
+    }
+    function fecharModalRecuperar() { if (document.getElementById('modal-recuperar')) document.getElementById('modal-recuperar').style.display = 'none'; }
+    function voltarStep1() {
+        if (document.getElementById('recup-step-1')) document.getElementById('recup-step-1').style.display = 'block';
+        if (document.getElementById('recup-step-2')) document.getElementById('recup-step-2').style.display = 'none';
+    }
+    function enviarCodigo() {
+        const e = document.getElementById('recup-email') ? document.getElementById('recup-email').value : "";
+        if (!e) return alert("E-mail inválido");
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+        google.script.run.withSuccessHandler(function (res) {
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+            if (res.sucesso) {
+                if (document.getElementById('recup-step-1')) document.getElementById('recup-step-1').style.display = 'none';
+                if (document.getElementById('recup-step-2')) document.getElementById('recup-step-2').style.display = 'block';
+            } else alert(res.erro);
+        }).enviarCodigoRecuperacao(e);
+    }
+    function confirmarNovaSenha() {
+        const e = document.getElementById('recup-email') ? document.getElementById('recup-email').value : "";
+        const c = document.getElementById('recup-codigo') ? document.getElementById('recup-codigo').value : "";
+        const n = document.getElementById('recup-nova-senha') ? document.getElementById('recup-nova-senha').value : "";
+
+        if (!c) return alert("Preencha tudo");
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+        google.script.run.withSuccessHandler(function (res) {
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+            if (res.sucesso) { alert("Sucesso!"); fecharModalRecuperar(); } else alert(res.erro);
+        }).redefinirSenhaComCodigo(e, c, n);
+    }
+    function abrirModalTrocaSenha() {
+        if (document.getElementById('modal-troca-senha')) document.getElementById('modal-troca-senha').style.display = 'flex';
+        if (document.getElementById('nova-senha-logado')) document.getElementById('nova-senha-logado').value = "";
+    }
+    function fecharModalTrocaSenha() { if (document.getElementById('modal-troca-senha')) document.getElementById('modal-troca-senha').style.display = 'none'; }
+    function confirmarTrocaSenhaLogado() {
+        const n = document.getElementById('nova-senha-logado') ? document.getElementById('nova-senha-logado').value : "";
+        if (!n) return alert("Digite a senha");
+
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+        fecharModalTrocaSenha();
+
+        google.script.run.withSuccessHandler(function (res) {
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+            if (res.sucesso) alert("Sucesso!"); else alert(res.erro);
+        }).trocarSenhaUsuario(userEmail, n);
+    }
+
+    function alternarDitado() {
+        const btn = document.getElementById('btn-mic-log'); const textArea = document.getElementById('modal-log-text');
+        if (!btn || !textArea) return;
+
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { mostrarMensagem("Aviso", "Seu navegador não suporta a digitação por voz integrada. Por favor, use o ícone de microfone nativo no teclado do seu celular ou os atalhos do computador (Win + H)."); return; }
+        if (speechRec && speechRec.isStarted) { speechRec.stop(); return; }
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; speechRec = new SpeechRecognition(); speechRec.lang = 'pt-BR'; speechRec.continuous = true; speechRec.interimResults = true;
+        let textoInicial = textArea.value;
+        speechRec.onstart = function () { speechRec.isStarted = true; btn.style.background = "#ea4335"; btn.style.color = "white"; btn.innerHTML = '<span class="material-icons" style="font-size:14px; vertical-align:middle;">mic</span> Gravando (Clique para parar)'; };
+        speechRec.onresult = function (event) {
+            let transcricaoParcial = ''; let transcricaoFinal = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) { if (event.results[i].isFinal) { transcricaoFinal += event.results[i][0].transcript; } else { transcricaoParcial += event.results[i][0].transcript; } }
+            if (transcricaoFinal) { textoInicial += (textoInicial && !textoInicial.endsWith(' ') ? " " : "") + transcricaoFinal; textArea.value = textoInicial; } else { textArea.value = textoInicial + (textoInicial && !textoInicial.endsWith(' ') ? " " : "") + transcricaoParcial; }
+        };
+        speechRec.onerror = function (event) { console.error("Erro voz:", event.error); };
+        speechRec.onend = function () { speechRec.isStarted = false; btn.style.background = "#e8f0fe"; btn.style.color = "#1a73e8"; btn.innerHTML = '<span class="material-icons" style="font-size:14px; vertical-align:middle;">mic</span> Ditar'; };
+        speechRec.start();
+    }
+
+    function inserirEmoji(emoji) { const textarea = document.getElementById('modal-log-text'); if (!textarea) return; const start = textarea.selectionStart; const end = textarea.selectionEnd; const text = textarea.value; textarea.value = text.slice(0, start) + emoji + text.slice(end); textarea.selectionStart = textarea.selectionEnd = start + emoji.length; textarea.focus(); }
+
+    function parseLogs(raw) { if (!raw) return []; let rawStr = String(raw); let chunks = rawStr.split(LOG_SEPARATOR); let logs = []; chunks.forEach(function (chunk) { let ch = chunk.trim(); if (!ch) return; let m = ch.match(/^📅 (.*?)\n([\s\S]*)$/); if (m) { logs.push({ date: m[1].trim(), text: m[2].trim() }); } else { logs.push({ date: "", text: ch }); } }); return logs; }
+    function stringifyLogs(logs) { return logs.map(function (l) { return l.date ? "📅 " + l.date + "\n" + l.text : l.text; }).join(LOG_SEPARATOR); }
+    function formatarLogResumo(raw) { if (!raw) return ""; let logs = parseLogs(raw); if (logs.length === 0) return ""; let last = logs[logs.length - 1]; let text = (last.text || "").replace(/\n/g, " "); let prefix = logs.length > 1 ? "(" + logs.length + ") " : ""; let trunc = text.substring(0, 30) + (text.length > 30 ? "..." : ""); return prefix + trunc; }
+    function linkify(text) { var urlRegex = /(https?:\/\/[^\s]+)/g; return text.replace(urlRegex, function (url) { return '<a href="' + url + '" target="_blank" style="color: #1a73e8; text-decoration: underline;">' + url + '</a>'; }); }
+
+    function prepararResposta(index) {
+        if (windowBloqueada && isClient()) {
+            if (document.getElementById('modal-janela-fechada')) document.getElementById('modal-janela-fechada').style.display = 'flex';
+            return;
+        }
+        logIndexSendoRespondido = index;
+        let msgCompleta = logsAtuais[index].text.replace(/\n/g, " ");
+        let excerpt = msgCompleta.length > 40 ? msgCompleta.substring(0, 40) + "..." : msgCompleta;
+
+        if (document.getElementById('area-digitacao-log')) document.getElementById('area-digitacao-log').style.display = 'block';
+        if (document.getElementById('label-modo-log')) document.getElementById('label-modo-log').innerHTML = '<span style="color:#e91e63;">Respondendo a:</span> "' + escapeHtml(excerpt) + '" <span style="cursor:pointer; color:#888; margin-left:5px; text-decoration:underline;" onclick="cancelarRespostaEspecifica()">[Cancelar]</span>';
+        if (document.getElementById('btn-salvar-log')) document.getElementById('btn-salvar-log').textContent = "Responder / Marcar Visto";
+
+        if (campoAlvo === 'obscli' && !isClient() && document.getElementById('chk-visto-cli')) { document.getElementById('chk-visto-cli').checked = true; }
+        if (campoAlvo === 'obspcli' && isClient() && document.getElementById('chk-visto-esp')) { document.getElementById('chk-visto-esp').checked = true; }
+
+        if (document.getElementById('modal-log-text')) document.getElementById('modal-log-text').focus();
+        const modalBox = document.querySelector('#modal-log .modal-box'); if (modalBox) modalBox.scrollTop = modalBox.scrollHeight;
+    }
+
+    function cancelarRespostaEspecifica() {
+        logIndexSendoRespondido = -1;
+        if (document.getElementById('area-digitacao-log')) document.getElementById('area-digitacao-log').style.display = 'none';
+        if (document.getElementById('modal-log-text')) document.getElementById('modal-log-text').value = "";
+        if (document.getElementById('btn-salvar-log')) document.getElementById('btn-salvar-log').textContent = "Salvar Confirmação";
+    }
+
+    function checarBloqueioTexto() {
+        if (windowBloqueada && isClient()) {
+            if (document.getElementById('modal-janela-fechada')) document.getElementById('modal-janela-fechada').style.display = 'flex';
+        }
+    }
+
+    function abrirModalLog(idUnico, tipoCampo, titulo) {
+        idUnicoAberto = idUnico; campoAlvo = tipoCampo; logIndexSendoRespondido = -1;
+        const item = dadosGlobais.find(d => d.id_unico === idUnico); if (!item) return;
+
+        let interacaoBloqueada = false;
+        if (isClient() && (item.status === 'Atendido' || item.status === 'Arquivado')) {
+            if (item.janela && item.janela.trim() !== "") {
+                let limiteDias = parseInt(item.janela);
+                let dtObj = parseDate(String(item.data).substring(0, 10), "00:00");
+                let agora = new Date(); agora.setHours(0, 0, 0, 0);
+                if (dtObj) {
+                    let diffDias = Math.floor((agora.getTime() - dtObj.getTime()) / (1000 * 60 * 60 * 24));
+                    if (diffDias > limiteDias) { interacaoBloqueada = true; }
+                }
+            }
+        }
+
+        windowBloqueada = interacaoBloqueada;
+        if (document.getElementById('modal-log-title')) document.getElementById('modal-log-title').textContent = titulo;
+
+        const textElement = document.getElementById(tipoCampo + '_' + idUnico);
+        let rawText = textElement ? textElement.value : "";
+
+        logsAtuais = parseLogs(rawText);
+        cancelarEdicaoLog();
+
+        let isReadOnlyLog = (!isClient() && tipoCampo === "obscli") || (isClient() && tipoCampo === "obspcli");
+        renderizarListaLogs(isReadOnlyLog, interacaoBloqueada);
+
+        const contVistoCli = document.getElementById('container-visto-cli');
+        const contVistoEsp = document.getElementById('container-visto-esp');
+
+        if (isReadOnlyLog) {
+            if (!isClient()) {
+                if (contVistoCli) contVistoCli.style.display = 'flex';
+                if (contVistoEsp) contVistoEsp.style.display = 'none';
+                const cliValEl = document.getElementById('vistocli_' + idUnico);
+                if (document.getElementById('chk-visto-cli')) document.getElementById('chk-visto-cli').checked = (cliValEl && cliValEl.value === "Visto");
+            } else {
+                if (contVistoCli) contVistoCli.style.display = 'none';
+                if (contVistoEsp) contVistoEsp.style.display = 'flex';
+                const espValEl = document.getElementById('vistopcli_' + idUnico);
+                if (document.getElementById('chk-visto-esp')) document.getElementById('chk-visto-esp').checked = (espValEl && espValEl.value === "Visto");
+            }
+
+            if (document.getElementById('area-digitacao-log')) document.getElementById('area-digitacao-log').style.display = 'none';
+            if (document.getElementById('modal-log-text')) document.getElementById('modal-log-text').value = "";
+
+            if (interacaoBloqueada) {
+                if (document.getElementById('btn-anexo-log')) document.getElementById('btn-anexo-log').style.display = 'none';
+                if (document.getElementById('btn-salvar-log')) document.getElementById('btn-salvar-log').textContent = "Marcar Visto e Fechar";
+            } else {
+                if (document.getElementById('btn-anexo-log')) document.getElementById('btn-anexo-log').style.display = 'inline-block';
+                if (document.getElementById('btn-salvar-log')) document.getElementById('btn-salvar-log').textContent = "Salvar Confirmação";
+            }
+        } else {
+            if (contVistoCli) contVistoCli.style.display = 'none';
+            if (contVistoEsp) contVistoEsp.style.display = 'none';
+            if (document.getElementById('label-modo-log')) document.getElementById('label-modo-log').textContent = "Nova entrada:";
+            if (document.getElementById('area-digitacao-log')) document.getElementById('area-digitacao-log').style.display = 'block';
+            if (document.getElementById('btn-anexo-log')) document.getElementById('btn-anexo-log').style.display = 'inline-block';
+            if (document.getElementById('btn-salvar-log')) {
+                document.getElementById('btn-salvar-log').style.display = 'inline-block';
+                document.getElementById('btn-salvar-log').textContent = "Adicionar e Salvar";
+            }
+
+            if (interacaoBloqueada) {
+                if (document.getElementById('modal-log-text')) {
+                    document.getElementById('modal-log-text').readOnly = true;
+                    document.getElementById('modal-log-text').placeholder = "Prazo esgotado. Use o botão 📎 Anexo para enviar arquivos.";
+                }
+                if (document.getElementById('emoji-bar')) document.getElementById('emoji-bar').style.display = 'none';
+            } else {
+                if (document.getElementById('modal-log-text')) {
+                    document.getElementById('modal-log-text').readOnly = false;
+                    document.getElementById('modal-log-text').placeholder = "Clique aqui e use o microfone do seu teclado para ditar (ou aperte Win+H no PC)...";
+                }
+                if (document.getElementById('emoji-bar')) document.getElementById('emoji-bar').style.display = 'flex';
+            }
+        }
+
+        if (document.getElementById('modal-log')) document.getElementById('modal-log').style.display = 'flex';
+    }
+
+    function fecharModalLog() {
+        if (document.getElementById('modal-log')) document.getElementById('modal-log').style.display = 'none';
+        if (document.getElementById('modal-log-text')) document.getElementById('modal-log-text').value = "";
+        idUnicoAberto = ""; campoAlvo = ""; logsAtuais = []; logIndexSendoRespondido = -1;
+        if (speechRec && speechRec.isStarted) { speechRec.stop(); }
+    }
+
+    function renderizarListaLogs(isReadOnlyLog, interacaoBloqueada = false) {
+        const container = document.getElementById('log-list-container');
+        if (!container) return;
+
+        if (logsAtuais.length === 0) {
+            container.innerHTML = '<div style="font-size: 11px; color: #888; text-align: center; padding: 10px;">Nenhum registro.</div>';
+            return;
+        }
+
+        let html = '';
+        logsAtuais.forEach(function (log, index) {
+            let dt = log.date ? "📅 " + log.date : "📅 Registro antigo";
+            let iconsHtml = '';
+            let responderTexto = '';
+
+            if (!isReadOnlyLog) {
+                if (!(interacaoBloqueada && isClient())) {
+                    iconsHtml = '<div style="position: absolute; top: 5px; right: 5px; display: flex; gap: 5px;"><span class="material-icons" style="font-size: 16px; cursor: pointer; color: #fbbc04;" onclick="editarLog(' + index + ')" title="Editar">edit</span><span class="material-icons" style="font-size: 16px; cursor: pointer; color: #ea4335;" onclick="excluirLog(' + index + ')" title="Excluir">delete</span></div>';
+                }
+            } else if (!interacaoBloqueada) {
+                iconsHtml = '<div style="position: absolute; top: 5px; right: 5px; display: flex; gap: 5px;"><span class="material-icons" style="font-size: 16px; cursor: pointer; color: #1a73e8;" onclick="prepararResposta(' + index + ')" title="Responder a esta mensagem">reply</span></div>';
+                responderTexto = '<div style="margin-top:8px; font-size:11px; color:#34a853; cursor:pointer; font-weight:bold; display:inline-block;" onclick="prepararResposta(' + index + ')">↪ Responder essa mensagem</div>';
+            }
+            html += '<div class="log-item"><div style="font-size: 10px; color: #1a73e8; font-weight: bold; margin-bottom: 4px;">' + escapeHtml(dt) + '</div><div style="font-size: 12px; color: var(--text-main); white-space: pre-wrap;">' + linkify(escapeHtml(log.text)) + '</div>' + responderTexto + iconsHtml + '</div>';
+        });
+
+        container.innerHTML = html;
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function editarLog(index) {
+        indiceEditando = index;
+        if (document.getElementById('modal-log-text')) document.getElementById('modal-log-text').value = logsAtuais[index].text;
+        if (document.getElementById('label-modo-log')) document.getElementById('label-modo-log').textContent = "Editando registro de: " + (logsAtuais[index].date || "Legado");
+
+        const btnSalvar = document.getElementById('btn-salvar-log');
+        if (btnSalvar) {
+            btnSalvar.textContent = "Atualizar e Salvar";
+            btnSalvar.style.background = "#fbbc04";
+            btnSalvar.style.color = "#333";
+        }
+
+        if (document.getElementById('btn-cancelar-edit')) document.getElementById('btn-cancelar-edit').style.display = "inline-block";
+        if (document.getElementById('area-digitacao-log')) document.getElementById('area-digitacao-log').style.display = 'block';
+    }
+
+    function cancelarEdicaoLog() {
+        indiceEditando = -1;
+        if (document.getElementById('modal-log-text')) document.getElementById('modal-log-text').value = "";
+        if (document.getElementById('label-modo-log')) document.getElementById('label-modo-log').textContent = "Nova entrada:";
+
+        const btnSalvar = document.getElementById('btn-salvar-log');
+        if (btnSalvar) {
+            btnSalvar.textContent = "Adicionar e Salvar";
+            btnSalvar.style.background = "#3b82f6";
+            btnSalvar.style.color = "white";
+        }
+
+        if (document.getElementById('btn-cancelar-edit')) document.getElementById('btn-cancelar-edit').style.display = "none";
+    }
+
+    function getAgoraStrLog() { const h = new Date(); const ano = h.getFullYear(); const mes = String(h.getMonth() + 1).padStart(2, '0'); const dia = String(h.getDate()).padStart(2, '0'); const hora = String(h.getHours()).padStart(2, '0') + ":" + String(h.getMinutes()).padStart(2, '0'); return dia + "/" + mes + "/" + ano + " às " + hora; }
+
+    function salvarEntradaLog() {
+        let isReadOnlyLog = (!isClient() && campoAlvo === "obscli") || (isClient() && campoAlvo === "obspcli");
+
+        const modalLogText = document.getElementById('modal-log-text');
+        const text = modalLogText ? modalLogText.value.trim() : "";
+
+        if (isReadOnlyLog) {
+            let isCheckedCli = document.getElementById('chk-visto-cli') ? document.getElementById('chk-visto-cli').checked : false;
+            let isCheckedEsp = document.getElementById('chk-visto-esp') ? document.getElementById('chk-visto-esp').checked : false;
+
+            if (text) {
+                if (campoAlvo === 'obscli' && !isClient()) {
+                    if (document.getElementById('chk-visto-cli')) document.getElementById('chk-visto-cli').checked = true;
+                    isCheckedCli = true;
+                }
+                if (campoAlvo === 'obspcli' && isClient()) {
+                    if (document.getElementById('chk-visto-esp')) document.getElementById('chk-visto-esp').checked = true;
+                    isCheckedEsp = true;
+                }
+            }
+
+            const novoRawAtual = stringifyLogs(logsAtuais);
+            if (document.getElementById(campoAlvo + '_' + idUnicoAberto)) document.getElementById(campoAlvo + '_' + idUnicoAberto).value = novoRawAtual;
+
+            if (campoAlvo === 'obscli' && !isClient()) {
+                if (document.getElementById('vistocli_' + idUnicoAberto)) document.getElementById('vistocli_' + idUnicoAberto).value = isCheckedCli ? "Visto" : "";
+                const disp = document.getElementById('obscli_display_' + idUnicoAberto);
+                if (disp) { if (isCheckedCli) disp.classList.remove('obs-unread'); else if (novoRawAtual) disp.classList.add('obs-unread'); }
+            }
+
+            if (campoAlvo === 'obspcli' && isClient()) {
+                if (document.getElementById('vistopcli_' + idUnicoAberto)) document.getElementById('vistopcli_' + idUnicoAberto).value = isCheckedEsp ? "Visto" : "";
+                const disp = document.getElementById('obspcli_display_' + idUnicoAberto);
+                if (disp) { if (isCheckedEsp) disp.classList.remove('obs-unread'); else if (novoRawAtual) disp.classList.add('obs-unread'); }
+            }
+
+            if (text) {
+                let campoDestino = (campoAlvo === 'obspcli') ? 'obscli' : 'obspcli';
+                let vistoDestino = (campoDestino === 'obscli') ? 'vistocli' : 'vistopcli';
+
+                const campoDestinoEl = document.getElementById(campoDestino + '_' + idUnicoAberto);
+                let rawDestino = campoDestinoEl ? campoDestinoEl.value : "";
+                let logsDestino = parseLogs(rawDestino);
+                let textoComContexto = text;
+
+                if (logIndexSendoRespondido >= 0) {
+                    let msgEspecifica = logsAtuais[logIndexSendoRespondido].text.replace(/\n/g, " ");
+                    if (msgEspecifica.length > 80) msgEspecifica = msgEspecifica.substring(0, 80) + "...";
+                    textoComContexto = "Em resposta a: \"" + msgEspecifica + "\"\n↳ " + text;
+                } else {
+                    textoComContexto = "Em resposta: " + text;
+                }
+
+                logsDestino.push({ date: getAgoraStrLog(), text: textoComContexto });
+                let novoRawDestino = stringifyLogs(logsDestino);
+
+                if (document.getElementById(campoDestino + '_' + idUnicoAberto)) document.getElementById(campoDestino + '_' + idUnicoAberto).value = novoRawDestino;
+                if (document.getElementById(vistoDestino + '_' + idUnicoAberto)) document.getElementById(vistoDestino + '_' + idUnicoAberto).value = "";
+
+                const elDisplay = document.getElementById(campoDestino + '_display_' + idUnicoAberto);
+                if (elDisplay) {
+                    elDisplay.textContent = formatarLogResumo(novoRawDestino) || "Clique para visualizar...";
+                    elDisplay.classList.remove('obs-placeholder');
+                }
+            }
+            salvar(idUnicoAberto);
+            fecharModalLog();
+            return;
+        }
+
+        if (!text && !windowBloqueada) { mostrarMensagem("Atenção", "Digite um texto antes de salvar."); return; }
+        if (!text && windowBloqueada) { fecharModalLog(); return; }
+
+        if (indiceEditando >= 0) {
+            logsAtuais[indiceEditando].text = text;
+            cancelarEdicaoLog();
+        } else {
+            logsAtuais.push({ date: getAgoraStrLog(), text: text });
+            if (document.getElementById('modal-log-text')) document.getElementById('modal-log-text').value = "";
+        }
+
+        renderizarListaLogs(false, windowBloqueada);
+        aplicarMudancasLog();
+        if (speechRec && speechRec.isStarted) { speechRec.stop(); }
+    }
+
+    function excluirLog(index) {
+        mostrarConfirmacao("Excluir Registro", "Deseja apagar esta entrada?", function () {
+            logsAtuais.splice(index, 1);
+            if (indiceEditando === index) { cancelarEdicaoLog(); } else if (indiceEditando > index) { indiceEditando--; }
+            renderizarListaLogs(false, windowBloqueada);
+            aplicarMudancasLog();
+        });
+    }
+
+    function aplicarMudancasLog() {
+        const novoRaw = stringifyLogs(logsAtuais);
+        if (document.getElementById(campoAlvo + '_' + idUnicoAberto)) document.getElementById(campoAlvo + '_' + idUnicoAberto).value = novoRaw;
+
+        if (campoAlvo === 'obscli' && !isClient()) {
+            const isChecked = document.getElementById('chk-visto-cli') ? document.getElementById('chk-visto-cli').checked : false;
+            if (document.getElementById('vistocli_' + idUnicoAberto)) document.getElementById('vistocli_' + idUnicoAberto).value = isChecked ? "Visto" : "";
+        }
+        if (campoAlvo === 'obspcli' && isClient()) {
+            const isChecked = document.getElementById('chk-visto-esp') ? document.getElementById('chk-visto-esp').checked : false;
+            if (document.getElementById('vistopcli_' + idUnicoAberto)) document.getElementById('vistopcli_' + idUnicoAberto).value = isChecked ? "Visto" : "";
+        }
+
+        const elDisplay = document.getElementById(campoAlvo + '_display_' + idUnicoAberto);
+        if (elDisplay) {
+            elDisplay.textContent = formatarLogResumo(novoRaw) || (isClient() ? "Clique para visualizar..." : "Clique para adicionar...");
+            if (!novoRaw) { elDisplay.classList.add('obs-placeholder'); } else { elDisplay.classList.remove('obs-placeholder'); }
+
+            if (campoAlvo === 'obscli' && !isClient()) {
+                const vistoval = document.getElementById('vistocli_' + idUnicoAberto) ? document.getElementById('vistocli_' + idUnicoAberto).value : "";
+                if (novoRaw && vistoval !== "Visto") { elDisplay.classList.add('obs-unread'); } else { elDisplay.classList.remove('obs-unread'); }
+            }
+            if (campoAlvo === 'obspcli' && isClient()) {
+                const vistoval = document.getElementById('vistopcli_' + idUnicoAberto) ? document.getElementById('vistopcli_' + idUnicoAberto).value : "";
+                if (novoRaw && vistoval !== "Visto") { elDisplay.classList.add('obs-unread'); } else { elDisplay.classList.remove('obs-unread'); }
+            }
+        }
+        salvar(idUnicoAberto);
+    }
+
+    function processarArquivo(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        arquivoPendenteParaUpload = file;
+        if (document.getElementById('upload-desc-input')) document.getElementById('upload-desc-input').value = "";
+        if (document.getElementById('modal-upload-desc')) document.getElementById('modal-upload-desc').style.display = 'flex';
+    }
+
+    function fecharModalUploadDesc() {
+        if (document.getElementById('modal-upload-desc')) document.getElementById('modal-upload-desc').style.display = 'none';
+        arquivoPendenteParaUpload = null;
+        if (document.getElementById('file-upload')) document.getElementById('file-upload').value = '';
+    }
+
+    function confirmarUploadDesc() {
+        const descInput = document.getElementById('upload-desc-input');
+        const desc = descInput ? descInput.value.trim() : "";
+
+        if (!desc) { alert("Por favor, informe a descrição do arquivo."); return; }
+        const fileToUpload = arquivoPendenteParaUpload;
+
+        if (document.getElementById('modal-upload-desc')) document.getElementById('modal-upload-desc').style.display = 'none';
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const base64Data = e.target.result; const fileName = fileToUpload.name; const mimeType = fileToUpload.type;
+            google.script.run.withSuccessHandler(function (res) {
+                if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+                if (document.getElementById('file-upload')) document.getElementById('file-upload').value = '';
+                arquivoPendenteParaUpload = null;
+                if (res.success) {
+                    const modalLogText = document.getElementById('modal-log-text');
+                    let textAtual = modalLogText ? modalLogText.value : "";
+                    let prefixo = "";
+                    if (!textAtual.includes("LISTA DE DOCUMENTOS")) { prefixo = (textAtual ? "\n\n" : "") + "LISTA DE DOCUMENTOS\n"; }
+                    else if (textAtual && !textAtual.endsWith("\n")) { prefixo = "\n"; }
+                    const novoTexto = textAtual + prefixo + "🔹 " + desc + ": " + res.url;
+                    if (modalLogText) modalLogText.value = novoTexto;
+                    mostrarMensagem("Sucesso!", "Anexo carregado na caixa de texto. Lembre-se de salvar.");
+                } else {
+                    mostrarMensagem("Erro", "Falha ao enviar arquivo: " + res.error);
+                }
+            }).withFailureHandler(function (err) {
+                if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+                if (document.getElementById('file-upload')) document.getElementById('file-upload').value = '';
+                arquivoPendenteParaUpload = null;
+                mostrarMensagem("Erro", "Falha de conexão.");
+            }).salvarArquivoDrive(base64Data, fileName, mimeType);
+        };
+        reader.readAsDataURL(fileToUpload);
+    }
+
+    function abrirModalLocal(idUnico) {
+        const el = document.getElementById('loc_' + idUnico);
+        if (el) {
+            if (document.getElementById('input-edit-local')) document.getElementById('input-edit-local').value = el.value;
+            if (document.getElementById('id-edit-local-hidden')) document.getElementById('id-edit-local-hidden').value = idUnico;
+            if (document.getElementById('modal-edit-local')) document.getElementById('modal-edit-local').style.display = 'flex';
+        }
+    }
+    function fecharModalLocal() { if (document.getElementById('modal-edit-local')) document.getElementById('modal-edit-local').style.display = 'none'; }
+    function salvarLocalUnicoFrontend() {
+        const idUnico = document.getElementById('id-edit-local-hidden') ? document.getElementById('id-edit-local-hidden').value : "";
+        const novoValor = document.getElementById('input-edit-local') ? document.getElementById('input-edit-local').value : "";
+
+        if (document.getElementById('modal-edit-local')) document.getElementById('modal-edit-local').style.display = 'none';
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+        google.script.run.withSuccessHandler(function (res) {
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+            if (res.success) {
+                const el = document.getElementById('loc_' + idUnico);
+                if (el) el.value = novoValor;
+                mostrarMensagem("Sucesso", "Local/Link atualizado com sucesso!");
+            } else {
+                mostrarMensagem("Erro", "Erro ao salvar: " + res.error);
+            }
+        }).withFailureHandler(function (err) {
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+            mostrarMensagem("Erro", "Falha de conexão.");
+        }).atualizarLocalIsolado(idUnico, novoValor);
+    }
+
+    function abrirRelatorio() {
+        let chkPc = document.getElementById('chk-relatorio-pc');
+        let chkMob = document.getElementById('chk-relatorio-mobile');
+        if ((chkPc && !chkPc.checked) && (chkMob && !chkMob.checked)) return;
+        if (!clienteSelecionadoCelular) { mostrarMensagem("Atenção", "Selecione um cliente válido da lista."); fecharRelatorio(); return; }
+        fecharMenuSeMobile('menu-principal');
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+        google.script.run.withSuccessHandler(function (res) {
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+            if (res.success) { renderizarHTMLRelatorio(res.dados); }
+            else { mostrarMensagem("Erro", "Erro ao buscar relatório: " + res.erro); fecharRelatorio(); }
+        }).withFailureHandler(function (err) {
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+            mostrarMensagem("Erro", "Falha de conexão."); fecharRelatorio();
+        }).gerarRelatorioCliente(clienteSelecionadoCelular, userEmail);
+    }
+
+    function renderizarHTMLRelatorio(dados) {
+        const container = document.getElementById('relatorio-content');
+        if (!container) return;
+
+        if (!dados || dados.length === 0) {
+            container.innerHTML = "<div>Nenhum atendimento finalizado encontrado para este cliente.</div>";
+        } else {
+            let emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+            let html = "";
+            dados.forEach(function (item, index) {
+                let numIcon = index < 10 ? emojis[index] : (index + 1) + "️⃣";
+                let dStr = formatarDataBr(item.dataRaw);
+                html += '<div style="margin-bottom: 25px; border-bottom: 1px solid var(--border-light); padding-bottom: 15px;">';
+                html += '<b>' + numIcon + ' Especialidade:</b> ' + escapeHtml(item.esp) + '<br><b>Data:</b> ' + dStr + '<br><b>Profissional:</b> ' + escapeHtml(item.prof) + '<br><br>';
+                html += '<b style="color:#1a73e8;">1- CONSIDERAÇÕES DO ESPECIALISTA</b><br>' + formatarLogsRelatorio(item.obs_esp) + '<br><br>';
+                html += '<b style="color:#1a73e8;">2- INFORMAÇÕES PARA O CLIENTE</b><br>' + formatarLogsRelatorio(item.obs_p_cli) + '<br><br>';
+                html += '<b style="color:#1a73e8;">3- INFORMAÇÕES DO PRÉ-ATENDIMENTO</b><br>' + (item.relatorio ? escapeHtml(item.relatorio).replace(/\n/g, '<br>') : "Sem registro.") + '<br><br>';
+                html += '<b style="color:#1a73e8;">4- INFORMAÇÕES DO CLIENTE</b><br>' + formatarLogsRelatorio(item.obs_cli) + '<br></div>';
+            });
+            container.innerHTML = html;
+        }
+        if (document.getElementById('modal-relatorio-cliente')) document.getElementById('modal-relatorio-cliente').style.display = 'flex';
+    }
+
+    function fecharRelatorio() {
+        if (document.getElementById('modal-relatorio-cliente')) document.getElementById('modal-relatorio-cliente').style.display = 'none';
+        let chkPc = document.getElementById('chk-relatorio-pc');
+        let chkMob = document.getElementById('chk-relatorio-mobile');
+        if (chkPc) chkPc.checked = false;
+        if (chkMob) chkMob.checked = false;
+    }
+
+    function carregarListaFavoritos() {
+        if (!userEmail) return;
+        google.script.run.withSuccessHandler(function (res) {
+            const sel = document.getElementById('sel-favoritos');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">-- Selecione para preencher --</option>';
+            if (res.success && res.dados) {
+                const favs = res.dados; window.meusFavoritos = favs;
+                for (const nome in favs) {
+                    const opt = document.createElement('option'); opt.value = nome; opt.textContent = nome; sel.appendChild(opt);
+                }
+            }
+        }).listarFavoritos(userEmail);
+    }
+
+    function salvarFavoritoUI() {
+        const nome = document.getElementById('nome-novo-fav') ? document.getElementById('nome-novo-fav').value : "";
+        if (!nome) return mostrarMensagem("Atenção", "Digite um nome para o modelo.");
+
+        const diasBlocks = document.querySelectorAll('.day-block'); let configModelo = {};
+        diasBlocks.forEach(function (block) {
+            const chk = block.querySelector('.day-header input');
+            if (!chk || !chk.checked) return;
+            const dataIso = block.dataset.isoDate; const p = dataIso.split('-'); const d = new Date(p[0], p[1] - 1, p[2]); const diaSemana = d.getDay();
+            const rows = block.querySelectorAll('.time-row'); let horarios = [];
+            rows.forEach(function (row) {
+                const ini = row.querySelector('.t-ini').value; const fim = row.querySelector('.t-fim').value;
+                if (ini && fim) horarios.push({ ini: ini, fim: fim });
+            });
+            if (horarios.length > 0) { configModelo[diaSemana] = horarios; }
+        });
+
+        if (Object.keys(configModelo).length === 0) return mostrarMensagem("Atenção", "Configure os dias e horários.");
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+        google.script.run.withSuccessHandler(function (res) {
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+            if (res.success) {
+                mostrarMensagem("Sucesso", "Modelo salvo com sucesso!");
+                if (document.getElementById('nome-novo-fav')) document.getElementById('nome-novo-fav').value = "";
+                carregarListaFavoritos();
+            } else { mostrarMensagem("Erro", "Erro ao salvar."); }
+        }).salvarFavorito(userEmail, nome, configModelo);
+    }
+
+    function aplicarFavoritoUI() {
+        const selObj = document.getElementById('sel-favoritos');
+        const nome = selObj ? selObj.value : "";
+        if (!nome || !window.meusFavoritos || !window.meusFavoritos[nome]) return;
+
+        const modelo = window.meusFavoritos[nome]; const diasBlocks = document.querySelectorAll('.day-block');
+        diasBlocks.forEach(function (block) {
+            const dataIso = block.dataset.isoDate; const p = dataIso.split('-'); const d = new Date(p[0], p[1] - 1, p[2]); const diaSemana = d.getDay();
+            const chk = block.querySelector('.day-header input'); const timesContainer = block.querySelector('.times-container');
+            if (!chk || chk.disabled) return;
+
+            if (modelo[diaSemana]) {
+                chk.checked = true; toggleTimeBlock(chk); timesContainer.innerHTML = '';
+                modelo[diaSemana].forEach(function (h) {
+                    const div = document.createElement('div'); div.className = 'time-row';
+                    div.innerHTML = '<input type="time" class="t-ini" value="' + h.ini + '"> às <input type="time" class="t-fim" value="' + h.fim + '"> <span style="color:red;cursor:pointer;margin-left:5px;" onclick="this.parentElement.remove()">x</span>';
+                    timesContainer.appendChild(div);
+                });
+            } else { chk.checked = false; toggleTimeBlock(chk); }
+        });
+    }
+
+    function excluirFavoritoUI() {
+        const selObj = document.getElementById('sel-favoritos');
+        const nome = selObj ? selObj.value : "";
+        if (!nome) return mostrarMensagem("Atenção", "Selecione um modelo para excluir.");
+
+        mostrarConfirmacao("Excluir Modelo", "Deseja excluir o modelo '" + nome + "'?", function () {
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+            google.script.run.withSuccessHandler(function (res) {
+                if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+                carregarListaFavoritos(); mostrarMensagem("Sucesso", "Modelo excluído.");
+            }).excluirFavorito(userEmail, nome);
+        });
+    }
+
+    function abrirModalNovoBloco() {
+        const sel = document.getElementById('sel-mes-bloco');
+        if (!sel) return;
+        sel.innerHTML = '';
+        const hoje = new Date();
+        for (let i = 0; i < 6; i++) {
+            const d = new Date(hoje.getFullYear(), hoje.getMonth() + i, 1);
+            const opt = document.createElement('option');
+            opt.value = d.toISOString().substring(0, 7);
+            opt.textContent = d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+            sel.appendChild(opt);
+        }
+        renderizarSemanas(); carregarListaFavoritos();
+        if (document.getElementById('modal-novo-bloco')) document.getElementById('modal-novo-bloco').style.display = 'flex';
+    }
+
+    function fecharModalNovoBloco() { if (document.getElementById('modal-novo-bloco')) document.getElementById('modal-novo-bloco').style.display = 'none'; }
+
+    function renderizarSemanas() {
+        const selObj = document.getElementById('sel-mes-bloco');
+        const val = selObj ? selObj.value : "";
+        if (!val) return;
+
+        const p = val.split('-'); const ano = p[0]; const mes = p[1];
+        const container = document.getElementById('container-semanas');
+        if (!container) return;
+        container.innerHTML = '';
+
+        if (document.getElementById('container-status-bloco')) document.getElementById('container-status-bloco').style.display = 'none';
+        if (document.getElementById('container-favoritos-bloco')) document.getElementById('container-favoritos-bloco').style.display = 'none';
+        if (document.getElementById('container-dias-wrapper')) document.getElementById('container-dias-wrapper').style.display = 'none';
+
+        const limite = new Date(); limite.setHours(limite.getHours() + 24);
+        const ultimoDia = new Date(ano, parseInt(mes), 0).getDate(); let semanas = {};
+
+        for (let d = 1; d <= ultimoDia; d++) {
+            const dataAtual = new Date(ano, parseInt(mes) - 1, d, 23, 59, 59);
+            const numSemana = getWeekOfMonth(dataAtual);
+            if (!semanas[numSemana]) semanas[numSemana] = [];
+            semanas[numSemana].push(d);
+        }
+
+        if (Object.keys(semanas).length === 0) { container.innerHTML = '<div style="font-size:12px;color:#888;">Nenhuma data disponível neste mês.</div>'; return; }
+
+        for (const sem in semanas) {
+            const dias = semanas[sem]; const div = document.createElement('div'); div.className = 'week-checkbox-row';
+            const idCheck = 'check-sem-' + sem; const labelStr = 'Semana ' + sem + ' (' + dias[0] + '/' + mes + ' a ' + dias[dias.length - 1] + '/' + mes + ')';
+            div.innerHTML = '<input type="checkbox" id="' + idCheck + '" onchange="renderizarDiasSelecionados()"> <label for="' + idCheck + '">' + labelStr + '</label>';
+            div.dataset.dias = JSON.stringify(dias); div.dataset.ano = ano; div.dataset.mes = mes;
+            container.appendChild(div);
+        }
+    }
+
+    function getWeekOfMonth(date) { const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay(); return Math.ceil((date.getDate() + firstDay) / 7); }
+
+    function renderizarDiasSelecionados() {
+        const containerDias = document.getElementById('container-dias');
+        const statusContainer = document.getElementById('container-status-bloco');
+        const favContainer = document.getElementById('container-favoritos-bloco');
+        const wrapper = document.getElementById('container-dias-wrapper');
+
+        if (containerDias) containerDias.innerHTML = '';
+        const checks = document.querySelectorAll('#container-semanas input[type="checkbox"]:checked');
+
+        if (checks.length === 0) {
+            if (statusContainer) statusContainer.style.display = 'none';
+            if (favContainer) favContainer.style.display = 'none';
+            if (wrapper) wrapper.style.display = 'none';
+            return;
+        } else {
+            if (statusContainer) statusContainer.style.display = 'block';
+            if (favContainer) favContainer.style.display = 'block';
+            if (wrapper) wrapper.style.display = 'block';
+        }
+
+        const limite = new Date(); limite.setHours(limite.getHours() + 24);
+        checks.forEach(function (chk) {
+            const divPai = chk.parentElement; const dias = JSON.parse(divPai.dataset.dias); const ano = divPai.dataset.ano; const mes = divPai.dataset.mes;
+            dias.forEach(function (dia) {
+                const idDia = 'dia-' + ano + '-' + mes + '-' + dia;
+                if (document.getElementById(idDia)) return;
+
+                const block = document.createElement('div'); block.className = 'day-block'; block.id = idDia;
+                const dateObj = new Date(ano, parseInt(mes) - 1, dia); const dataFinalDia = new Date(ano, parseInt(mes) - 1, dia, 23, 59, 59);
+                const diaSemana = dateObj.toLocaleDateString('pt-BR', { weekday: 'short' }); const diaSemanaIndex = dateObj.getDay();
+                const isWeekend = (diaSemanaIndex === 0 || diaSemanaIndex === 6); const isPast = (dataFinalDia < limite);
+                const isChecked = (!isWeekend && !isPast) ? 'checked' : ''; const disableChk = isPast ? 'disabled' : '';
+                const diaFmt = dia + '/' + mes + ' (' + diaSemana + ')'; const avisoPassado = isPast ? ' <span style="font-size:10px; color:#ea4335;">(Indisponível - Regra 24h)</span>' : '';
+                const opacity = (!isWeekend && !isPast) ? 1 : 0.5; const pointerEvents = (!isWeekend && !isPast) ? 'auto' : 'none'; const displayBtn = (!isWeekend && !isPast) ? 'inline-block' : 'none';
+
+                block.innerHTML = '<div class="day-header"><label><input type="checkbox" ' + isChecked + ' ' + disableChk + ' onchange="toggleTimeBlock(this)"> ' + diaFmt + avisoPassado + '</label></div><div class="times-container" style="opacity:' + opacity + '; pointer-events:' + pointerEvents + '"><div class="time-row"><input type="time" class="t-ini" value="08:00"> às <input type="time" class="t-fim" value="09:00"></div></div><button class="btn-add-time" onclick="addTimeRow(this)" style="display:' + displayBtn + '">+ Horário</button>';
+                block.dataset.isoDate = ano + '-' + String(mes).padStart(2, '0') + '-' + String(dia).padStart(2, '0');
+                if (containerDias) containerDias.appendChild(block);
+            });
+        });
+        aplicarFavoritoUI();
+    }
+
+    function toggleTimeBlock(chk) {
+        const container = chk.closest('.day-block').querySelector('.times-container');
+        const btn = chk.closest('.day-block').querySelector('.btn-add-time');
+        if (chk.checked) {
+            if (container) { container.style.opacity = '1'; container.style.pointerEvents = 'auto'; }
+            if (btn) btn.style.display = 'inline-block';
+        } else {
+            if (container) { container.style.opacity = '0.5'; container.style.pointerEvents = 'none'; }
+            if (btn) btn.style.display = 'none';
+        }
+    }
+
+    function addTimeRow(btn) {
+        const container = btn.previousElementSibling;
+        const div = document.createElement('div'); div.className = 'time-row';
+        div.innerHTML = '<input type="time" class="t-ini" value="09:00"> às <input type="time" class="t-fim" value="10:00"> <span style="color:red;cursor:pointer;margin-left:5px;" onclick="this.parentElement.remove()">x</span>';
+        if (container) container.appendChild(div);
+    }
+
+    // 🔥 SALVA O BLOCO DE AGENDAMENTOS 🔥
+    function salvarBloco() {
+        const diasBlocks = document.querySelectorAll('.day-block'); let payload = [];
+        const statusObj = document.getElementById('novo-status-bloco');
+        const statusEscolhido = statusObj ? statusObj.value : "Indefinido";
+
+        document.querySelectorAll('.error-overlap').forEach(function (el) { el.classList.remove('error-overlap'); });
+        let temConflito = false; let horarioInvalido = false;
+
+        diasBlocks.forEach(function (block) {
+            const chk = block.querySelector('.day-header input'); if (!chk || !chk.checked) return;
+            const dataIso = block.dataset.isoDate; const rows = block.querySelectorAll('.time-row');
+            rows.forEach(function (row) {
+                const iniInput = row.querySelector('.t-ini'); const fimInput = row.querySelector('.t-fim');
+                if (!iniInput || !fimInput) return;
+                const ini = iniInput.value; const fim = fimInput.value;
+                if (ini && fim) {
+                    if (fim <= ini) { horarioInvalido = true; iniInput.classList.add('error-overlap'); fimInput.classList.add('error-overlap'); return; }
+                    let conflitoEncontrado = false;
+                    for (let i = 0; i < payload.length; i++) {
+                        let p = payload[i];
+                        if (p.data === dataIso) { if (ini < p.fim && fim > p.ini) { conflitoEncontrado = true; break; } }
+                    }
+                    if (conflitoEncontrado) { temConflito = true; iniInput.classList.add('error-overlap'); fimInput.classList.add('error-overlap'); }
+                    else { payload.push({ data: dataIso, ini: ini, fim: fim, status: statusEscolhido }); }
+                }
+            });
+        });
+
+        if (horarioInvalido) { mostrarMensagem("Atenção", "O horário final deve ser maior que o horário inicial. Corrija as marcações em vermelho."); return; }
+        if (temConflito) { if (document.getElementById('modal-erro-conflito')) document.getElementById('modal-erro-conflito').style.display = 'flex'; return; }
+        if (payload.length === 0) return mostrarMensagem("Atenção", "Nenhum horário selecionado.");
+
+        mostrarConfirmacao("Criar Agendas", "Confirmar criação de " + payload.length + " agendamentos como '" + statusEscolhido + "'?", function () {
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+            fecharModalNovoBloco();
+
+            // ENVIA userEmail, userCodigoEmpresa e payload
+            google.script.run.withSuccessHandler(function (res) {
+                if (res.conflict) {
+                    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+                    if (document.getElementById('modal-erro-conflito')) document.getElementById('modal-erro-conflito').style.display = 'flex';
+                } else if (res.success) {
+                    mostrarMensagem("Sucesso", "Agendamentos criados com sucesso!"); carregar();
+                } else {
+                    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+                    mostrarMensagem("Erro", "Falha: " + res.error);
+                }
+            }).withFailureHandler(function (err) {
+                mostrarMensagem("Erro", "Erro: " + err);
+                if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+            }).salvarAgendamentosEmLote(userEmail, userCodigoEmpresa, payload);
+        });
+    }
+
+    function acaoMarcarAtendido(idUnico, element) { mostrarConfirmacao("Confirmar Atendimento", "Marcar este agendamento como ATENDIDO?", function () { if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex'; google.script.run.withSuccessHandler(carregar).marcarAtendido(idUnico); }, function () { if (element) element.checked = !element.checked; }); }
+    function acaoMarcarCancelado(idUnico, element) { mostrarConfirmacao("Cancelar Agendamento", "Deseja realmente cancelar?", function () { if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex'; google.script.run.withSuccessHandler(carregar).marcarCancelado(idUnico); }, function () { if (element) element.checked = !element.checked; }); }
+    function alternarArquivamento(idUnico, element) { if (element.checked) { mostrarConfirmacao("Arquivar", "Deseja mover este agendamento para os Arquivados?", function () { const elStatus = document.getElementById('status_' + idUnico); if (elStatus) elStatus.value = "Arquivado"; salvar(idUnico); }, function () { element.checked = false; }); } else { mostrarConfirmacao("Desarquivar", "Deseja retornar este agendamento para Atendido?", function () { const elStatus = document.getElementById('status_' + idUnico); if (elStatus) elStatus.value = "Atendido"; salvar(idUnico); }, function () { element.checked = true; }); } }
+
+    function salvar(idUnico) {
+        const dataCard = gV('data_' + idUnico); const iniCard = gV('ini_' + idUnico); const fimCard = gV('fim_' + idUnico); const statusCard = gV('status_' + idUnico);
+        if (iniCard && fimCard && iniCard >= fimCard) { mostrarMensagem("Atenção", "O horário final deve ser maior que o horário inicial."); return; }
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+        setTimeout(function () {
+            const d = {
+                ativ: gV('ativ_' + idUnico), ult_ev: gV('ultev_' + idUnico), forma: gV('forma_' + idUnico), esp: gV('esp_' + idUnico), celesp: gV('celesp_' + idUnico), prop: userEmail,
+                data: dataCard, h_ini: iniCard, h_fim: fimCard, especialidade: gV('spec_' + idUnico), cli: gV('cli_' + idUnico), cel_cli: gV('celcli_' + idUnico),
+                status: statusCard, local: gV('loc_' + idUnico), id_pag: gV('idpag_' + idUnico), link_pag: gV('linkpag_' + idUnico), valor: gV('valor_' + idUnico), status_conf: gV('stconf_' + idUnico),
+                obs: gV('obs_' + idUnico), obs_para_cliente: gV('obspcli_' + idUnico), obs_cliente: gV('obscli_' + idUnico), visto_cli: gV('vistocli_' + idUnico), visto_p_cli: gV('vistopcli_' + idUnico)
+            };
+            google.script.run.withSuccessHandler(function (res) {
+                if (res.conflict) { if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none'; if (document.getElementById('modal-erro-conflito')) document.getElementById('modal-erro-conflito').style.display = 'flex'; }
+                else if (res.success) { mostrarMensagem("Sucesso", "Agendamento salvo!"); carregar(); }
+                else { if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none'; mostrarMensagem("Erro", "Falha ao salvar: " + res.error); }
+            }).withFailureHandler(function (err) { if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none'; mostrarMensagem("Erro", "Falha ao salvar: " + err); }).salvarAlteracao(idUnico, d, userCodigoEmpresa);
+        }, 100);
+    }
+
+    function excluir(idUnico) { mostrarConfirmacao("Excluir", "Deseja apagar este agendamento?", function () { if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex'; google.script.run.withSuccessHandler(function () { carregar(); }).withFailureHandler(function (err) { if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none'; mostrarMensagem("Erro", "Erro ao excluir: " + err); }).excluirLinha(idUnico); }); }
+
+    function renderizar(dados, containerAlvo) {
+        if (!dados || dados.length === 0) return; let html = ''; const agora = new Date(); const hojeStr = getHojeStr();
+        const amanhaObj = new Date(); amanhaObj.setDate(amanhaObj.getDate() + 1);
+        const amanhaStr = amanhaObj.getFullYear() + "-" + String(amanhaObj.getMonth() + 1).padStart(2, '0') + "-" + String(amanhaObj.getDate()).padStart(2, '0');
+
+        try {
+            dados.forEach(function (item) {
+                let rowCls = "status-indefinido"; let badgeCls = "badge-padrao"; let isExpired = false;
+                const itemDataISO = String(item.data).substring(0, 10); const dtObj = parseDate(itemDataISO, item.h_ini);
+                if (item.status === "Confirmado") { rowCls = "status-confirmado"; badgeCls = "badge-confirmado"; if (dtObj && dtObj < agora) { isExpired = true; rowCls += " bg-vencido"; } }
+                else if (item.status === "Cancelado" || item.status === "Adiado") { rowCls = "status-cancelado"; badgeCls = "badge-cancelado"; } else if (item.status === "Atendido" || item.status === "Arquivado") { rowCls = "status-atendido"; badgeCls = "badge-atendido"; } else if (item.status === "Disponível") { rowCls = "status-disponivel"; } else if (item.status === "Não confirmado") { rowCls = "status-nao-confirmado"; badgeCls = "badge-nao-confirmado"; } else if (item.status === "Indefinido") { rowCls = "status-indefinido"; badgeCls = "badge-padrao"; }
+
+                let podeEditar = (item.status === "Disponível" || item.status === "Indefinido" || isExpired); const podeExcluir = ["Disponível", "Indefinido"].includes(item.status);
+                let valorFmt = ""; if (!isClient() && !podeEditar && item.valor) { valorFmt = '<span class="valor-display">' + getValorNumerico(item.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</span>'; }
+
+                let statusContent = "";
+
+                if (podeEditar) {
+                    let opts = '<option value="Disponível" ' + (item.status === "Disponível" ? 'selected' : '') + '>Disponível</option><option value="Indefinido" ' + (item.status === "Indefinido" ? 'selected' : '') + '>Indefinido</option>';
+                    if (isExpired && item.status === "Confirmado") { opts = '<option value="Confirmado" selected>Confirmado (Vencido)</option><option value="Atendido">Atendido</option><option value="Adiado">Adiado</option><option value="Cancelado">Cancelado</option>'; }
+                    statusContent = '<select id="status_' + item.id_unico + '" style="height:32px;width:auto;cursor:pointer;border-radius:6px;border:1px solid var(--border-color);font-size:12px;padding:0 8px;" onclick="event.stopPropagation()">' + opts + '</select>';
+                } else {
+                    statusContent = '<span class="status-badge ' + badgeCls + '">' + item.status + '</span><input type="hidden" id="status_' + item.id_unico + '" value="' + item.status + '">';
+                }
+
+                let finalStatusHtml = "";
+                if (!isClient()) { finalStatusHtml = '<div class="status-wrapper" style="width: 100%; justify-content: center;">' + statusContent + '</div>'; }
+                else { finalStatusHtml = '<span class="status-badge ' + badgeCls + '">' + item.status + '</span><input type="hidden" id="status_' + item.id_unico + '" value="' + item.status + '">'; }
+
+                let htmlSpec = (item.especialidade) ? '<span class="spec-badge">★ ' + escapeHtml(item.especialidade) + '</span>' : "";
+                let htmlNomeEsp = '<span class="prof-badge pc-hide">👨‍⚕️ ' + escapeHtml(item.nome_esp) + '</span>';
+
+                let stCliClass = ""; let stCliVal = item.status_cliente || "";
+                if (stCliVal === "Confirmado") stCliClass = "st-cli-confirmado"; else if (stCliVal === "Remarcado") stCliClass = "st-cli-remarcado"; else if (stCliVal === "Pendente") stCliClass = "st-cli-pendente";
+
+                let nomePrincipal = isClient() ? escapeHtml(item.nome_esp) : escapeHtml(item.cli);
+                if (!nomePrincipal) nomePrincipal = "Novo Agendamento";
+                let subtitulo = item.especialidade ? escapeHtml(item.especialidade) : "";
+
+                html += '<div class="card ' + rowCls + '" id="card_' + item.id_unico + '">';
+                html += '<div class="card-header" onclick="toggleCardEl(this)">';
+
+                html += '<div class="ch-col-info">';
+                html += '<div class="client-name-big">' + nomePrincipal + '</div>';
+                if (subtitulo) html += '<div style="font-size: 12px; color: var(--text-sec);">' + subtitulo + '</div>';
+                html += htmlNomeEsp;
+                html += '</div>';
+
+                html += '<div class="datetime-block">' + formatarDataBr(itemDataISO) + ' - ' + item.h_ini + ' às ' + item.h_fim + '</div>';
+                html += '<div class="ch-col-status">' + finalStatusHtml + '</div>';
+                html += '<div class="valor-wrapper">' + valorFmt + '</div>';
+
+                html += '<button class="btn-expand-row" onclick="event.stopPropagation(); toggleCardEl(this);"><span class="material-icons">visibility</span></button>';
+
+                html += '</div>';
+
+                html += '<div class="card-body" onclick="event.stopPropagation()">';
+                html += '<input type="hidden" id="valor_' + item.id_unico + '" value="' + escapeHtml(item.valor) + '"><input type="hidden" id="spec_' + item.id_unico + '" value="' + escapeHtml(item.especialidade) + '"><input type="hidden" id="stconf_' + item.id_unico + '" value="' + escapeHtml(item.status_conf) + '">';
+
+                let formaHtmlStr = ''; if (podeEditar) { formaHtmlStr = '<select id="forma_' + item.id_unico + '"><option value="Presencial ou On-Line" ' + (item.forma == "Presencial ou On-Line" ? 'selected' : '') + '>Híbrido</option><option value="Presencial" ' + (item.forma == "Presencial" ? 'selected' : '') + '>Presencial</option><option value="On-Line" ' + (item.forma == "On-Line" ? 'selected' : '') + '>On-Line</option></select>'; } else { formaHtmlStr = '<input type="text" id="forma_' + item.id_unico + '" value="' + escapeHtml(item.forma) + '" readonly>'; }
+
+                if (isClient() || !podeEditar) {
+                    html += '<input type="hidden" id="ativ_' + item.id_unico + '" value="' + escapeHtml(item.ativ) + '"><input type="hidden" id="ultev_' + item.id_unico + '" value="' + escapeHtml(item.ult_ev) + '"><input type="hidden" id="data_' + item.id_unico + '" value="' + itemDataISO + '"><input type="hidden" id="ini_' + item.id_unico + '" value="' + item.h_ini + '"><input type="hidden" id="fim_' + item.id_unico + '" value="' + item.h_fim + '">';
+                    html += '<div class="row-client-4"><div class="form-group"><div class="label-row"><label>FORMA DE ATENDIMENTO</label></div>' + formaHtmlStr + '</div><div class="form-group"><div class="label-row"><label>Cliente</label></div><input type="text" id="cli_' + item.id_unico + '" value="' + escapeHtml(item.cli) + '" readonly></div><div class="form-group"><div class="label-row"><label>Celular</label></div><input type="text" id="celcli_' + item.id_unico + '" value="' + escapeHtml(item.cel_cli) + '" readonly></div><div class="form-group"><div class="label-row"><label>Status Cliente</label></div><input type="text" value="' + escapeHtml(item.status_cliente) + '" class="' + stCliClass + '" readonly></div></div>';
+                } else {
+                    html += '<div class="row-grid-3"><div class="form-group"><div class="label-row"><label>Atividade</label></div><input type="text" id="ativ_' + item.id_unico + '" value="' + escapeHtml(item.ativ) + '" readonly></div><div class="form-group"><div class="label-row"><label>Último Evento</label></div><input type="text" id="ultev_' + item.id_unico + '" value="' + escapeHtml(item.ult_ev) + '" readonly></div><div class="form-group"><div class="label-row"><label>FORMA DE ATENDIMENTO</label></div>' + formaHtmlStr + '</div></div><div class="row-datetime"><div class="form-group"><div class="label-row"><label>Data</label></div><input type="date" id="data_' + item.id_unico + '" value="' + itemDataISO + '" ' + (!podeEditar ? 'readonly' : '') + '></div><div class="form-group"><div class="label-row"><label>Início</label></div><input type="time" id="ini_' + item.id_unico + '" value="' + item.h_ini + '" ' + (!podeEditar ? 'readonly' : '') + '></div><div class="form-group"><div class="label-row"><label>Fim</label></div><input type="time" id="fim_' + item.id_unico + '" value="' + item.h_fim + '" ' + (!podeEditar ? 'readonly' : '') + '></div></div><div class="row-client-group"><div class="form-group client-name-box"><div class="label-row"><label>Cliente</label></div><input type="text" id="cli_' + item.id_unico + '" value="' + escapeHtml(item.cli) + '" readonly></div><div class="form-group"><div class="label-row"><label>Celular</label></div><input type="text" id="celcli_' + item.id_unico + '" value="' + escapeHtml(item.cel_cli) + '" readonly></div><div class="form-group"><div class="label-row"><label>Status Cliente</label></div><input type="text" value="' + escapeHtml(item.status_cliente) + '" class="' + stCliClass + '" readonly></div></div>';
+                }
+
+                let labelLocal = "LOCAL DO EVENTO"; if (item.forma === "On-Line") labelLocal = "PLATAFORMA E/OU LINK DO EVENTO";
+                let btnEditLocal = ""; if (!isClient() && item.status === "Confirmado") { btnEditLocal = '<span class="material-icons" style="cursor:pointer; font-size:16px; color:#fbbc04; margin-left:5px;" onclick="abrirModalLocal(\'' + item.id_unico + '\')" title="Editar Local/Link">edit</span>'; }
+
+                html += '<div class="row-payment-group"><div class="form-group local-box"><div class="label-row" style="justify-content: space-between; width: 100%;"><label>' + labelLocal + '</label><div style="display:flex; align-items:center; gap:5px;"><span class="copy-link-btn" onclick="copiarLink(\'loc_' + item.id_unico + '\')" title="Copiar">📋</span>' + btnEditLocal + '</div></div><input type="text" id="loc_' + item.id_unico + '" value="' + escapeHtml(item.local) + '" readonly></div><div class="form-group"><div class="label-row"><label>ID Pag.</label><div style="display:flex; align-items:center; gap:5px; margin-left:auto;"><span class="copy-link-btn" onclick="copiarLink(\'idpag_' + item.id_unico + '\')" title="Copiar">📋</span></div></div><input type="text" id="idpag_' + item.id_unico + '" value="' + escapeHtml(item.id_pag) + '" readonly></div><div class="form-group"><div class="label-row"><label>Link Pag.</label><div style="display:flex; align-items:center; gap:5px; margin-left:auto;"><span class="copy-link-btn" onclick="copiarLink(\'linkpag_' + item.id_unico + '\')" title="Copiar">📋</span></div></div><input type="text" id="linkpag_' + item.id_unico + '" value="' + escapeHtml(item.link_pag) + '" readonly></div></div>';
+
+                const gridClass = isClient() ? "row-info-group grid-client" : "row-info-group"; html += '<div class="' + gridClass + '">';
+
+                if (!isClient()) { html += '<div class="form-group"><div class="label-row"><label>MINHAS CONSIDERAÇÕES</label></div><div id="obs_display_' + item.id_unico + '" class="obs-field ' + (item.obs ? '' : 'obs-placeholder') + '" onclick="abrirModalLog(\'' + item.id_unico + '\', \'obs\', \'Minhas Considerações\')">' + (escapeHtml(formatarLogResumo(item.obs)) || "Clique para editar...") + '</div><input type="hidden" id="obs_' + item.id_unico + '" value="' + escapeHtml(item.obs) + '"></div>'; }
+                else { html += '<input type="hidden" id="obs_' + item.id_unico + '" value="' + escapeHtml(item.obs) + '">'; }
+
+                let isUnreadCli = (isClient() && item.obs_para_cliente && item.obs_para_cliente.trim() !== "" && item.visto_p_cli !== "Visto");
+                let obsPcliClass = "obs-field " + (item.obs_para_cliente ? "" : "obs-placeholder");
+                if (isUnreadCli) obsPcliClass += " obs-unread";
+
+                if (isClient()) { html += '<div class="form-group"><div class="label-row"><label>INFO PARA O CLIENTE</label></div><div id="obspcli_display_' + item.id_unico + '" class="' + obsPcliClass + '" onclick="abrirModalLog(\'' + item.id_unico + '\', \'obspcli\', \'Info para o Cliente\')">' + (escapeHtml(formatarLogResumo(item.obs_para_cliente)) || "Clique para visualizar...") + '</div><input type="hidden" id="obspcli_' + item.id_unico + '" value="' + escapeHtml(item.obs_para_cliente) + '"></div>'; }
+                else { html += '<div class="form-group"><div class="label-row"><label>INFO PARA O CLIENTE</label></div><div id="obspcli_display_' + item.id_unico + '" class="obs-field ' + (item.obs_para_cliente ? '' : 'obs-placeholder') + '" onclick="abrirModalLog(\'' + item.id_unico + '\', \'obspcli\', \'Info para o Cliente\')">' + (escapeHtml(formatarLogResumo(item.obs_para_cliente)) || "Clique para editar...") + '</div><input type="hidden" id="obspcli_' + item.id_unico + '" value="' + escapeHtml(item.obs_para_cliente) + '"></div>'; }
+                html += '<input type="hidden" id="vistopcli_' + item.id_unico + '" value="' + escapeHtml(item.visto_p_cli || "") + '">';
+
+                let isUnreadEsp = (!isClient() && item.obs_cliente && item.obs_cliente.trim() !== "" && item.visto_cli !== "Visto");
+                let obsCliClass = "obs-field " + (item.obs_cliente ? "" : "obs-placeholder");
+                if (isUnreadEsp) obsCliClass += " obs-unread";
+
+                if (isClient()) { html += '<div class="form-group"><div class="label-row"><label>INFO DO CLIENTE</label></div><div id="obscli_display_' + item.id_unico + '" class="obs-field ' + (item.obs_cliente ? '' : 'obs-placeholder') + '" onclick="abrirModalLog(\'' + item.id_unico + '\', \'obscli\', \'Info do Cliente\')">' + (escapeHtml(formatarLogResumo(item.obs_cliente)) || "Adicionar exames/infos...") + '</div><input type="hidden" id="obscli_' + item.id_unico + '" value="' + escapeHtml(item.obs_cliente) + '"></div>'; }
+                else { html += '<div class="form-group"><div class="label-row"><label>INFO DO CLIENTE</label></div><div id="obscli_display_' + item.id_unico + '" class="' + obsCliClass + '" onclick="abrirModalLog(\'' + item.id_unico + '\', \'obscli\', \'Info do Cliente\')">' + (escapeHtml(formatarLogResumo(item.obs_cliente)) || "Clique para visualizar/editar...") + '</div><input type="hidden" id="obscli_' + item.id_unico + '" value="' + escapeHtml(item.obs_cliente) + '"></div>'; }
+                html += '<input type="hidden" id="vistocli_' + item.id_unico + '" value="' + escapeHtml(item.visto_cli || "") + '">';
+
+                html += '<div class="form-group"><div class="label-row"><label>INFO PRÉ-ATENDIMENTO</label></div><div class="info-readonly" onclick="abrirModalInfo(\'INFO PRÉ-ATENDIMENTO\', \'relatorio_' + item.id_unico + '\')">' + (escapeHtml(item.relatorio) || "...") + '</div><input type="hidden" id="relatorio_' + item.id_unico + '" value="' + escapeHtml(item.relatorio) + '"></div></div></div>';
+
+                if (!isClient()) {
+                    html += '<div class="card-actions" onclick="event.stopPropagation()">';
+                    if (item.status === 'Confirmado') {
+                        html += '<button class="btn" style="background:#fff; color:#ef4444; border: 1px solid #fecaca;" onclick="acaoMarcarCancelado(\'' + item.id_unico + '\', null)">❌ Cancelar</button>';
+                        html += '<button class="btn btn-save" onclick="acaoMarcarAtendido(\'' + item.id_unico + '\', null)">✅ Atender</button>';
+                    }
+                    if (item.status === 'Atendido' || item.status === 'Arquivado') {
+                        html += '<button class="btn" style="background:#f3e8ff; color:#7e22ce; border: 1px solid #e9d5ff;" onclick="alternarArquivamento(\'' + item.id_unico + '\', {checked: ' + (item.status !== "Arquivado") + '})">📦 ' + (item.status === "Arquivado" ? "Desarquivar" : "Arquivar") + '</button>';
+                    }
+                    if (podeExcluir) html += '<button class="btn btn-del" onclick="excluir(\'' + item.id_unico + '\')">🗑️</button>';
+                    if (podeEditar) html += '<button class="btn btn-save" onclick="salvar(\'' + item.id_unico + '\')">💾 Salvar</button>';
+                    html += '</div>';
+                }
+                html += '</div>';
+            });
+        } catch (err) { console.error("Erro render", err); }
+        containerAlvo.innerHTML = html;
+    }
+
+    function aplicarFiltrosPrincipalDebounce() { clearTimeout(debounceTimer); debounceTimer = setTimeout(aplicarFiltrosPrincipal, 10); }
+
+    function aplicarFiltrosPrincipal() {
+        try {
+            const container = document.getElementById('cards-container'); const agora = new Date();
+            if (!dadosGlobais || dadosGlobais.length === 0) {
+                if (container) container.innerHTML = '<div style="text-align: center; padding: 40px;">Nenhum agendamento encontrado.<br><br><button class="btn-refresh" style="margin:0 auto; width:auto;" onclick="limparFiltros()">Limpar Filtros</button></div>';
+                atualizarBadgeTotal('badge-total-confirmado', 'row-total-confirmado', '', 0, 0, false); atualizarBadgeTotal('badge-total-atendido', 'row-total-atendido', '', 0, 0, false); atualizarBadgeTotal('badge-total-cancelado', 'row-total-cancelado', '', 0, 0, false);
+                return;
+            }
+
+            const hojeStr = getHojeStr(); let filtrados = [];
+            const amanhaObj = new Date(); amanhaObj.setDate(amanhaObj.getDate() + 1);
+            const amanhaStr = amanhaObj.getFullYear() + "-" + String(amanhaObj.getMonth() + 1).padStart(2, '0') + "-" + String(amanhaObj.getDate()).padStart(2, '0');
+
+            const dataFiltroObj = document.getElementById('filtro-data'); const dataFiltro = dataFiltroObj ? dataFiltroObj.value : "";
+            const statusFiltroObj = document.getElementById('filtro-status'); const statusFiltro = statusFiltroObj ? statusFiltroObj.value : "";
+            const clienteFiltroObj = document.getElementById('filtro-cliente'); const clienteFiltro = clienteFiltroObj ? clienteFiltroObj.value.toLowerCase() : "";
+            const especialidadeFiltroObj = document.getElementById('filtro-especialidade'); const especialidadeFiltro = especialidadeFiltroObj ? especialidadeFiltroObj.value.toLowerCase() : "";
+
+            const mobDataObj = document.getElementById('filtro-data-mobile'); const mobData = mobDataObj ? mobDataObj.value : "";
+            const mobStatusObj = document.getElementById('filtro-status-mobile'); const mobStatus = mobStatusObj ? mobStatusObj.value : "";
+            const mobClienteObj = document.getElementById('filtro-cliente-mobile'); const mobCliente = mobClienteObj ? mobClienteObj.value.toLowerCase() : "";
+            const mobEspecialidadeObj = document.getElementById('filtro-especialidade-mobile'); const mobEspecialidade = mobEspecialidadeObj ? mobEspecialidadeObj.value.toLowerCase() : "";
+
+            const finalData = dataFiltro || mobData; const finalStatus = statusFiltro || mobStatus; const finalCliente = clienteFiltro || mobCliente; const finalEspecialidade = especialidadeFiltro || mobEspecialidade;
+
+            if (filtroSinoAtivo) {
+                filtrados = dadosGlobais.filter(function (item) {
+                    if (filtroSinoAtivo === 'unread') { if (isClient()) return (item.obs_para_cliente && item.obs_para_cliente.trim() !== "" && item.visto_p_cli !== "Visto"); else return (item.obs_cliente && item.obs_cliente.trim() !== "" && item.visto_cli !== "Visto"); }
+                    if (item.status !== 'Confirmado') return false;
+                    const itemData = String(item.data).substring(0, 10); const dt = parseDate(itemData, item.h_ini); if (!dt) return false;
+                    const diffMs = dt - agora; const isHoje = (itemData === hojeStr); const isAmanha = (itemData === amanhaStr);
+                    if (filtroSinoAtivo === 'vencido') return diffMs < 0; if (filtroSinoAtivo === 'hoje') return isHoje && diffMs >= 0; if (filtroSinoAtivo === '24h') return isAmanha; if (filtroSinoAtivo === 'futuro') return !isHoje && !isAmanha && diffMs > 0;
+                    return true;
+                });
+            } else {
+                filtrados = dadosGlobais.filter(function (item) {
+                    const matchData = !finalData || String(item.data).substring(0, 10) === finalData;
+                    let matchStatus = true; if (finalStatus) { matchStatus = item.status && item.status.trim() === finalStatus; } else { matchStatus = item.status !== 'Arquivado'; }
+                    const matchCliente = !finalCliente || (isClient() ? (item.nome_esp && String(item.nome_esp).toLowerCase().includes(finalCliente)) : (item.cli && String(item.cli).toLowerCase().includes(finalCliente)));
+                    const matchEspecialidade = !finalEspecialidade || (item.especialidade && String(item.especialidade).toLowerCase().includes(finalEspecialidade));
+                    return matchData && matchStatus && matchCliente && matchEspecialidade;
+                });
+            }
+
+            filtrados.sort(ordenarCards);
+
+            let totalConfirmado = 0, qtdConfirmado = 0, totalAtendido = 0, qtdAtendido = 0, totalCancelado = 0, qtdCancelado = 0;
+            filtrados.forEach(function (item) {
+                let val = getValorNumerico(item.valor);
+                if (item.status === 'Confirmado') { totalConfirmado += val; qtdConfirmado++; }
+                if (item.status === 'Atendido' || item.status === 'Aconteceu') { totalAtendido += val; qtdAtendido++; }
+                if (item.status === 'Cancelado') { totalCancelado += val; qtdCancelado++; }
+            });
+
+            let showConf = (finalStatus === "Confirmado"); let showAten = (finalStatus === "Atendido" || finalStatus === "Arquivado"); let showCanc = (finalStatus === "Cancelado");
+            atualizarBadgeTotal('badge-total-confirmado', 'row-total-confirmado', 'Total (Confirmado): ', totalConfirmado, qtdConfirmado, showConf); atualizarBadgeTotal('badge-total-atendido', 'row-total-atendido', 'Total (Atendido): ', totalAtendido, qtdAtendido, showAten); atualizarBadgeTotal('badge-total-cancelado', 'row-total-cancelado', 'Total (Cancelado): ', totalCancelado, qtdCancelado, showCanc);
+
+            if (filtrados.length === 0) { if (container) container.innerHTML = '<div style="text-align: center; padding: 40px; color:#888;">Nenhum agendamento para este filtro.<br><br><button class="btn-refresh" style="margin:0 auto; width:auto;" onclick="limparFiltros()">Limpar Filtros</button></div>'; } else { renderizar(filtrados, container); }
+            verificarInputsPreenchidos();
+
+            const qtdAtual = filtrados.length;
+            if (document.getElementById('qtd-cards-pc')) document.getElementById('qtd-cards-pc').textContent = qtdAtual;
+            if (document.getElementById('qtd-cards-mobile')) document.getElementById('qtd-cards-mobile').textContent = qtdAtual;
+
+        } catch (e) { }
+    }
+
+    function aplicarFiltroPeriodo() {
+        const isMobile = window.innerWidth <= 768;
+        let periodo = isMobile ? gV('filtro-periodo-select-mobile') : gV('filtro-periodo-select');
+        let statusFiltro = isMobile ? gV('filtro-status-periodo-mobile') : gV('filtro-status-periodo');
+        let dtIni = isMobile ? gV('data-inicio-mobile') : gV('data-inicio-pc');
+        let dtFim = isMobile ? gV('data-fim-mobile') : gV('data-fim-pc');
+
+        const elIntervaloPc = document.getElementById('custom-interval-pc'); const elIntervaloMob = document.getElementById('custom-interval-mobile');
+        if (elIntervaloPc) elIntervaloPc.style.display = (periodo === 'custom') ? 'flex' : 'none';
+        if (elIntervaloMob) elIntervaloMob.style.display = (periodo === 'custom') ? 'flex' : 'none';
+
+        ['filtro-periodo-select', 'filtro-periodo-select-mobile'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).value = periodo; });
+        ['filtro-status-periodo', 'filtro-status-periodo-mobile'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).value = statusFiltro; });
+        ['data-inicio-pc', 'data-inicio-mobile'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).value = dtIni; });
+        ['data-fim-pc', 'data-fim-mobile'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).value = dtFim; });
+
+        const container = document.getElementById('cards-container-periodo');
+        if (!dadosGlobais || dadosGlobais.length === 0) { if (container) container.innerHTML = '<div style="padding:40px;text-align:center;">Sem dados.</div>'; return; }
+
+        const agora = new Date(); const anoAtual = agora.getFullYear(); const mesAtual = agora.getMonth(); const diaAtual = agora.getDate();
+        let iniCustom = dtIni ? parseDate(dtIni, "00:00") : null; let fimCustom = dtFim ? parseDate(dtFim, "23:59") : null;
+
+        let filtrados = dadosGlobais.filter(function (item) {
+            if (statusFiltro && item.status !== statusFiltro) return false;
+            const dataItem = parseDate(String(item.data).substring(0, 10), "00:00"); if (!dataItem) return false;
+
+            if (periodo === 'hoje') { return dataItem.getDate() === diaAtual && dataItem.getMonth() === mesAtual && dataItem.getFullYear() === anoAtual; }
+            else if (periodo === 'mes') { return dataItem.getMonth() === mesAtual && dataItem.getFullYear() === anoAtual; }
+            else if (periodo === 'trimestre') { const t = Math.floor(mesAtual / 3) * 3; return dataItem.getMonth() >= t && dataItem.getMonth() < t + 3 && dataItem.getFullYear() === anoAtual; }
+            else if (periodo === 'semestre') { const s = mesAtual < 6 ? 0 : 6; return dataItem.getMonth() >= s && dataItem.getMonth() < s + 6 && dataItem.getFullYear() === anoAtual; }
+            else if (periodo === 'ano') { return dataItem.getFullYear() === anoAtual; }
+            else if (periodo === 'custom') { if (iniCustom && dataItem < iniCustom) return false; if (fimCustom && dataItem > fimCustom) return false; return true; }
+            return true;
+        });
+
+        filtrados.sort(ordenarCards);
+
+        let total = 0; let qtd = 0;
+        filtrados.forEach(function (item) {
+            if (!statusFiltro) { if (item.status === 'Atendido' || item.status === 'Confirmado') { total += getValorNumerico(item.valor); qtd++; } } else { if (item.status === statusFiltro) { total += getValorNumerico(item.valor); qtd++; } }
+        });
+
+        const badgePeriodoPc = document.getElementById('badge-total-periodo-pc'); const rowPeriodoPc = document.getElementById('row-total-periodo-pc');
+        const badgePeriodoMob = document.getElementById('badge-total-periodo-mobile'); const rowPeriodoMob = document.getElementById('row-total-periodo-mobile');
+
+        if (!isClient()) {
+            let corClasse = "total-padrao"; let labelStatus = statusFiltro ? statusFiltro : "Todos";
+            if (statusFiltro === "Confirmado") corClasse = "total-confirmado"; else if (statusFiltro === "Atendido" || statusFiltro === "Arquivado") corClasse = "total-atendido"; else if (statusFiltro === "Cancelado") corClasse = "total-cancelado";
+            let txt = `Total (${labelStatus}): ` + total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + ' (' + qtd + ')';
+            if (badgePeriodoPc) { badgePeriodoPc.className = "total-badge " + corClasse; badgePeriodoPc.textContent = txt; badgePeriodoPc.style.display = 'inline-block'; if (rowPeriodoPc) rowPeriodoPc.style.display = 'flex'; }
+            if (badgePeriodoMob) { badgePeriodoMob.className = "total-badge " + corClasse; badgePeriodoMob.textContent = txt; badgePeriodoMob.style.display = 'inline-block'; if (rowPeriodoMob) rowPeriodoMob.style.display = 'flex'; }
+        } else {
+            if (badgePeriodoPc) { badgePeriodoPc.style.display = 'none'; if (rowPeriodoPc) rowPeriodoPc.style.display = 'none'; }
+            if (badgePeriodoMob) { badgePeriodoMob.style.display = 'none'; if (rowPeriodoMob) rowPeriodoMob.style.display = 'none'; }
+        }
+
+        if (filtrados.length === 0) { if (container) container.innerHTML = '<div style="text-align: center; padding: 40px; color: #888;">Nada encontrado.</div>'; } else { renderizar(filtrados, container); } verificarInputsPreenchidos();
+        const qtdAtualPer = filtrados.length;
+        if (document.getElementById('qtd-cards-periodo-pc')) document.getElementById('qtd-cards-periodo-pc').textContent = qtdAtualPer;
+        if (document.getElementById('qtd-cards-periodo-mobile')) document.getElementById('qtd-cards-periodo-mobile').textContent = qtdAtualPer;
+    }
+
+    function carregar() {
+        if (!userEmail) return;
+        const menu = document.getElementById('menu-principal'); if (menu) menu.classList.remove('show-menu');
+        filtroSinoAtivo = null;
+        let lblPc = document.getElementById('lbl-relatorio-pc'); if (lblPc) lblPc.style.display = 'none';
+        let lblMob = document.getElementById('lbl-relatorio-mobile'); if (lblMob) lblMob.style.display = 'none';
+        clienteSelecionadoCelular = null;
+
+        if (document.getElementById('filtro-data')) document.getElementById('filtro-data').value = "";
+        if (document.getElementById('filtro-status')) document.getElementById('filtro-status').value = "";
+        if (document.getElementById('filtro-cliente')) document.getElementById('filtro-cliente').value = "";
+        if (document.getElementById('filtro-especialidade')) document.getElementById('filtro-especialidade').value = "";
+        const md = document.getElementById('filtro-data-mobile'); if (md) { md.value = ""; atualizarPlaceholderData(); }
+        const ms = document.getElementById('filtro-status-mobile'); if (ms) ms.value = "";
+        const mc = document.getElementById('filtro-cliente-mobile'); if (mc) mc.value = "";
+        const me = document.getElementById('filtro-especialidade-mobile'); if (me) me.value = "";
+
+        atualizarEstiloSinos();
+
+        const loaderEl = document.getElementById('loader');
+        if (loaderEl) loaderEl.style.display = 'flex';
+
+        google.script.run.withSuccessHandler(function (res) {
+            if (res.error) {
+                alert("Erro: " + res.error);
+                if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+                return;
+            }
+            let rawData = res.data || []; rawData.sort(ordenarCards);
+            dadosGlobais = rawData; processarClientesUnicos(); processarEspecialidadesUnicas(); atualizarSinos();
+
+            if (!isClient() && res.janelaPropria !== undefined) {
+                if (document.getElementById('janela-interacao-pc')) document.getElementById('janela-interacao-pc').value = res.janelaPropria;
+                if (document.getElementById('janela-interacao-mobile')) document.getElementById('janela-interacao-mobile').value = res.janelaPropria;
+            }
+
+            const viewPrincipal = document.getElementById('view-principal');
+            if (viewPrincipal && viewPrincipal.style.display !== 'none') { aplicarFiltrosPrincipal(); } else { aplicarFiltroPeriodo(); }
+
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+            verificarInputsPreenchidos();
+        }).withFailureHandler(function (err) {
+            alert("Falha: " + err);
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+        }).getAgendaData(userEmail, userCodigoEmpresa);
+    }
+
+    function alternarTela(tela) {
+        if (document.getElementById('menu-principal')) document.getElementById('menu-principal').classList.remove('show-menu');
+        if (document.getElementById('menu-periodo')) document.getElementById('menu-periodo').classList.remove('show-menu');
+        if (tela === 'periodo') {
+            if (document.getElementById('view-principal')) document.getElementById('view-principal').style.display = 'none';
+            if (document.getElementById('view-periodo')) document.getElementById('view-periodo').style.display = 'block';
+            if (document.getElementById('fab-novo')) document.getElementById('fab-novo').style.display = 'none';
+            aplicarFiltroPeriodo();
+        } else {
+            if (document.getElementById('view-periodo')) document.getElementById('view-periodo').style.display = 'none';
+            if (document.getElementById('view-principal')) document.getElementById('view-principal').style.display = 'block';
+            if (document.getElementById('fab-novo')) document.getElementById('fab-novo').style.display = 'flex';
+            aplicarFiltrosPrincipal();
+        }
+    }
+
+    function processarClientesUnicos() { try { const map = new Map(); dadosGlobais.forEach(function (i) { if (isClient()) { if (i.nome_esp) map.set(i.nome_esp, { nome: i.nome_esp, cel: "" }); } else { if (i.cli) map.set(i.cli, { nome: i.cli, cel: i.cel_cli }); } }); listaClientesUnicos = Array.from(map.values()); } catch (e) { } }
+    function processarEspecialidadesUnicas() { try { const setSpec = new Set(); dadosGlobais.forEach(function (i) { if (i.especialidade && typeof i.especialidade === 'string' && i.especialidade.trim() !== "") { setSpec.add(i.especialidade.trim()); } }); listaEspecialidadesUnicas = Array.from(setSpec).sort(); } catch (e) { } }
+    function acionarFiltroManual() { desativarSinos(); aplicarFiltrosPrincipalDebounce(); }
+    function filtrarSugestoes(t) { desativarSinos(); aplicarFiltrosPrincipalDebounce(); const isMobile = window.innerWidth <= 768; const boxId = isMobile ? 'lista-sugestoes-mobile' : 'lista-sugestoes'; const b = document.getElementById(boxId); if (!b) return; b.innerHTML = ''; if (!t || t.length < 2) { b.style.display = 'none'; clienteSelecionadoCelular = null; let lblPc = document.getElementById('lbl-relatorio-pc'); if (lblPc) lblPc.style.display = 'none'; let lblMob = document.getElementById('lbl-relatorio-mobile'); if (lblMob) lblMob.style.display = 'none'; return; } const m = listaClientesUnicos.filter(function (c) { return c.nome.toLowerCase().includes(t.toLowerCase()); }).slice(0, 10); if (m.length > 0) { m.forEach(function (c) { const d = document.createElement('div'); d.className = 'suggestion-item'; d.innerHTML = '<span>' + escapeHtml(c.nome) + '</span>'; d.onclick = function () { selecionarCliente(c.nome); }; b.appendChild(d); }); b.style.display = 'block'; } else { b.style.display = 'none'; } }
+    function filtrarSugestoesEspecialidade(t) { desativarSinos(); aplicarFiltrosPrincipalDebounce(); const isMobile = window.innerWidth <= 768; const boxId = isMobile ? 'lista-sugestoes-especialidade-mobile' : 'lista-sugestoes-especialidade'; const b = document.getElementById(boxId); if (!b) return; b.innerHTML = ''; if (!t || t.length < 1) { b.style.display = 'none'; return; } const m = listaEspecialidadesUnicas.filter(function (s) { return String(s).toLowerCase().includes(t.toLowerCase()); }).slice(0, 10); if (m.length > 0) { m.forEach(function (s) { const d = document.createElement('div'); d.className = 'suggestion-item'; d.innerHTML = '<span>' + escapeHtml(s) + '</span>'; d.onclick = function () { selecionarEspecialidade(s); }; b.appendChild(d); }); b.style.display = 'block'; } else { b.style.display = 'none'; } }
+    function selecionarCliente(n) { const pc = document.getElementById('filtro-cliente'); if (pc) pc.value = n; const mob = document.getElementById('filtro-cliente-mobile'); if (mob) mob.value = n; if (document.getElementById('lista-sugestoes')) document.getElementById('lista-sugestoes').style.display = 'none'; const mobBox = document.getElementById('lista-sugestoes-mobile'); if (mobBox) mobBox.style.display = 'none'; let clienteEncontrado = listaClientesUnicos.find(function (c) { return c.nome === n; }); if (clienteEncontrado && !isClient()) { clienteSelecionadoCelular = clienteEncontrado.cel; let lblPc = document.getElementById('lbl-relatorio-pc'); if (lblPc) lblPc.style.display = 'inline-flex'; let lblMob = document.getElementById('lbl-relatorio-mobile'); if (lblMob) lblMob.style.display = 'inline-flex'; } else { clienteSelecionadoCelular = null; } acionarFiltroManual(); fecharMenuSeMobile('menu-principal'); }
+    function selecionarEspecialidade(n) { const pc = document.getElementById('filtro-especialidade'); if (pc) pc.value = n; const mob = document.getElementById('filtro-especialidade-mobile'); if (mob) mob.value = n; if (document.getElementById('lista-sugestoes-especialidade')) document.getElementById('lista-sugestoes-especialidade').style.display = 'none'; const mobBox = document.getElementById('lista-sugestoes-especialidade-mobile'); if (mobBox) mobBox.style.display = 'none'; acionarFiltroManual(); fecharMenuSeMobile('menu-principal'); }
+    function limparFiltroCliente() { if (document.getElementById('filtro-cliente')) document.getElementById('filtro-cliente').value = ""; const mob = document.getElementById('filtro-cliente-mobile'); if (mob) mob.value = ""; if (document.getElementById('lista-sugestoes')) document.getElementById('lista-sugestoes').style.display = 'none'; const mobBox = document.getElementById('lista-sugestoes-mobile'); if (mobBox) mobBox.style.display = 'none'; clienteSelecionadoCelular = null; let lblPc = document.getElementById('lbl-relatorio-pc'); if (lblPc) lblPc.style.display = 'none'; let lblMob = document.getElementById('lbl-relatorio-mobile'); if (lblMob) lblMob.style.display = 'none'; acionarFiltroManual(); }
+    function limparFiltroEspecialidade() { if (document.getElementById('filtro-especialidade')) document.getElementById('filtro-especialidade').value = ""; const mob = document.getElementById('filtro-especialidade-mobile'); if (mob) mob.value = ""; if (document.getElementById('lista-sugestoes-especialidade')) document.getElementById('lista-sugestoes-especialidade').style.display = 'none'; const mobBox = document.getElementById('lista-sugestoes-especialidade-mobile'); if (mobBox) mobBox.style.display = 'none'; acionarFiltroManual(); }
+    function sincronizarFiltros(origem) { if (origem === 'mobile') { if (document.getElementById('filtro-data') && document.getElementById('filtro-data-mobile')) document.getElementById('filtro-data').value = document.getElementById('filtro-data-mobile').value; if (document.getElementById('filtro-status') && document.getElementById('filtro-status-mobile')) document.getElementById('filtro-status').value = document.getElementById('filtro-status-mobile').value; } else { const mobDt = document.getElementById('filtro-data-mobile'); if (mobDt && document.getElementById('filtro-data')) mobDt.value = document.getElementById('filtro-data').value; const mobSt = document.getElementById('filtro-status-mobile'); if (mobSt && document.getElementById('filtro-status')) mobSt.value = document.getElementById('filtro-status').value; } acionarFiltroManual(); if (origem === 'mobile') fecharMenuSeMobile('menu-principal'); }
+    function atualizarPlaceholderData() { try { const input = document.getElementById('filtro-data-mobile'); const ph = document.getElementById('date-placeholder-mobile'); if (input && ph) { if (input.value) { ph.style.display = 'none'; input.classList.add('has-value'); } else { ph.style.display = 'block'; input.classList.remove('has-value'); } } } catch (e) { console.log("Aviso: Elementos de data mobile não encontrados.", e); } }
+    function toggleMobileMenu(id) { const el = document.getElementById(id); if (el) { el.classList.toggle('show-menu'); window.scrollTo({ top: 0, behavior: 'smooth' }); } }
+    function fecharMenuSeMobile(id) { if (window.innerWidth <= 768) { const el = document.getElementById(id); if (el) el.classList.remove('show-menu'); } }
+    function toggleTheme() { document.body.classList.toggle('dark-mode'); const icon = document.getElementById('icon-theme'); if (icon) icon.textContent = document.body.classList.contains('dark-mode') ? 'brightness_7' : 'brightness_6'; }
+    function toggleSenha() { const i = document.getElementById('login-senha'); const icon = document.querySelector('.toggle-pass'); if (!i) return; if (i.type === "password") { i.type = "text"; if (icon) icon.textContent = "visibility_off"; } else { i.type = "password"; if (icon) icon.textContent = "visibility"; } }
+    document.addEventListener('click', function (e) { if (!e.target.closest('#filtro-cliente-wrapper') && !e.target.closest('.input-busca-wrapper')) { const b = document.getElementById('lista-sugestoes'); if (b) b.style.display = 'none'; const mb = document.getElementById('lista-sugestoes-mobile'); if (mb) mb.style.display = 'none'; } if (!e.target.closest('#filtro-especialidade-wrapper') && !e.target.closest('.input-busca-wrapper')) { const b = document.getElementById('lista-sugestoes-especialidade'); if (b) b.style.display = 'none'; const mb = document.getElementById('lista-sugestoes-especialidade-mobile'); if (mb) mb.style.display = 'none'; } });
+
+    function verificarInputsPreenchidos() {
+        try {
+            const setStyle = function (id) { const el = document.getElementById(id); if (el) { if (el.value && el.value.trim() !== "") { el.classList.add('input-filled'); } else { el.classList.remove('input-filled'); } } };
+            setStyle('filtro-data'); setStyle('filtro-status'); setStyle('filtro-cliente'); setStyle('filtro-especialidade'); setStyle('filtro-data-mobile'); setStyle('filtro-status-mobile'); setStyle('filtro-cliente-mobile'); setStyle('filtro-especialidade-mobile');
+            const dateMob = document.getElementById('filtro-data-mobile'); const dateContainer = document.querySelector('.date-container');
+            if (dateMob && dateContainer) { if (dateMob.value) dateContainer.classList.add('input-filled'); else dateContainer.classList.remove('input-filled'); }
+            setStyle('filtro-periodo-select'); setStyle('filtro-status-periodo');
+        } catch (e) { }
+    }
+
+    function atualizarEstiloSinos() {
+        const btns = ['overdue', 'today', '24h', 'future', 'unread'];
+        btns.forEach(b => {
+            let el = document.getElementById('btn-alert-' + b);
+            if (el) {
+                if (filtroSinoAtivo === b) el.classList.add('active');
+                else el.classList.remove('active');
+            }
+        });
+
+        const mOver = document.getElementById('bell-overdue-mobile'); const mToday = document.getElementById('bell-today-mobile'); const mFuture = document.getElementById('bell-future-mobile'); const m24 = document.getElementById('bell-24h-mobile'); const mUnread = document.getElementById('alert-unread-mobile');
+        if (mOver) {
+            mOver.classList.remove('active-filter'); mToday.classList.remove('active-filter'); mFuture.classList.remove('active-filter'); m24.classList.remove('active-filter'); if (mUnread) mUnread.classList.remove('active-filter');
+            if (filtroSinoAtivo === 'hoje') mToday.classList.add('active-filter'); if (filtroSinoAtivo === 'futuro') mFuture.classList.add('active-filter'); if (filtroSinoAtivo === 'vencido') mOver.classList.add('active-filter'); if (filtroSinoAtivo === '24h') m24.classList.add('active-filter'); if (filtroSinoAtivo === 'unread' && mUnread) mUnread.classList.add('active-filter');
+        }
+    }
+
+    function atualizarSinos() {
+        const agora = new Date(); const hojeStr = getHojeStr(); let cV = 0, cH = 0, cF = 0, c24 = 0, cUnread = 0;
+        const amanhaObj = new Date(); amanhaObj.setDate(amanhaObj.getDate() + 1);
+        const amanhaStr = amanhaObj.getFullYear() + "-" + String(amanhaObj.getMonth() + 1).padStart(2, '0') + "-" + String(amanhaObj.getDate()).padStart(2, '0');
+
+        dadosGlobais.forEach(function (item) {
+            if (item.status === 'Confirmado') {
+                const itemData = String(item.data).substring(0, 10);
+                const dtObj = parseDate(itemData, item.h_ini);
+                if (dtObj) {
+                    const diffMs = dtObj - agora;
+                    const isHoje = (itemData === hojeStr);
+                    const isAmanha = (itemData === amanhaStr);
+                    if (diffMs < 0) { cV++; } else { if (isHoje) { cH++; } else if (isAmanha) { c24++; } else { cF++; } }
+                }
+            }
+            if (!isClient() && item.obs_cliente && item.obs_cliente.trim() !== "" && item.visto_cli !== "Visto") { cUnread++; }
+            if (isClient() && item.obs_para_cliente && item.obs_para_cliente.trim() !== "" && item.visto_p_cli !== "Visto") { cUnread++; }
+        });
+
+        const updateAlert = (id, count) => {
+            const span = document.getElementById('bell-count-' + id);
+            const btn = document.getElementById('btn-alert-' + id);
+            if (span) span.textContent = count;
+            if (btn) btn.style.display = (!isClient() && count > 0) ? 'flex' : 'none';
+        }
+
+        updateAlert('overdue', cV); updateAlert('today', cH); updateAlert('24h', c24); updateAlert('future', cF); updateAlert('unread', cUnread);
+
+        const mOverC = document.getElementById('bell-count-overdue-mobile'); if (mOverC) mOverC.textContent = cV; const mOver = document.getElementById('bell-overdue-mobile'); if (mOver) mOver.style.display = (!isClient() && cV > 0) ? 'block' : 'none';
+        const mTodayC = document.getElementById('bell-count-today-mobile'); if (mTodayC) mTodayC.textContent = cH; const mTodayB = document.getElementById('bell-today-mobile'); if (mTodayB) mTodayB.style.display = (!isClient() && cH > 0) ? 'block' : 'none';
+        const mFutureC = document.getElementById('bell-count-future-mobile'); if (mFutureC) mFutureC.textContent = cF; const mFutureB = document.getElementById('bell-future-mobile'); if (mFutureB) mFutureB.style.display = (!isClient() && cF > 0) ? 'block' : 'none';
+        const b24m = document.getElementById('bell-24h-mobile'); const count24m = document.getElementById('bell-count-24h-mobile'); if (b24m && count24m) { count24m.textContent = c24; b24m.style.display = (!isClient() && c24 > 0) ? 'block' : 'none'; if (c24 > 0) b24m.classList.add('bell-pulsing'); else b24m.classList.remove('bell-pulsing'); }
+        const mUnreadC = document.getElementById('bell-count-unread-mobile'); if (mUnreadC) mUnreadC.textContent = cUnread; const mUnreadB = document.getElementById('alert-unread-mobile'); if (mUnreadB) mUnreadB.style.display = (!isClient() && cUnread > 0) ? 'block' : 'none';
+
+        atualizarEstiloSinos();
+    }
+
+    function filtrarPorSino(tipo) {
+        fecharMenuSeMobile('menu-principal');
+        if (filtroSinoAtivo === tipo) { filtroSinoAtivo = null; } else {
+            filtroSinoAtivo = tipo;
+            if (document.getElementById('filtro-data')) document.getElementById('filtro-data').value = "";
+            if (document.getElementById('filtro-status')) document.getElementById('filtro-status').value = "";
+            if (document.getElementById('filtro-cliente')) document.getElementById('filtro-cliente').value = "";
+            if (document.getElementById('filtro-especialidade')) document.getElementById('filtro-especialidade').value = "";
+
+            const md = document.getElementById('filtro-data-mobile'); if (md) { md.value = ""; atualizarPlaceholderData(); }
+            const ms = document.getElementById('filtro-status-mobile'); if (ms) ms.value = "";
+            const mc = document.getElementById('filtro-cliente-mobile'); if (mc) mc.value = "";
+            const me = document.getElementById('filtro-especialidade-mobile'); if (me) me.value = "";
+        }
+        atualizarEstiloSinos(); aplicarFiltrosPrincipal();
+    }
+
+    function limparFiltros() {
+        filtroSinoAtivo = null; atualizarEstiloSinos();
+        if (document.getElementById('filtro-data')) document.getElementById('filtro-data').value = "";
+        if (document.getElementById('filtro-status')) document.getElementById('filtro-status').value = "";
+        if (document.getElementById('filtro-cliente')) document.getElementById('filtro-cliente').value = "";
+        if (document.getElementById('filtro-especialidade')) document.getElementById('filtro-especialidade').value = "";
+
+        const md = document.getElementById('filtro-data-mobile'); if (md) { md.value = ""; atualizarPlaceholderData(); }
+        const ms = document.getElementById('filtro-status-mobile'); if (ms) ms.value = "";
+        const mc = document.getElementById('filtro-cliente-mobile'); if (mc) mc.value = "";
+        const me = document.getElementById('filtro-especialidade-mobile'); if (me) me.value = "";
+        aplicarFiltrosPrincipal();
+    }
+
+    function atualizarBadgeTotal(badgeId, rowId, label, valor, qtd, forceShow) {
+        if (isClient()) return;
+        const badgePC = document.getElementById(badgeId); const badgeMobile = document.getElementById(badgeId + '-mobile');
+        if (forceShow) {
+            const texto = label + valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + " (" + qtd + ")";
+            if (badgePC) { const rowPC = document.getElementById(rowId); if (rowPC) rowPC.style.display = 'flex'; badgePC.textContent = texto; }
+            if (badgeMobile) { badgeMobile.style.display = 'flex'; badgeMobile.textContent = texto; }
+        } else {
+            if (badgePC) { const rowPC = document.getElementById(rowId); if (rowPC) rowPC.style.display = 'none'; }
+            if (badgeMobile) { badgeMobile.style.display = 'none'; }
+        }
+    }
+    function desativarSinos() { if (filtroSinoAtivo !== null) { filtroSinoAtivo = null; atualizarEstiloSinos(); } }
+</script>

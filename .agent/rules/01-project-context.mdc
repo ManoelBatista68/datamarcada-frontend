@@ -1,0 +1,4 @@
+"Este projeto é um Sistema de Agendamento (SaaS) construído com Google Apps Script (Backend - .gs) e HTML/JS puro (Frontend - .html). O banco de dados é o próprio Google Sheets. Regra vital: as operações de salvar na agenda precisam obrigatoriamente identificar a coluna codigoEmpresa e preenchê-la, buscando esse valor preferencialmente da aba 'Temporario'."
+# Language Profile
+- TODA a comunicação, documentação, nomes de variáveis não-padrão, mensagens de erro e arquivos gerados (como planos de implementação) DEVEM ser escritos em Português do Brasil (pt-BR).
+- NEVER output plans or text in English unless explicitly asked.

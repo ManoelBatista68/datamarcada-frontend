@@ -1,0 +1,98 @@
+<div id="view-periodo" style="display: none;">
+    <div class="mobile-hamburger-bar mobile-only">
+        <button onclick="toggleMobileMenu('menu-periodo')">
+            <span class="material-icons">menu</span> Filtros do Relatório
+        </button>
+    </div>
+    <div id="menu-periodo" class="menu-bar-container">
+        <div class="menu-content mobile-only">
+            <button class="btn-voltar" style="width:100%; justify-content:center;"
+                onclick="alternarTela('principal')"><span class="material-icons"
+                    style="font-size:16px">arrow_back</span> Principal</button>
+
+            <div style="display:flex; gap:10px; width:100%;">
+                <select id="filtro-periodo-select-mobile" class="input-control" style="flex:1;"
+                    onchange="aplicarFiltroPeriodo();" title="Selecione o período do relatório">
+                    <option value="hoje">Hoje</option>
+                    <option value="mes" selected>Este Mês</option>
+                    <option value="trimestre">Trimestre</option>
+                    <option value="semestre">Semestre</option>
+                    <option value="ano">Este Ano</option>
+                    <option value="custom">Definir intervalo</option>
+                </select>
+                <div class="status-select-wrapper" style="flex:1;">
+                    <div class="status-badge-float" id="qtd-cards-periodo-mobile">0</div>
+                    <select id="filtro-status-periodo-mobile" class="input-control" style="width:100%;"
+                        onchange="aplicarFiltroPeriodo(); fecharMenuSeMobile('menu-periodo');"
+                        title="Filtre pelo status no período">
+                        <option value="">Status: Todos</option>
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Atendido">Atendido</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                    <span class="material-icons expand-icon">expand_more</span>
+                </div>
+            </div>
+
+            <div id="custom-interval-mobile" style="display:none; gap:5px; width:100%;">
+                <input type="date" id="data-inicio-mobile" class="input-control" style="flex:1;"
+                    onchange="aplicarFiltroPeriodo()">
+                <input type="date" id="data-fim-mobile" class="input-control" style="flex:1;"
+                    onchange="aplicarFiltroPeriodo()">
+            </div>
+
+            <div class="header-totals" id="row-total-periodo-mobile"
+                style="display:none; width:100%; justify-content:center; margin-top:5px;">
+                <span id="badge-total-periodo-mobile" class="total-badge" style="display:none;"></span>
+            </div>
+        </div>
+
+        <div class="menu-content pc-only" style="padding: 15px; display: flex; gap: 15px; align-items: center;">
+            <button class="btn-voltar" onclick="alternarTela('principal')" title="Voltar à tela principal"><span
+                    class="material-icons" style="font-size:16px">arrow_back</span> Principal</button>
+
+            <div style="display: flex; gap: 10px; width: 100%; max-width: 400px;">
+                <div class="input-group-wrapper" style="flex: 1;">
+                    <select id="filtro-periodo-select" class="input-control"
+                        style="height: 38px; border-radius: 8px; width: 100%;" onchange="aplicarFiltroPeriodo()"
+                        title="Selecione o período do relatório">
+                        <option value="hoje">Hoje</option>
+                        <option value="mes" selected>Este Mês</option>
+                        <option value="trimestre">Trimestre</option>
+                        <option value="semestre">Semestre</option>
+                        <option value="ano">Este Ano</option>
+                        <option value="custom">Definir intervalo</option>
+                    </select>
+                </div>
+                <div class="input-group-wrapper status-select-wrapper" style="flex: 1;">
+                    <div class="status-badge-float" id="qtd-cards-periodo-pc">0</div>
+                    <select id="filtro-status-periodo" class="input-control"
+                        style="height: 38px; border-radius: 8px; width: 100% !important; padding-left: 45px !important;"
+                        onchange="aplicarFiltroPeriodo()" title="Filtre pelo status no período">
+                        <option value="">Status: Todos</option>
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Atendido">Atendido</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                    <span class="material-icons expand-icon">expand_more</span>
+                </div>
+            </div>
+
+            <div id="custom-interval-pc" style="display:none; align-items:center; gap:5px;">
+                <input type="date" id="data-inicio-pc" class="input-control" style="height: 38px; border-radius: 8px;"
+                    onchange="aplicarFiltroPeriodo()" title="Data Inicial">
+                <span style="font-size:11px; font-weight:bold;">até</span>
+                <input type="date" id="data-fim-pc" class="input-control" style="height: 38px; border-radius: 8px;"
+                    onchange="aplicarFiltroPeriodo()" title="Data Final">
+            </div>
+
+            <div class="header-totals" id="row-total-periodo-pc" style="display:none; margin-left: auto;">
+                <span id="badge-total-periodo-pc" class="total-badge" style="display:none;"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-container">
+        <div id="cards-container-periodo">Carregando...</div>
+    </div>
+</div>
