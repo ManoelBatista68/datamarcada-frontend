@@ -13,6 +13,8 @@
         rel="stylesheet" />
     <script id="tailwind-config">
         tailwind.config = {
+            prefix: 'tw-',
+            corePlugins: { preflight: false },
             darkMode: "class",
             theme: {
                 extend: {
@@ -101,147 +103,160 @@
     </style>
 </head>
 
-<body class="bg-surface text-on-surface">
-    <main class="min-h-screen">
-        <div class="p-4 md:p-8 max-w-full mx-auto">
-            <div class="mb-10">
-                <h1 class="text-3xl md:text-4xl font-extrabold text-on-surface tracking-tight mb-2">Cadastro Geral</h1>
-                <p class="text-on-surface-variant font-medium">Gerenciamento centralizado de especialidades, produtos e
+<body class="tw-bg-surface tw-text-on-surface">
+    <main class="tw-min-h-screen">
+        <div class="tw-p-4 md:tw-p-8 tw-max-w-full tw-mx-auto">
+            <div class="tw-mb-10">
+                <h1 class="tw-text-3xl md:tw-text-4xl tw-font-extrabold tw-text-on-surface tw-tracking-tight tw-mb-2">
+                    Cadastro Geral</h1>
+                <p class="tw-text-on-surface-variant tw-font-medium">Gerenciamento centralizado de especialidades,
+                    produtos e
                     corpo clínico.</p>
             </div>
-            <div class="flex gap-1 mb-8 bg-surface-container-low p-1.5 rounded-full w-fit">
+            <div class="tw-flex tw-gap-1 tw-mb-8 tw-bg-surface-container-low tw-p-1.5 tw-rounded-full tw-w-fit">
                 <button id="tab-1" onclick="switchTab(1)"
-                    class="px-6 md:px-8 py-2.5 rounded-full bg-surface-container-lowest text-primary font-bold shadow-sm transition-all text-sm">
+                    class="tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-full tw-bg-surface-container-lowest tw-text-primary tw-font-bold tw-shadow-sm tw-transition-all tw-text-sm">
                     Especialidades e Produtos
                 </button>
                 <button id="tab-2" onclick="switchTab(2)"
-                    class="px-6 md:px-8 py-2.5 rounded-full text-on-surface-variant font-medium hover:bg-surface-container-high transition-all text-sm">
+                    class="tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-full tw-text-on-surface-variant tw-font-medium hover:tw-bg-surface-container-high tw-transition-all tw-text-sm">
                     Especialistas
                 </button>
             </div>
-            <div id="content-1" class="space-y-8">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <h3 class="text-xl font-bold text-primary flex items-center gap-2">
+            <div id="content-1" class="tw-space-y-8">
+                <div
+                    class="tw-flex tw-flex-col sm:tw-flex-row tw-justify-between tw-items-start sm:tw-items-center tw-gap-4">
+                    <h3 class="tw-text-xl tw-font-bold tw-text-primary tw-flex tw-items-center tw-gap-2">
                         <span class="material-symbols-outlined">category</span>
                         Estrutura Hierárquica
                     </h3>
                     <button onclick="window.parent.abrirModal('modal-nova-especialidade')"
-                        class="primary-gradient text-white px-5 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-lg shadow-primary/10">
-                        <span class="material-symbols-outlined text-sm">add_circle</span>
+                        class="primary-gradient tw-text-white tw-px-5 tw-py-2 tw-rounded-xl tw-text-sm tw-font-semibold tw-flex tw-items-center tw-gap-2 tw-shadow-lg tw-shadow-primary/10">
+                        <span class="material-symbols-outlined tw-text-sm">add_circle</span>
                         Nova Especialidade
                     </button>
                 </div>
-                <div class="bg-surface-container-low rounded-xl overflow-hidden">
+                <div class="tw-bg-surface-container-low tw-rounded-xl tw-overflow-hidden">
                     <div
-                        class="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between border-l-4 border-primary bg-surface-container-lowest gap-4">
-                        <div class="flex items-center gap-4">
+                        class="tw-p-6 tw-flex tw-flex-col sm:tw-flex-row tw-items-start sm:tw-items-center tw-justify-between tw-border-l-4 tw-border-primary tw-bg-surface-container-lowest tw-gap-4">
+                        <div class="tw-flex tw-items-center tw-gap-4">
                             <div
-                                class="w-12 h-12 rounded-lg bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+                                class="tw-w-12 tw-h-12 tw-rounded-lg tw-bg-primary-fixed tw-flex tw-items-center tw-justify-center tw-text-primary tw-shrink-0">
                                 <span class="material-symbols-outlined">cardiology</span>
                             </div>
                             <div>
-                                <h4 class="font-bold text-on-surface text-lg leading-tight">Cardiologia</h4>
-                                <p class="text-xs font-mono text-outline uppercase tracking-wider">COD: CRD-001</p>
+                                <h4 class="tw-font-bold tw-text-on-surface tw-text-lg tw-leading-tight">Cardiologia</h4>
+                                <p class="tw-text-xs tw-font-mono tw-text-outline tw-uppercase tw-tracking-wider">COD:
+                                    CRD-001</p>
                             </div>
                         </div>
-                        <div class="flex gap-2 w-full sm:w-auto justify-end">
+                        <div class="tw-flex tw-gap-2 tw-w-full sm:tw-w-auto tw-justify-end">
                             <button onclick="window.parent.abrirModal('modal-editar-especialidade')"
-                                class="p-2 hover:bg-surface-container-high rounded-lg text-primary transition-colors">
+                                class="tw-p-2 hover:tw-bg-surface-container-high tw-rounded-lg tw-text-primary tw-transition-colors">
                                 <span class="material-symbols-outlined">edit</span>
                             </button>
                             <button
-                                class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2">
-                                <span class="material-symbols-outlined text-sm">add</span>
+                                class="tw-bg-secondary-container tw-text-on-secondary-container tw-px-4 tw-py-2 tw-rounded-lg tw-text-xs tw-font-bold tw-flex tw-items-center tw-gap-2">
+                                <span class="material-symbols-outlined tw-text-sm">add</span>
                                 Adicionar Sub-especialidade
                             </button>
                         </div>
                     </div>
-                    <div class="pl-6 md:pl-12 pr-6 py-4 space-y-4">
-                        <div class="bg-surface-container-low rounded-xl p-5 border-l-2 border-primary/30">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center gap-3">
+                    <div class="tw-pl-6 md:tw-pl-12 tw-pr-6 tw-py-4 tw-space-y-4">
+                        <div
+                            class="tw-bg-surface-container-low tw-rounded-xl tw-p-5 tw-border-l-2 tw-border-primary/30">
+                            <div class="tw-flex tw-items-center tw-justify-between tw-mb-4">
+                                <div class="tw-flex tw-items-center tw-gap-3">
                                     <span
-                                        class="material-symbols-outlined text-primary/60">subdirectory_arrow_right</span>
+                                        class="material-symbols-outlined tw-text-primary/60">subdirectory_arrow_right</span>
                                     <div>
-                                        <h5 class="font-bold text-on-surface">Ecocardiografia</h5>
-                                        <p class="text-[10px] font-mono text-outline uppercase">COD: ECO-012</p>
+                                        <h5 class="tw-font-bold tw-text-on-surface">Ecocardiografia</h5>
+                                        <p class="tw-text-[10px] tw-font-mono tw-text-outline tw-uppercase">COD: ECO-012
+                                        </p>
                                     </div>
                                 </div>
                                 <button
-                                    class="bg-primary/5 text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary/10 transition-colors">
+                                    class="tw-bg-primary/5 tw-text-primary tw-px-3 tw-py-1.5 tw-rounded-lg tw-text-xs tw-font-bold hover:tw-bg-primary/10 tw-transition-colors">
                                     Novo Produto
                                 </button>
                             </div>
-                            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                            <div class="tw-grid tw-grid-cols-1 xl:tw-grid-cols-2 tw-gap-4">
                                 <div
-                                    class="bg-surface-container-lowest p-5 rounded-xl border border-transparent hover:border-outline-variant/30 transition-all shadow-sm">
-                                    <div class="flex justify-between items-start mb-3">
+                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-xl tw-border tw-border-transparent hover:tw-border-outline-variant/30 tw-transition-all tw-shadow-sm">
+                                    <div class="tw-flex tw-justify-between tw-items-start tw-mb-3">
                                         <div>
                                             <span
-                                                class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded uppercase tracking-tighter">Exame
+                                                class="tw-text-[10px] tw-font-bold tw-text-emerald-700 tw-bg-emerald-50 tw-px-2 tw-py-0.5 tw-rounded tw-uppercase tw-tracking-tighter">Exame
                                                 Presencial</span>
-                                            <h6 class="font-bold text-on-surface mt-1">Ecocardiograma com Doppler</h6>
-                                            <p class="text-xs text-outline font-mono">COD: PROD-9921 • Clinic ID: CP-01
+                                            <h6 class="tw-font-bold tw-text-on-surface tw-mt-1">Ecocardiograma com
+                                                Doppler</h6>
+                                            <p class="tw-text-xs tw-text-outline tw-font-mono">COD: PROD-9921 • Clinic
+                                                ID: CP-01
                                             </p>
                                         </div>
-                                        <div class="text-right">
-                                            <p class="text-xs text-outline line-through">R$ 450,00</p>
-                                            <p class="text-lg font-extrabold text-primary leading-none">R$ 380,00</p>
+                                        <div class="tw-text-right">
+                                            <p class="tw-text-xs tw-text-outline tw-line-through">R$ 450,00</p>
+                                            <p class="tw-text-lg tw-font-extrabold tw-text-primary tw-leading-none">R$
+                                                380,00</p>
                                         </div>
                                     </div>
-                                    <p class="text-xs text-on-surface-variant mb-4 line-clamp-2">Exame de imagem não
+                                    <p class="tw-text-xs tw-text-on-surface-variant tw-mb-4 tw-line-clamp-2">Exame de
+                                        imagem não
                                         invasivo que utiliza ondas sonoras para criar imagens em movimento do coração.
                                     </p>
                                     <div
-                                        class="flex items-center justify-between pt-3 border-t border-surface-container">
+                                        class="tw-flex tw-items-center tw-justify-between tw-pt-3 tw-border-t tw-border-surface-container">
                                         <div
-                                            class="flex items-center gap-2 text-[10px] font-medium text-on-surface-variant">
-                                            <span class="material-symbols-outlined text-sm">location_on</span>
+                                            class="tw-flex tw-items-center tw-gap-2 tw-text-[10px] tw-font-medium tw-text-on-surface-variant">
+                                            <span class="material-symbols-outlined tw-text-sm">location_on</span>
                                             Pavilhão A, Sala 402
                                         </div>
-                                        <div class="flex gap-2">
+                                        <div class="tw-flex tw-gap-2">
                                             <button
-                                                class="p-1.5 hover:bg-surface-container text-outline rounded-lg transition-colors">
-                                                <span class="material-symbols-outlined text-sm">settings</span>
+                                                class="tw-p-1.5 hover:tw-bg-surface-container tw-text-outline tw-rounded-lg tw-transition-colors">
+                                                <span class="material-symbols-outlined tw-text-sm">settings</span>
                                             </button>
                                             <button
-                                                class="p-1.5 hover:bg-error-container text-error rounded-lg transition-colors">
-                                                <span class="material-symbols-outlined text-sm">delete</span>
+                                                class="tw-p-1.5 hover:tw-bg-error-container tw-text-error tw-rounded-lg tw-transition-colors">
+                                                <span class="material-symbols-outlined tw-text-sm">delete</span>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div
-                                    class="bg-surface-container-lowest p-5 rounded-xl border border-transparent hover:border-outline-variant/30 transition-all shadow-sm">
-                                    <div class="flex justify-between items-start mb-3">
+                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-xl tw-border tw-border-transparent hover:tw-border-outline-variant/30 tw-transition-all tw-shadow-sm">
+                                    <div class="tw-flex tw-justify-between tw-items-start tw-mb-3">
                                         <div>
                                             <span
-                                                class="text-[10px] font-bold text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded uppercase tracking-tighter">Telemedicina</span>
-                                            <h6 class="font-bold text-on-surface mt-1">Laudo Remoto de ECG</h6>
-                                            <p class="text-xs text-outline font-mono">COD: PROD-8812 • Clinic ID: CP-01
+                                                class="tw-text-[10px] tw-font-bold tw-text-cyan-700 tw-bg-cyan-50 tw-px-2 tw-py-0.5 tw-rounded tw-uppercase tw-tracking-tighter">Telemedicina</span>
+                                            <h6 class="tw-font-bold tw-text-on-surface tw-mt-1">Laudo Remoto de ECG</h6>
+                                            <p class="tw-text-xs tw-text-outline tw-font-mono">COD: PROD-8812 • Clinic
+                                                ID: CP-01
                                             </p>
                                         </div>
-                                        <div class="text-right">
-                                            <p class="text-lg font-extrabold text-primary leading-none">R$ 85,00</p>
+                                        <div class="tw-text-right">
+                                            <p class="tw-text-lg tw-font-extrabold tw-text-primary tw-leading-none">R$
+                                                85,00</p>
                                         </div>
                                     </div>
-                                    <p class="text-xs text-on-surface-variant mb-4 line-clamp-2">Interpretação técnica
+                                    <p class="tw-text-xs tw-text-on-surface-variant tw-mb-4 tw-line-clamp-2">
+                                        Interpretação técnica
                                         de eletrocardiograma via plataforma digital com entrega em 24h.</p>
                                     <div
-                                        class="flex items-center justify-between pt-3 border-t border-surface-container">
+                                        class="tw-flex tw-items-center tw-justify-between tw-pt-3 tw-border-t tw-border-surface-container">
                                         <div
-                                            class="flex items-center gap-2 text-[10px] font-medium text-on-surface-variant">
-                                            <span class="material-symbols-outlined text-sm">cloud</span>
+                                            class="tw-flex tw-items-center tw-gap-2 tw-text-[10px] tw-font-medium tw-text-on-surface-variant">
+                                            <span class="material-symbols-outlined tw-text-sm">cloud</span>
                                             Digital / Online
                                         </div>
-                                        <div class="flex gap-2">
+                                        <div class="tw-flex tw-gap-2">
                                             <button
-                                                class="p-1.5 hover:bg-surface-container text-outline rounded-lg transition-colors">
-                                                <span class="material-symbols-outlined text-sm">settings</span>
+                                                class="tw-p-1.5 hover:tw-bg-surface-container tw-text-outline tw-rounded-lg tw-transition-colors">
+                                                <span class="material-symbols-outlined tw-text-sm">settings</span>
                                             </button>
                                             <button onclick="window.parent.abrirModal('modal-excluir-especialidade')"
-                                                class="p-1.5 hover:bg-error-container text-error rounded-lg transition-colors">
-                                                <span class="material-symbols-outlined text-sm">delete</span>
+                                                class="tw-p-1.5 hover:tw-bg-error-container tw-text-error tw-rounded-lg tw-transition-colors">
+                                                <span class="material-symbols-outlined tw-text-sm">delete</span>
                                             </button>
                                         </div>
                                     </div>
@@ -252,124 +267,138 @@
                 </div>
             </div>
             <div id="content-2" style="display: none;">
-                <div class="mt-12">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-bold text-primary">Corpo Clínico</h3>
-                        <button class="primary-gradient text-white px-5 py-2 rounded-xl text-sm font-semibold">Novo
+                <div class="tw-mt-12">
+                    <div class="tw-flex tw-justify-between tw-items-center tw-mb-6">
+                        <h3 class="tw-text-xl tw-font-bold tw-text-primary">Corpo Clínico</h3>
+                        <button
+                            class="primary-gradient tw-text-white tw-px-5 tw-py-2 tw-rounded-xl tw-text-sm tw-font-semibold">Novo
                             Especialista</button>
                     </div>
                     <div
-                        class="bg-surface-container-lowest rounded-xl shadow-sm overflow-x-auto border border-outline-variant/10">
-                        <table class="w-full text-left min-w-[600px]">
+                        class="tw-bg-surface-container-lowest tw-rounded-xl tw-shadow-sm tw-overflow-x-auto tw-border tw-border-outline-variant/10">
+                        <table class="tw-w-full tw-text-left tw-min-w-[600px]">
                             <thead
-                                class="bg-surface-container-low text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+                                class="tw-bg-surface-container-low tw-text-[10px] tw-font-bold tw-uppercase tw-tracking-widest tw-text-on-surface-variant">
                                 <tr>
-                                    <th class="px-6 py-4">Especialista</th>
-                                    <th class="px-6 py-4">Contato</th>
-                                    <th class="px-6 py-4">Especialidades</th>
-                                    <th class="px-6 py-4 text-right">Ações</th>
+                                    <th class="tw-px-6 tw-py-4">Especialista</th>
+                                    <th class="tw-px-6 tw-py-4">Contato</th>
+                                    <th class="tw-px-6 tw-py-4">Especialidades</th>
+                                    <th class="tw-px-6 tw-py-4 tw-text-right">Ações</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-surface-container">
-                                <tr class="hover:bg-surface-container-low transition-colors">
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center gap-3">
-                                            <img alt="Specialist" class="w-10 h-10 rounded-full object-cover"
+                            <tbody class="tw-divide-y tw-divide-surface-container">
+                                <tr class="hover:tw-bg-surface-container-low tw-transition-colors">
+                                    <td class="tw-px-6 tw-py-4">
+                                        <div class="tw-flex tw-items-center tw-gap-3">
+                                            <img alt="Specialist"
+                                                class="tw-w-10 tw-h-10 tw-rounded-full tw-object-cover"
                                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwEmp-YXzn_CS3AuKaYaU1SkHO_cvRoULF8gTiVFHCfkBB7Z5lwYdMewGifdGcS4qUbnWgI969nmJeWDeKwm36QKk2k6hkMBbg9iHd0VVrHBG-n9OAt-HXQnLosFghY9af_JweTSQGDKtBnBll1nJAVcthAJYqkT0-vRlFVPpmDi4hp1Q6b_6XL3PNqBOqzPSdn_SSFATU-ib8mlRZou74araJ-Bz8_odFFs4ao8104E_-fVOcURyDWz_jyd8nUnSqO8ZSYaQRgpk" />
                                             <div>
-                                                <p class="font-bold text-on-surface text-sm">Dr. Arthur Mendes</p>
-                                                <p class="text-[10px] font-mono text-outline uppercase">CRM 12345-SP</p>
+                                                <p class="tw-font-bold tw-text-on-surface tw-text-sm">Dr. Arthur Mendes
+                                                </p>
+                                                <p class="tw-text-[10px] tw-font-mono tw-text-outline tw-uppercase">CRM
+                                                    12345-SP</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <p class="text-xs font-medium text-on-surface-variant">(11) 98765-4321</p>
-                                        <p class="text-xs text-outline">arthur.m@medpavilion.com</p>
+                                    <td class="tw-px-6 tw-py-4">
+                                        <p class="tw-text-xs tw-font-medium tw-text-on-surface-variant">(11) 98765-4321
+                                        </p>
+                                        <p class="tw-text-xs tw-text-outline">arthur.m@medpavilion.com</p>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex flex-wrap gap-1">
+                                    <td class="tw-px-6 tw-py-4">
+                                        <div class="tw-flex tw-flex-wrap tw-gap-1">
                                             <span
-                                                class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded">Cardiologia</span>
+                                                class="tw-px-2 tw-py-0.5 tw-bg-secondary-container tw-text-on-secondary-container tw-text-[10px] tw-font-bold tw-rounded">Cardiologia</span>
                                             <span
-                                                class="px-2 py-0.5 bg-surface-container-high text-on-surface-variant text-[10px] font-bold rounded">Ecocardiografia</span>
+                                                class="tw-px-2 tw-py-0.5 tw-bg-surface-container-high tw-text-on-surface-variant tw-text-[10px] tw-font-bold tw-rounded">Ecocardiografia</span>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-right">
+                                    <td class="tw-px-6 tw-py-4 tw-text-right">
                                         <button
-                                            class="text-primary hover:underline text-xs font-bold">Gerenciar</button>
+                                            class="tw-text-primary hover:tw-underline tw-text-xs tw-font-bold">Gerenciar</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div class="mt-12 bg-surface-container-low rounded-2xl p-6 md:p-8 border border-outline-variant/15">
-                    <div class="flex items-center gap-4 mb-8">
+                <div
+                    class="tw-mt-12 tw-bg-surface-container-low tw-rounded-2xl tw-p-6 md:tw-p-8 tw-border tw-border-outline-variant/15">
+                    <div class="tw-flex tw-items-center tw-gap-4 tw-mb-8">
                         <div
-                            class="w-12 h-12 rounded-full primary-gradient flex items-center justify-center text-white shrink-0">
+                            class="tw-w-12 tw-h-12 tw-rounded-full primary-gradient tw-flex tw-items-center tw-justify-center tw-text-white tw-shrink-0">
                             <span class="material-symbols-outlined">person_add</span>
                         </div>
                         <div>
-                            <h2 class="text-2xl font-bold tracking-tight">Novo Especialista</h2>
-                            <p class="text-sm text-on-surface-variant font-medium">Cadastre um novo profissional para a
-                                unidade <span class="text-primary">CP-01 (Clinical Pavilion)</span></p>
+                            <h2 class="tw-text-2xl tw-font-bold tw-tracking-tight">Novo Especialista</h2>
+                            <p class="tw-text-sm tw-text-on-surface-variant tw-font-medium">Cadastre um novo
+                                profissional para a
+                                unidade <span class="tw-text-primary">CP-01 (Clinical Pavilion)</span></p>
                         </div>
                     </div>
-                    <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-outline uppercase ml-1">Nome Completo</label>
+                    <form class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6">
+                        <div class="tw-space-y-1.5">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-outline tw-uppercase tw-ml-1">Nome
+                                Completo</label>
                             <input
-                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                                class="tw-w-full tw-bg-surface-container-lowest tw-border-none tw-rounded-xl tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary tw-transition-all tw-shadow-sm"
                                 placeholder="Ex: Dr. Roberto Silva" type="text" />
                         </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-outline uppercase ml-1">Registro / Código</label>
+                        <div class="tw-space-y-1.5">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-outline tw-uppercase tw-ml-1">Registro /
+                                Código</label>
                             <input
-                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                                class="tw-w-full tw-bg-surface-container-lowest tw-border-none tw-rounded-xl tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary tw-transition-all tw-shadow-sm"
                                 placeholder="Ex: CRM 99.123" type="text" />
                         </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-outline uppercase ml-1">Celular / WhatsApp</label>
+                        <div class="tw-space-y-1.5">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-outline tw-uppercase tw-ml-1">Celular /
+                                WhatsApp</label>
                             <input
-                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                                class="tw-w-full tw-bg-surface-container-lowest tw-border-none tw-rounded-xl tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary tw-transition-all tw-shadow-sm"
                                 placeholder="(00) 00000-0000" type="tel" />
                         </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-outline uppercase ml-1">E-mail Profissional</label>
+                        <div class="tw-space-y-1.5">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-outline tw-uppercase tw-ml-1">E-mail
+                                Profissional</label>
                             <input
-                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                                class="tw-w-full tw-bg-surface-container-lowest tw-border-none tw-rounded-xl tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary tw-transition-all tw-shadow-sm"
                                 placeholder="roberto@clinica.com" type="email" />
                         </div>
-                        <div class="space-y-1.5 lg:col-span-2">
-                            <label class="text-[11px] font-bold text-outline uppercase ml-1">Especialidades
+                        <div class="tw-space-y-1.5 lg:tw-col-span-2">
+                            <label
+                                class="tw-text-[11px] tw-font-bold tw-text-outline tw-uppercase tw-ml-1">Especialidades
                                 (Multiseleção)</label>
                             <div
-                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-2.5 flex flex-wrap gap-2 shadow-sm min-h-[46px]">
+                                class="tw-w-full tw-bg-surface-container-lowest tw-border-none tw-rounded-xl tw-px-4 tw-py-2.5 tw-flex tw-flex-wrap tw-gap-2 tw-shadow-sm tw-min-h-[46px]">
                                 <span
-                                    class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-lg text-xs font-bold">
-                                    Cardiologia <button class="material-symbols-outlined text-xs">close</button>
+                                    class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-secondary-container tw-text-on-secondary-container tw-px-2 tw-py-0.5 tw-rounded-lg tw-text-xs tw-font-bold">
+                                    Cardiologia <button class="material-symbols-outlined tw-text-xs">close</button>
                                 </span>
                                 <span
-                                    class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-lg text-xs font-bold">
-                                    Geriatria <button class="material-symbols-outlined text-xs">close</button>
+                                    class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-secondary-container tw-text-on-secondary-container tw-px-2 tw-py-0.5 tw-rounded-lg tw-text-xs tw-font-bold">
+                                    Geriatria <button class="material-symbols-outlined tw-text-xs">close</button>
                                 </span>
-                                <button class="text-xs text-outline font-bold hover:text-primary ml-auto">+
+                                <button
+                                    class="tw-text-xs tw-text-outline tw-font-bold hover:tw-text-primary tw-ml-auto">+
                                     Selecionar</button>
                             </div>
                         </div>
-                        <div class="space-y-1.5 md:col-span-2 lg:col-span-3">
-                            <label class="text-[11px] font-bold text-outline uppercase ml-1">Biografia / Descrição
+                        <div class="tw-space-y-1.5 md:tw-col-span-2 lg:tw-col-span-3">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-outline tw-uppercase tw-ml-1">Biografia /
+                                Descrição
                                 Profissional</label>
                             <textarea
-                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                                class="tw-w-full tw-bg-surface-container-lowest tw-border-none tw-rounded-xl tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary tw-transition-all tw-shadow-sm"
                                 placeholder="Conte um pouco sobre a experiência do profissional..." rows="3"></textarea>
                         </div>
-                        <div class="md:col-span-2 lg:col-span-3 pt-6 flex justify-end gap-3">
+                        <div class="md:tw-col-span-2 lg:tw-col-span-3 tw-pt-6 tw-flex tw-justify-end tw-gap-3">
                             <button
-                                class="px-6 py-2.5 rounded-xl text-on-surface-variant font-bold hover:bg-surface-container-high transition-all"
+                                class="tw-px-6 tw-py-2.5 tw-rounded-xl tw-text-on-surface-variant tw-font-bold hover:tw-bg-surface-container-high tw-transition-all"
                                 type="button">Cancelar</button>
                             <button
-                                class="primary-gradient px-10 py-2.5 rounded-xl text-white font-bold shadow-xl shadow-primary/20"
+                                class="primary-gradient tw-px-10 tw-py-2.5 tw-rounded-xl tw-text-white tw-font-bold tw-shadow-xl tw-shadow-primary/20"
                                 type="submit">Salvar Especialista</button>
                         </div>
                     </form>
@@ -384,8 +413,8 @@
             const content1 = document.getElementById('content-1');
             const content2 = document.getElementById('content-2');
 
-            const activeClass = "px-6 md:px-8 py-2.5 rounded-full bg-surface-container-lowest text-primary font-bold shadow-sm transition-all text-sm";
-            const inactiveClass = "px-6 md:px-8 py-2.5 rounded-full text-on-surface-variant font-medium hover:bg-surface-container-high transition-all text-sm";
+            const activeClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-full tw-bg-surface-container-lowest tw-text-primary tw-font-bold tw-shadow-sm tw-transition-all tw-text-sm";
+            const inactiveClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-full tw-text-on-surface-variant tw-font-medium hover:tw-bg-surface-container-high tw-transition-all tw-text-sm";
 
             if (tab === 1) {
                 btn1.className = activeClass;
