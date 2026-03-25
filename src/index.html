@@ -814,7 +814,7 @@
                                     for="specialty-name">Nome da Especialidade <span
                                         class="tw-text-error tw-font-bold">*</span></label>
                                 <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-md tw-px-4 tw-py-2.5 tw-text-on-surface placeholder:tw-text-outline/50 tw-transition-all tw-duration-200 tw-outline-none focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary"
+                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-on-surface placeholder:tw-text-outline/50 tw-transition-all tw-duration-200 tw-outline-none focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary"
                                     id="specialty-name" placeholder="Ex: Dermatologia" required="" type="text" />
                             </div>
                             <div class="tw-space-y-2 tw-flex-1">
@@ -823,17 +823,18 @@
                                     for="company-code">CÓDIGO EMPRESA <span
                                         class="tw-text-error tw-font-bold">*</span></label>
                                 <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-md tw-px-4 tw-py-2.5 tw-text-on-surface placeholder:tw-text-outline/50 tw-transition-all tw-duration-200 tw-outline-none focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary"
+                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-on-surface placeholder:tw-text-outline/50 tw-transition-all tw-duration-200 tw-outline-none focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary"
                                     id="company-code" placeholder="Ex: EMP-1234" required="" type="text" />
                             </div>
                         </div>
                         <div class="tw-flex tw-gap-3 tw-justify-end tw-pt-2">
                             <button
-                                class="tw-px-6 tw-py-2.5 tw-rounded-md tw-font-bold tw-text-[#333] tw-bg-[#e0e0e0] hover:tw-bg-[#d5d5d5] tw-transition-colors tw-border-none tw-cursor-pointer tw-text-sm"
+                                class="tw-px-6 tw-h-[38px] tw-rounded-lg tw-font-bold tw-text-[#333] tw-transition-colors tw-border-none tw-cursor-pointer tw-text-sm"
+                                style="background:#e0e0e0; color:#333;"
                                 onclick="fecharModal('modal-nova-especialidade')">Cancelar</button>
                             <button
-                                class="tw-bg-[#34a853] tw-text-white tw-border-none tw-px-6 tw-py-2.5 tw-rounded-md tw-font-bold tw-text-sm tw-transition-colors hover:tw-bg-[#2b8c46] tw-flex tw-items-center tw-gap-2 tw-cursor-pointer"><span>Criar
-                                    Especialidade</span></button>
+                                class="tw-text-white tw-border-none tw-px-6 tw-h-[38px] tw-rounded-lg tw-font-bold tw-text-sm tw-transition-colors hover:tw-brightness-110 tw-flex tw-items-center tw-gap-2 tw-cursor-pointer"
+                                style="background:#34a853; color:white;"><span>Criar Especialidade</span></button>
                         </div>
                         <div class="tw-pt-4 tw-space-y-4 tw-border-t tw-border-outline/10 tw-text-left">
                             <h3 class="tw-text-xs tw-font-bold tw-text-on-surface tw-uppercase tw-tracking-wider">
@@ -843,7 +844,7 @@
                                 <span
                                     class="material-symbols-outlined tw-absolute tw-left-3 tw-top-1/2 -tw-translate-y-1/2 tw-text-slate-400 tw-text-[20px]">search</span>
                                 <input
-                                    class="tw-w-full tw-bg-[#f4f7f6] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-md tw-pl-10 tw-pr-4 tw-py-2 tw-text-sm tw-text-on-surface placeholder:tw-text-outline/50 tw-transition-all tw-outline-none"
+                                    class="tw-w-full tw-bg-[#f4f7f6] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-lg tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-text-on-surface placeholder:tw-text-outline/50 tw-transition-all tw-outline-none"
                                     placeholder="Buscar especialidade..." type="text" />
                             </div>
                             <div class="tw-space-y-2 tw-max-h-40 tw-overflow-y-auto tw-pr-2 tw-custom-scrollbar">
@@ -936,7 +937,7 @@
                                     da
                                     Especialidade</label>
                                 <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-md tw-px-4 tw-py-2.5 tw-text-slate-900 tw-font-medium tw-transition-all tw-duration-200 tw-outline-none"
+                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-slate-900 tw-font-medium tw-transition-all tw-duration-200 tw-outline-none"
                                     placeholder="Ex: Dermatologia" type="text" value="Cardiologia" />
                             </div>
                             <div>
@@ -944,17 +945,18 @@
                                     class="tw-block tw-text-xs tw-font-bold tw-text-slate-600 tw-uppercase tw-tracking-widest tw-mb-2">Status
                                     da Especialidade</label>
                                 <select
-                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-border-primary focus:tw-ring-2 focus:tw-ring-primary/20 tw-rounded-md tw-px-4 tw-py-2.5 tw-text-slate-900 tw-font-medium tw-transition-all tw-outline-none tw-appearance-none tw-cursor-pointer">
+                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-border-primary focus:tw-ring-2 focus:tw-ring-primary/20 tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-slate-900 tw-font-medium tw-transition-all tw-outline-none tw-appearance-none tw-cursor-pointer">
                                     <option selected="" value="active">Ativo</option>
                                     <option value="inactive">Inativo</option>
                                 </select>
                             </div>
                             <div class="tw-flex tw-items-center tw-gap-3 tw-pt-2">
                                 <button
-                                    class="tw-flex-1 tw-bg-[#34a853] tw-text-white tw-py-2.5 tw-rounded-md tw-font-bold tw-text-sm tw-transition-colors hover:tw-bg-[#2b8c46] tw-border-none tw-cursor-pointer">Salvar
-                                    Alterações</button>
+                                    class="tw-flex-1 tw-text-white tw-h-[38px] tw-rounded-lg tw-font-bold tw-text-sm tw-transition-colors hover:tw-brightness-110 tw-border-none tw-cursor-pointer"
+                                    style="background:#34a853; color:white;">Salvar Alterações</button>
                                 <button
-                                    class="tw-flex-1 tw-bg-[#e0e0e0] tw-text-[#333] tw-border-none hover:tw-bg-[#d5d5d5] tw-py-2.5 tw-rounded-md tw-font-bold tw-text-sm tw-transition-colors tw-cursor-pointer"
+                                    class="tw-flex-1 tw-text-[#333] tw-border-none tw-transition-colors tw-cursor-pointer tw-h-[38px] tw-rounded-lg tw-font-bold tw-text-sm"
+                                    style="background:#e0e0e0; color:#333;"
                                     onclick="fecharModal('modal-editar-especialidade')">Cancelar</button>
                             </div>
                         </div>
@@ -986,11 +988,12 @@
                         </div>
                         <div class="tw-mt-10 tw-flex tw-flex-col sm:tw-flex-row tw-gap-3">
                             <button
-                                class="tw-flex-1 tw-px-6 tw-py-2.5 tw-rounded-md tw-text-[#333] tw-font-bold tw-bg-[#e0e0e0] hover:tw-bg-[#d5d5d5] tw-transition-colors tw-cursor-pointer tw-border-none"
+                                class="tw-flex-1 tw-px-6 tw-h-[38px] tw-rounded-lg tw-text-[#333] tw-font-bold tw-transition-colors tw-cursor-pointer tw-border-none"
+                                style="background:#e0e0e0; color:#333;"
                                 onclick="fecharModal('modal-excluir-especialidade')">Cancelar</button>
                             <button
-                                class="tw-flex-1 tw-px-6 tw-py-2.5 tw-rounded-md tw-text-white tw-font-bold tw-bg-[#ea4335] hover:tw-bg-[#c62828] tw-transition-colors tw-cursor-pointer tw-border-none">Sim,
-                                Excluir</button>
+                                class="tw-flex-1 tw-px-6 tw-h-[38px] tw-rounded-lg tw-text-white tw-font-bold tw-transition-colors hover:tw-brightness-110 tw-cursor-pointer tw-border-none"
+                                style="background:#34a853; color:white;">Sim, Excluir</button>
                         </div>
                     </div>
                 </div>

@@ -180,7 +180,7 @@
                                 <span class="material-symbols-outlined">edit</span>
                             </button>
                             <button
-                                class="tw-bg-[#eff6ff] tw-text-primary tw-px-4 tw-py-2 tw-rounded-md tw-text-xs tw-font-bold tw-flex tw-items-center tw-gap-2 tw-border tw-border-[#ddd] tw-transition-colors hover:tw-bg-[#e0f2fe]">
+                                class="tw-bg-[#eff6ff] tw-text-primary tw-px-4 tw-py-2 tw-rounded-md tw-text-xs tw-font-bold tw-flex tw-items-center tw-gap-2 tw-transition-colors hover:tw-bg-[#e0f2fe]">
                                 <span class="material-symbols-outlined tw-text-sm">add</span>
                                 Adicionar Sub-especialidade
                             </button>
@@ -200,7 +200,7 @@
                                     </div>
                                 </div>
                                 <button
-                                    class="tw-bg-[#eff6ff] tw-text-primary tw-px-3 tw-py-1.5 tw-rounded-md tw-text-xs tw-font-bold tw-transition-colors tw-border tw-border-[#ddd] hover:tw-bg-primary hover:tw-text-white">
+                                    class="tw-bg-[#eff6ff] tw-text-primary tw-px-3 tw-py-1.5 tw-rounded-md tw-text-xs tw-font-bold tw-transition-colors hover:tw-bg-primary hover:tw-text-white">
                                     Novo Produto
                                 </button>
                             </div>
@@ -294,9 +294,11 @@
                 <div class="tw-mt-12">
                     <div class="tw-flex tw-justify-between tw-items-center tw-mb-6">
                         <h3 class="tw-text-xl tw-font-bold tw-text-primary">Corpo Clínico</h3>
-                        <button
-                            class="tw-bg-[#1a73e8] tw-text-white tw-px-5 tw-py-2 tw-rounded-md tw-text-sm tw-font-bold tw-transition-all tw-duration-200 tw-shadow-md hover:tw-brightness-110 active:tw-scale-95">Novo
-                            Especialista</button>
+                        <button class="action-add tw-bg-transparent tw-border-0 tw-p-0 tw-cursor-pointer" title="Criar novo especialista">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #1a73e8; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(26,115,232,0.3);">
+                                <span class="material-symbols-outlined" style="font-size: 24px; color: white;">person_add</span>
+                            </div>
+                        </button>
                     </div>
                     <div class="tw-bg-white tw-rounded-md tw-shadow-sm tw-overflow-x-auto tw-border tw-border-[#eee]">
                         <table class="tw-w-full tw-text-left tw-min-w-[600px]">
@@ -365,28 +367,28 @@
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome
                                 Completo</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-md tw-px-4 tw-py-2.5 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="Ex: Dr. Roberto Silva" type="text" />
                         </div>
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Registro /
                                 Código</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-md tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="Ex: CRM 99.123" type="text" />
                         </div>
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Celular /
                                 WhatsApp</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-md tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="roberto@clinica.com" type="email" />
                         </div>
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">E-mail
                                 Profissional</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-md tw-px-4 tw-py-2.5 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="roberto@clinica.com" type="email" />
                         </div>
                         <div class="tw-space-y-1.5 lg:tw-col-span-2">
@@ -394,7 +396,7 @@
                                 class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Especialidades
                                 (Multiseleção)</label>
                             <div
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-md tw-px-4 tw-py-2 tw-flex tw-flex-wrap tw-gap-2 tw-min-h-[46px]">
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-lg tw-px-4 tw-flex tw-items-center tw-flex-wrap tw-gap-2 tw-min-h-[38px]">
                                 <span
                                     class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-[#eff6ff] tw-text-primary tw-px-2 tw-py-0.5 tw-rounded tw-text-xs tw-font-bold tw-border tw-border-[#ddd]">
                                     Cardiologia <button class="material-symbols-outlined tw-text-xs">close</button>
@@ -419,10 +421,12 @@
                         </div>
                         <div class="md:tw-col-span-2 lg:tw-col-span-3 tw-pt-6 tw-flex tw-justify-end tw-gap-3">
                             <button
-                                class="tw-px-6 tw-py-2.5 tw-rounded-md tw-text-slate-500 tw-font-bold hover:tw-bg-slate-100 tw-transition-all tw-duration-200"
+                                class="tw-px-6 tw-h-[38px] tw-rounded-lg tw-font-bold tw-transition-all tw-duration-200"
+                                style="background:#e0e0e0; color:#333;"
                                 type="button">Cancelar</button>
                             <button
-                                class="tw-bg-[#1a73e8] tw-px-10 tw-py-2.5 tw-rounded-md tw-text-white tw-font-bold tw-transition-all tw-duration-200 tw-shadow-sm hover:tw-brightness-110 active:tw-scale-95"
+                                class="tw-px-10 tw-h-[38px] tw-rounded-lg tw-font-bold tw-transition-all tw-duration-200 tw-shadow-sm hover:tw-brightness-110 active:tw-scale-95"
+                                style="background:#34a853; color:white;"
                                 type="submit">Salvar Especialista</button>
                         </div>
                     </form>
