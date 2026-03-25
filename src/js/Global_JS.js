@@ -127,14 +127,16 @@ async function iniciarApp() {
         console.log("🎭 Role detectada:", tipoUsuarioAtual);
 
         // Trava de segurança RBAC: Cadastro Geral
+        console.log("🔍 Verificando permissões de acesso...");
+        console.log("👤 Usuário:", userEmail);
+        console.log("🎭 Role detectada:", tipoUsuarioAtual);
+
         const btnCadastro = document.getElementById('btn-cadastro-geral');
         if (btnCadastro) {
-            // Normalização: trim() e toLowerCase() para evitar inconsistências no banco
             const roleNormalizada = (tipoUsuarioAtual || "").toString().trim().toLowerCase();
             const eAdmin = roleNormalizada === 'admim';
 
             console.log("🛡️ RBAC Match ('admim'):", eAdmin);
-
             btnCadastro.style.display = eAdmin ? 'flex' : 'none';
         }
     }
