@@ -1527,9 +1527,11 @@ function alternarTela(tela) {
         if (document.getElementById('fab-novo')) document.getElementById('fab-novo').style.display = 'none';
         aplicarFiltroPeriodo();
     } else if (tela === 'cadastro') {
-        // [MOCKUP UI - MedPavilion SaaS]
-        // Abrir mockup em nova aba para evitar conflitos de Tailwind com o CSS global
-        window.open('./tela_cadastro_mockup.html', '_blank');
+        // [MOCKUP UI - MedPavilion SaaS] - Integração via iFrame (Mesma Aba)
+        if (document.getElementById('view-principal')) document.getElementById('view-principal').style.display = 'none';
+        if (document.getElementById('view-periodo')) document.getElementById('view-periodo').style.display = 'none';
+        if (document.getElementById('view-cadastro')) document.getElementById('view-cadastro').style.display = 'block';
+        if (document.getElementById('fab-novo')) document.getElementById('fab-novo').style.display = 'none';
         if (typeof fecharMenuSeMobile === 'function') fecharMenuSeMobile('menu-principal');
     } else {
         if (document.getElementById('view-periodo')) document.getElementById('view-periodo').style.display = 'none';

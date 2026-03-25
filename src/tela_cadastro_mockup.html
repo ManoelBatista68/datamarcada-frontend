@@ -4,153 +4,376 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>MedPavilion SaaS - Cadastro Geral (Mockup)</title>
+    <title>MedPavilion SaaS - Cadastro Geral</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#6a3c00",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#ffcfa5",
+                        "secondary": "#3f665c",
+                        "secondary-container": "#bee8dc",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container-low": "#f2f4f6",
+                        "on-background": "#191c1e",
+                        "primary": "#004e5f",
+                        "surface-dim": "#d8dadc",
+                        "on-secondary-fixed": "#00201a",
+                        "inverse-primary": "#8bd1e8",
+                        "tertiary-fixed-dim": "#ffb872",
+                        "primary-fixed-dim": "#8bd1e8",
+                        "surface-container": "#eceef0",
+                        "on-primary-fixed": "#001f27",
+                        "tertiary-fixed": "#ffdcbf",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#9de3fa",
+                        "on-tertiary-fixed": "#2d1600",
+                        "tertiary-container": "#8b5001",
+                        "tertiary": "#6a3b00",
+                        "on-surface-variant": "#40484f",
+                        "primary-container": "#13677b",
+                        "secondary-fixed": "#c1ebdf",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c0c7d0",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#b2ebff",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-variant": "#e0e3e5",
+                        "secondary-fixed-dim": "#a6cfc3",
+                        "on-secondary-fixed-variant": "#274e45",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "surface-container-highest": "#e0e3e5",
+                        "background": "#f7f9fb",
+                        "surface-tint": "#13677b",
+                        "on-secondary-container": "#436a60",
+                        "outline": "#707880",
+                        "surface": "#f7f9fb",
+                        "surface-bright": "#f7f9fb"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
     <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
         }
 
-        .font-manrope {
+        h1,
+        h2,
+        h3 {
             font-family: 'Manrope', sans-serif;
+        }
+
+        .glass-effect {
+            background: rgba(247, 249, 251, 0.8);
+            backdrop-filter: blur(16px);
+        }
+
+        .primary-gradient {
+            background: linear-gradient(135deg, #004e5f 0%, #13677b 100%);
         }
     </style>
 </head>
 
-<body class="bg-slate-50 min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Header -->
-        <div class="md:flex md:items-center md:justify-between mb-8">
-            <div class="flex-1 min-w-0">
-                <h2 class="text-3xl font-extrabold font-manrope text-slate-900 sm:text-4xl sm:truncate">
-                    Cadastro Geral
-                </h2>
-                <p class="mt-1 text-sm text-slate-500 font-medium">
-                    Gerencie a infraestrutura de saúde da sua clínica
-                </p>
+<body class="bg-surface text-on-surface">
+    <main class="min-h-screen">
+        <div class="p-4 md:p-8 max-w-full mx-auto">
+            <div class="mb-10">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-on-surface tracking-tight mb-2">Cadastro Geral</h1>
+                <p class="text-on-surface-variant font-medium">Gerenciamento centralizado de especialidades, produtos e
+                    corpo clínico.</p>
             </div>
-            <div class="mt-4 flex md:mt-0 md:ml-4">
-                <button type="button" onclick="window.close()"
-                    class="inline-flex items-center px-4 py-2 border border-slate-300 rounded-xl shadow-sm text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
-                    Fechar Mockup
+            <div class="flex gap-1 mb-8 bg-surface-container-low p-1.5 rounded-full w-fit">
+                <button
+                    class="px-6 md:px-8 py-2.5 rounded-full bg-surface-container-lowest text-primary font-bold shadow-sm transition-all text-sm">
+                    Especialidades e Produtos
+                </button>
+                <button
+                    class="px-6 md:px-8 py-2.5 rounded-full text-on-surface-variant font-medium hover:bg-surface-container-high transition-all text-sm">
+                    Especialistas
                 </button>
             </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <nav class="flex space-x-4 mb-8 bg-slate-200/50 p-1.5 rounded-2xl w-fit" aria-label="Tabs">
-            <button class="bg-white text-blue-600 shadow-sm px-6 py-2.5 rounded-xl text-sm font-bold transition-all">
-                Especialidades & Produtos
-            </button>
-            <button class="text-slate-500 hover:text-slate-700 px-6 py-2.5 rounded-xl text-sm font-semibold">
-                Corpo Clínico
-            </button>
-            <button class="text-slate-500 hover:text-slate-700 px-6 py-2.5 rounded-xl text-sm font-semibold">
-                Unidades
-            </button>
-        </nav>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Sidebar: Categorias -->
-            <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6">
-                    <h3 class="text-lg font-bold font-manrope text-slate-800 mb-4 flex items-center">
-                        <span class="material-symbols-outlined mr-2 text-blue-600">medical_services</span>
-                        Especialidades
+            <div class="space-y-8">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h3 class="text-xl font-bold text-primary flex items-center gap-2">
+                        <span class="material-symbols-outlined">category</span>
+                        Estrutura Hierárquica
                     </h3>
-                    <div class="space-y-3">
-                        <div
-                            class="group flex items-center justify-between p-3 rounded-xl bg-blue-50 border border-blue-100 transition-all cursor-pointer">
-                            <span class="text-sm font-bold text-blue-700">Psicologia</span>
-                            <span
-                                class="material-symbols-outlined text-blue-400 group-hover:text-blue-600 text-sm">chevron_right</span>
-                        </div>
-                        <div
-                            class="group flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all cursor-pointer">
-                            <span class="text-sm font-semibold text-slate-600">Nutrição</span>
-                            <span
-                                class="material-symbols-outlined text-slate-300 group-hover:text-slate-500 text-sm">chevron_right</span>
-                        </div>
-                        <div
-                            class="group flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all cursor-pointer">
-                            <span class="text-sm font-semibold text-slate-600">Fisioterapia</span>
-                            <span
-                                class="material-symbols-outlined text-slate-300 group-hover:text-slate-500 text-sm">chevron_right</span>
-                        </div>
-                    </div>
                     <button
-                        class="mt-6 w-full flex items-center justify-center p-3 rounded-xl border-2 border-dashed border-slate-200 text-slate-400 hover:text-blue-500 hover:border-blue-200 hover:bg-blue-50/50 transition-all font-bold text-xs">
-                        <span class="material-symbols-outlined text-sm mr-2">add</span>
-                        NOVA ESPECIALIDADE
+                        class="primary-gradient text-white px-5 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-lg shadow-primary/10">
+                        <span class="material-symbols-outlined text-sm">add_circle</span>
+                        Nova Especialidade
                     </button>
                 </div>
-            </div>
-
-            <!-- Main Content: Sub-categorias & Detalhes -->
-            <div class="lg:col-span-2 space-y-8">
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="bg-surface-container-low rounded-xl overflow-hidden">
                     <div
-                        class="p-6 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
-                        <div>
-                            <h3 class="text-xl font-bold font-manrope text-slate-800">
-                                Psicologia
-                            </h3>
-                            <p class="text-xs text-slate-500 font-semibold mt-1 uppercase tracking-wider">
-                                Sub-especialidades & Serviços</p>
-                        </div>
-                        <button
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-200 transition-all flex items-center">
-                            <span class="material-symbols-outlined text-sm mr-2">add</span>
-                            Adicionar Sub
-                        </button>
-                    </div>
-
-                    <div class="p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Card Individual -->
+                        class="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between border-l-4 border-primary bg-surface-container-lowest gap-4">
+                        <div class="flex items-center gap-4">
                             <div
-                                class="p-5 rounded-2xl border border-slate-100 hover:border-blue-100 hover:shadow-md hover:shadow-blue-50/50 transition-all bg-white relative group">
-                                <div class="flex justify-between items-start mb-4">
-                                    <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
-                                        <span class="material-symbols-outlined text-xl">psychology</span>
-                                    </div>
-                                    <button
-                                        class="p-1.5 text-slate-400 hover:text-red-500 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined text-lg">delete</span>
-                                    </button>
-                                </div>
-                                <h4 class="font-bold text-slate-800 text-base mb-1">Terapia Cognitivo Comportamental
-                                </h4>
-                                <p class="text-xs text-slate-500 font-medium line-clamp-2">Especialidade focada no
-                                    tratamento de ansiedade e depressão...</p>
+                                class="w-12 h-12 rounded-lg bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+                                <span class="material-symbols-outlined">cardiology</span>
                             </div>
-
-                            <div
-                                class="p-5 rounded-2xl border border-slate-100 hover:border-blue-100 hover:shadow-md hover:shadow-blue-50/50 transition-all bg-white relative group">
-                                <div class="flex justify-between items-start mb-4">
-                                    <div class="p-2 bg-purple-50 rounded-lg text-purple-600">
-                                        <span class="material-symbols-outlined text-xl">child_care</span>
+                            <div>
+                                <h4 class="font-bold text-on-surface text-lg leading-tight">Cardiologia</h4>
+                                <p class="text-xs font-mono text-outline uppercase tracking-wider">COD: CRD-001</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 w-full sm:w-auto justify-end">
+                            <button
+                                class="p-2 hover:bg-surface-container-high rounded-lg text-primary transition-colors">
+                                <span class="material-symbols-outlined">edit</span>
+                            </button>
+                            <button
+                                class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">add</span>
+                                Adicionar Sub-especialidade
+                            </button>
+                        </div>
+                    </div>
+                    <div class="pl-6 md:pl-12 pr-6 py-4 space-y-4">
+                        <div class="bg-surface-container-low rounded-xl p-5 border-l-2 border-primary/30">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <span
+                                        class="material-symbols-outlined text-primary/60">subdirectory_arrow_right</span>
+                                    <div>
+                                        <h5 class="font-bold text-on-surface">Ecocardiografia</h5>
+                                        <p class="text-[10px] font-mono text-outline uppercase">COD: ECO-012</p>
                                     </div>
-                                    <button
-                                        class="p-1.5 text-slate-400 hover:text-red-500 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined text-lg">delete</span>
-                                    </button>
                                 </div>
-                                <h4 class="font-bold text-slate-800 text-base mb-1">Psicopedagogia Clínica</h4>
-                                <p class="text-xs text-slate-500 font-medium line-clamp-2">Suporte especializado para
-                                    crianças com dificuldades de aprendizagem.</p>
+                                <button
+                                    class="bg-primary/5 text-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary/10 transition-colors">
+                                    Novo Produto
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                                <div
+                                    class="bg-surface-container-lowest p-5 rounded-xl border border-transparent hover:border-outline-variant/30 transition-all shadow-sm">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <span
+                                                class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded uppercase tracking-tighter">Exame
+                                                Presencial</span>
+                                            <h6 class="font-bold text-on-surface mt-1">Ecocardiograma com Doppler</h6>
+                                            <p class="text-xs text-outline font-mono">COD: PROD-9921 • Clinic ID: CP-01
+                                            </p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-xs text-outline line-through">R$ 450,00</p>
+                                            <p class="text-lg font-extrabold text-primary leading-none">R$ 380,00</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-on-surface-variant mb-4 line-clamp-2">Exame de imagem não
+                                        invasivo que utiliza ondas sonoras para criar imagens em movimento do coração.
+                                    </p>
+                                    <div
+                                        class="flex items-center justify-between pt-3 border-t border-surface-container">
+                                        <div
+                                            class="flex items-center gap-2 text-[10px] font-medium text-on-surface-variant">
+                                            <span class="material-symbols-outlined text-sm">location_on</span>
+                                            Pavilhão A, Sala 402
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button
+                                                class="p-1.5 hover:bg-surface-container text-outline rounded-lg transition-colors">
+                                                <span class="material-symbols-outlined text-sm">settings</span>
+                                            </button>
+                                            <button
+                                                class="p-1.5 hover:bg-error-container text-error rounded-lg transition-colors">
+                                                <span class="material-symbols-outlined text-sm">delete</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-surface-container-lowest p-5 rounded-xl border border-transparent hover:border-outline-variant/30 transition-all shadow-sm">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <div>
+                                            <span
+                                                class="text-[10px] font-bold text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded uppercase tracking-tighter">Telemedicina</span>
+                                            <h6 class="font-bold text-on-surface mt-1">Laudo Remoto de ECG</h6>
+                                            <p class="text-xs text-outline font-mono">COD: PROD-8812 • Clinic ID: CP-01
+                                            </p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-lg font-extrabold text-primary leading-none">R$ 85,00</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-on-surface-variant mb-4 line-clamp-2">Interpretação técnica
+                                        de eletrocardiograma via plataforma digital com entrega em 24h.</p>
+                                    <div
+                                        class="flex items-center justify-between pt-3 border-t border-surface-container">
+                                        <div
+                                            class="flex items-center gap-2 text-[10px] font-medium text-on-surface-variant">
+                                            <span class="material-symbols-outlined text-sm">cloud</span>
+                                            Digital / Online
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button
+                                                class="p-1.5 hover:bg-surface-container text-outline rounded-lg transition-colors">
+                                                <span class="material-symbols-outlined text-sm">settings</span>
+                                            </button>
+                                            <button
+                                                class="p-1.5 hover:bg-error-container text-error rounded-lg transition-colors">
+                                                <span class="material-symbols-outlined text-sm">delete</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="hidden mt-12">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-primary">Corpo Clínico</h3>
+                    <button class="primary-gradient text-white px-5 py-2 rounded-xl text-sm font-semibold">Novo
+                        Especialista</button>
+                </div>
+                <div
+                    class="bg-surface-container-lowest rounded-xl shadow-sm overflow-x-auto border border-outline-variant/10">
+                    <table class="w-full text-left min-w-[600px]">
+                        <thead
+                            class="bg-surface-container-low text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+                            <tr>
+                                <th class="px-6 py-4">Especialista</th>
+                                <th class="px-6 py-4">Contato</th>
+                                <th class="px-6 py-4">Especialidades</th>
+                                <th class="px-6 py-4 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-surface-container">
+                            <tr class="hover:bg-surface-container-low transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <img alt="Specialist" class="w-10 h-10 rounded-full object-cover"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwEmp-YXzn_CS3AuKaYaU1SkHO_cvRoULF8gTiVFHCfkBB7Z5lwYdMewGifdGcS4qUbnWgI969nmJeWDeKwm36QKk2k6hkMBbg9iHd0VVrHBG-n9OAt-HXQnLosFghY9af_JweTSQGDKtBnBll1nJAVcthAJYqkT0-vRlFVPpmDi4hp1Q6b_6XL3PNqBOqzPSdn_SSFATU-ib8mlRZou74araJ-Bz8_odFFs4ao8104E_-fVOcURyDWz_jyd8nUnSqO8ZSYaQRgpk" />
+                                        <div>
+                                            <p class="font-bold text-on-surface text-sm">Dr. Arthur Mendes</p>
+                                            <p class="text-[10px] font-mono text-outline uppercase">CRM 12345-SP</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <p class="text-xs font-medium text-on-surface-variant">(11) 98765-4321</p>
+                                    <p class="text-xs text-outline">arthur.m@medpavilion.com</p>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex flex-wrap gap-1">
+                                        <span
+                                            class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded">Cardiologia</span>
+                                        <span
+                                            class="px-2 py-0.5 bg-surface-container-high text-on-surface-variant text-[10px] font-bold rounded">Ecocardiografia</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-primary hover:underline text-xs font-bold">Gerenciar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="mt-12 bg-surface-container-low rounded-2xl p-6 md:p-8 border border-outline-variant/15">
+                <div class="flex items-center gap-4 mb-8">
+                    <div
+                        class="w-12 h-12 rounded-full primary-gradient flex items-center justify-center text-white shrink-0">
+                        <span class="material-symbols-outlined">person_add</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight">Novo Especialista</h2>
+                        <p class="text-sm text-on-surface-variant font-medium">Cadastre um novo profissional para a
+                            unidade <span class="text-primary">CP-01 (Clinical Pavilion)</span></p>
+                    </div>
+                </div>
+                <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-bold text-outline uppercase ml-1">Nome Completo</label>
+                        <input
+                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                            placeholder="Ex: Dr. Roberto Silva" type="text" />
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-bold text-outline uppercase ml-1">Registro / Código</label>
+                        <input
+                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                            placeholder="Ex: CRM 99.123" type="text" />
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-bold text-outline uppercase ml-1">Celular / WhatsApp</label>
+                        <input
+                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                            placeholder="(00) 00000-0000" type="tel" />
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-bold text-outline uppercase ml-1">E-mail Profissional</label>
+                        <input
+                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                            placeholder="roberto@clinica.com" type="email" />
+                    </div>
+                    <div class="space-y-1.5 lg:col-span-2">
+                        <label class="text-[11px] font-bold text-outline uppercase ml-1">Especialidades
+                            (Multiseleção)</label>
+                        <div
+                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-2.5 flex flex-wrap gap-2 shadow-sm min-h-[46px]">
+                            <span
+                                class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-lg text-xs font-bold">
+                                Cardiologia <button class="material-symbols-outlined text-xs">close</button>
+                            </span>
+                            <span
+                                class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-lg text-xs font-bold">
+                                Geriatria <button class="material-symbols-outlined text-xs">close</button>
+                            </span>
+                            <button class="text-xs text-outline font-bold hover:text-primary ml-auto">+
+                                Selecionar</button>
+                        </div>
+                    </div>
+                    <div class="space-y-1.5 md:col-span-2 lg:col-span-3">
+                        <label class="text-[11px] font-bold text-outline uppercase ml-1">Biografia / Descrição
+                            Profissional</label>
+                        <textarea
+                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                            placeholder="Conte um pouco sobre a experiência do profissional..." rows="3"></textarea>
+                    </div>
+                    <div class="md:col-span-2 lg:col-span-3 pt-6 flex justify-end gap-3">
+                        <button
+                            class="px-6 py-2.5 rounded-xl text-on-surface-variant font-bold hover:bg-surface-container-high transition-all"
+                            type="button">Cancelar</button>
+                        <button
+                            class="primary-gradient px-10 py-2.5 rounded-xl text-white font-bold shadow-xl shadow-primary/20"
+                            type="submit">Salvar Especialista</button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
+    </main>
 </body>
 
 </html>

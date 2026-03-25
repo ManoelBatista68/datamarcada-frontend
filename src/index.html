@@ -429,6 +429,18 @@
         </div>
 
 
+        <div id="view-cadastro" style="display:none; width: 100%; height: 100vh;">
+            <div
+                style="padding: 10px; display: flex; align-items: center; background: #fff; border-bottom: 1px solid #ddd;">
+                <button class="btn-voltar" onclick="alternarTela('principal')" title="Voltar à tela principal"
+                    style="display: flex; align-items: center; gap: 5px; background: none; border: none; cursor: pointer; color: #1a73e8; font-weight: bold;">
+                    <span class="material-icons" style="font-size:16px">arrow_back</span> Voltar à Agenda
+                </button>
+            </div>
+            <iframe src="./tela_cadastro_mockup.html"
+                style="width: 100%; height: calc(100vh - 50px); border: none;"></iframe>
+        </div>
+
         <button class="fab mobile-only" id="fab-novo" onclick="abrirModalNovoBloco()"
             title="Criar Agendamento em Bloco">+</button>
     </div>
