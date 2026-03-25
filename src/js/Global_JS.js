@@ -168,7 +168,7 @@ async function fazerLogin() {
         const token = res.access_token;
         const user = res.user;
         const metadata = user.user_metadata || {};
-        const codigoempresa = metadata.codigoempresa || "";
+        const codigoempresa = metadata.codigoempresa || metadata.codigoEmpresa || "";
         const tipoUsuario = metadata.tipoUsuario || "Especialista";
 
         // Camada C: Verificação de Escrita e Persistência
@@ -1702,12 +1702,12 @@ function renderizarEspecialidades(dados) {
         list.innerHTML = "<p style='color: #666; font-size: 13px;'>Nenhuma especialidade cadastrada.</p>";
         return;
     }
-    dados.forEach(item => {
+    dados.forEach(esp => {
         const div = document.createElement('div');
-        div.className = "item-row";
+        div.className = 'item-cadastro';
         div.innerHTML = `
-            <span style="font-weight: 500; font-size: 14px;">${item.nome}</span>
-            <button class="btn-action-del" onclick="excluirEspecialidade('${item.id}')" title="Excluir">
+            <span>${esp.nome}</span>
+            <button class="btn-del-mini" onclick="excluirEspecialidade('${esp.id}')" title="Excluir especialidade">
                 <span class="material-icons" style="font-size: 18px;">delete</span>
             </button>
         `;
@@ -1780,10 +1780,10 @@ function renderizarSubEspecialidades(dados) {
     }
     dados.forEach(item => {
         const div = document.createElement('div');
-        div.className = "item-row";
+        div.className = 'item-cadastro';
         div.innerHTML = `
-            <span style="font-size: 14px;">${item.nome}</span>
-            <button class="btn-action-del" onclick="excluirSubEspecialidade('${item.id}')" title="Excluir">
+            <span>${item.nome}</span>
+            <button class="btn-del-mini" onclick="excluirSubEspecialidade('${item.id}')" title="Excluir sub-especialidade">
                 <span class="material-icons" style="font-size: 18px;">delete</span>
             </button>
         `;
