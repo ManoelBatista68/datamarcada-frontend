@@ -17,3 +17,8 @@
 ## 4. Arquitetura de iFrame e Modais
 - **Modais de Tela Cheia:** Modais devem residir no ficheiro principal (`index.html`) para cobrir todo o ecrã, acionados via `window.parent` de dentro do iFrame.
 - **Scroll Único:** O iFrame NUNCA deve ter barra de rolagem interna. Deve usar a técnica de envio de altura via `postMessage` para que o documento pai redimensione o iFrame dinamicamente.
+
+## 5. Fidelidade Estética e Herança Visual (A Nova Regra de Ouro)
+- **Herança de Propriedades**: Elementos de interface novos (incluindo modais e formulários em qualquer aba) devem obrigatoriamente herdar as propriedades de design (border-radius, espessura e cor de contorno, e efeitos hover) da tela principal legada.
+- **Proibição de Contornos Agressivos**: É expressamente proibido o uso de contornos agressivos; priorize tons suaves (#ddd, #eee) e mantenha a consistência do feedback tátil.
+- **Feedback Tátil Padronizado**: O estado de hover deve replicar o comportamento nativo do sistema (ex: `scale-[1.02]`) e transição de `200ms`.
