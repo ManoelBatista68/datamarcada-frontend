@@ -110,16 +110,16 @@
                     corpo clínico.</p>
             </div>
             <div class="flex gap-1 mb-8 bg-surface-container-low p-1.5 rounded-full w-fit">
-                <button
+                <button id="tab-1" onclick="switchTab(1)"
                     class="px-6 md:px-8 py-2.5 rounded-full bg-surface-container-lowest text-primary font-bold shadow-sm transition-all text-sm">
                     Especialidades e Produtos
                 </button>
-                <button
+                <button id="tab-2" onclick="switchTab(2)"
                     class="px-6 md:px-8 py-2.5 rounded-full text-on-surface-variant font-medium hover:bg-surface-container-high transition-all text-sm">
                     Especialistas
                 </button>
             </div>
-            <div class="space-y-8">
+            <div id="content-1" class="space-y-8">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <h3 class="text-xl font-bold text-primary flex items-center gap-2">
                         <span class="material-symbols-outlined">category</span>
@@ -251,129 +251,155 @@
                     </div>
                 </div>
             </div>
-            <div class="hidden mt-12">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold text-primary">Corpo Clínico</h3>
-                    <button class="primary-gradient text-white px-5 py-2 rounded-xl text-sm font-semibold">Novo
-                        Especialista</button>
-                </div>
-                <div
-                    class="bg-surface-container-lowest rounded-xl shadow-sm overflow-x-auto border border-outline-variant/10">
-                    <table class="w-full text-left min-w-[600px]">
-                        <thead
-                            class="bg-surface-container-low text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-                            <tr>
-                                <th class="px-6 py-4">Especialista</th>
-                                <th class="px-6 py-4">Contato</th>
-                                <th class="px-6 py-4">Especialidades</th>
-                                <th class="px-6 py-4 text-right">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-surface-container">
-                            <tr class="hover:bg-surface-container-low transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <img alt="Specialist" class="w-10 h-10 rounded-full object-cover"
-                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwEmp-YXzn_CS3AuKaYaU1SkHO_cvRoULF8gTiVFHCfkBB7Z5lwYdMewGifdGcS4qUbnWgI969nmJeWDeKwm36QKk2k6hkMBbg9iHd0VVrHBG-n9OAt-HXQnLosFghY9af_JweTSQGDKtBnBll1nJAVcthAJYqkT0-vRlFVPpmDi4hp1Q6b_6XL3PNqBOqzPSdn_SSFATU-ib8mlRZou74araJ-Bz8_odFFs4ao8104E_-fVOcURyDWz_jyd8nUnSqO8ZSYaQRgpk" />
-                                        <div>
-                                            <p class="font-bold text-on-surface text-sm">Dr. Arthur Mendes</p>
-                                            <p class="text-[10px] font-mono text-outline uppercase">CRM 12345-SP</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <p class="text-xs font-medium text-on-surface-variant">(11) 98765-4321</p>
-                                    <p class="text-xs text-outline">arthur.m@medpavilion.com</p>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-wrap gap-1">
-                                        <span
-                                            class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded">Cardiologia</span>
-                                        <span
-                                            class="px-2 py-0.5 bg-surface-container-high text-on-surface-variant text-[10px] font-bold rounded">Ecocardiografia</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="text-primary hover:underline text-xs font-bold">Gerenciar</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="mt-12 bg-surface-container-low rounded-2xl p-6 md:p-8 border border-outline-variant/15">
-                <div class="flex items-center gap-4 mb-8">
+            <div id="content-2" style="display: none;">
+                <div class="mt-12">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-primary">Corpo Clínico</h3>
+                        <button class="primary-gradient text-white px-5 py-2 rounded-xl text-sm font-semibold">Novo
+                            Especialista</button>
+                    </div>
                     <div
-                        class="w-12 h-12 rounded-full primary-gradient flex items-center justify-center text-white shrink-0">
-                        <span class="material-symbols-outlined">person_add</span>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-bold tracking-tight">Novo Especialista</h2>
-                        <p class="text-sm text-on-surface-variant font-medium">Cadastre um novo profissional para a
-                            unidade <span class="text-primary">CP-01 (Clinical Pavilion)</span></p>
+                        class="bg-surface-container-lowest rounded-xl shadow-sm overflow-x-auto border border-outline-variant/10">
+                        <table class="w-full text-left min-w-[600px]">
+                            <thead
+                                class="bg-surface-container-low text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+                                <tr>
+                                    <th class="px-6 py-4">Especialista</th>
+                                    <th class="px-6 py-4">Contato</th>
+                                    <th class="px-6 py-4">Especialidades</th>
+                                    <th class="px-6 py-4 text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-surface-container">
+                                <tr class="hover:bg-surface-container-low transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <img alt="Specialist" class="w-10 h-10 rounded-full object-cover"
+                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwEmp-YXzn_CS3AuKaYaU1SkHO_cvRoULF8gTiVFHCfkBB7Z5lwYdMewGifdGcS4qUbnWgI969nmJeWDeKwm36QKk2k6hkMBbg9iHd0VVrHBG-n9OAt-HXQnLosFghY9af_JweTSQGDKtBnBll1nJAVcthAJYqkT0-vRlFVPpmDi4hp1Q6b_6XL3PNqBOqzPSdn_SSFATU-ib8mlRZou74araJ-Bz8_odFFs4ao8104E_-fVOcURyDWz_jyd8nUnSqO8ZSYaQRgpk" />
+                                            <div>
+                                                <p class="font-bold text-on-surface text-sm">Dr. Arthur Mendes</p>
+                                                <p class="text-[10px] font-mono text-outline uppercase">CRM 12345-SP</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="text-xs font-medium text-on-surface-variant">(11) 98765-4321</p>
+                                        <p class="text-xs text-outline">arthur.m@medpavilion.com</p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-wrap gap-1">
+                                            <span
+                                                class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded">Cardiologia</span>
+                                            <span
+                                                class="px-2 py-0.5 bg-surface-container-high text-on-surface-variant text-[10px] font-bold rounded">Ecocardiografia</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="text-primary hover:underline text-xs font-bold">Gerenciar</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="space-y-1.5">
-                        <label class="text-[11px] font-bold text-outline uppercase ml-1">Nome Completo</label>
-                        <input
-                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
-                            placeholder="Ex: Dr. Roberto Silva" type="text" />
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-[11px] font-bold text-outline uppercase ml-1">Registro / Código</label>
-                        <input
-                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
-                            placeholder="Ex: CRM 99.123" type="text" />
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-[11px] font-bold text-outline uppercase ml-1">Celular / WhatsApp</label>
-                        <input
-                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
-                            placeholder="(00) 00000-0000" type="tel" />
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-[11px] font-bold text-outline uppercase ml-1">E-mail Profissional</label>
-                        <input
-                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
-                            placeholder="roberto@clinica.com" type="email" />
-                    </div>
-                    <div class="space-y-1.5 lg:col-span-2">
-                        <label class="text-[11px] font-bold text-outline uppercase ml-1">Especialidades
-                            (Multiseleção)</label>
+                <div class="mt-12 bg-surface-container-low rounded-2xl p-6 md:p-8 border border-outline-variant/15">
+                    <div class="flex items-center gap-4 mb-8">
                         <div
-                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-2.5 flex flex-wrap gap-2 shadow-sm min-h-[46px]">
-                            <span
-                                class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-lg text-xs font-bold">
-                                Cardiologia <button class="material-symbols-outlined text-xs">close</button>
-                            </span>
-                            <span
-                                class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-lg text-xs font-bold">
-                                Geriatria <button class="material-symbols-outlined text-xs">close</button>
-                            </span>
-                            <button class="text-xs text-outline font-bold hover:text-primary ml-auto">+
-                                Selecionar</button>
+                            class="w-12 h-12 rounded-full primary-gradient flex items-center justify-center text-white shrink-0">
+                            <span class="material-symbols-outlined">person_add</span>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold tracking-tight">Novo Especialista</h2>
+                            <p class="text-sm text-on-surface-variant font-medium">Cadastre um novo profissional para a
+                                unidade <span class="text-primary">CP-01 (Clinical Pavilion)</span></p>
                         </div>
                     </div>
-                    <div class="space-y-1.5 md:col-span-2 lg:col-span-3">
-                        <label class="text-[11px] font-bold text-outline uppercase ml-1">Biografia / Descrição
-                            Profissional</label>
-                        <textarea
-                            class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
-                            placeholder="Conte um pouco sobre a experiência do profissional..." rows="3"></textarea>
-                    </div>
-                    <div class="md:col-span-2 lg:col-span-3 pt-6 flex justify-end gap-3">
-                        <button
-                            class="px-6 py-2.5 rounded-xl text-on-surface-variant font-bold hover:bg-surface-container-high transition-all"
-                            type="button">Cancelar</button>
-                        <button
-                            class="primary-gradient px-10 py-2.5 rounded-xl text-white font-bold shadow-xl shadow-primary/20"
-                            type="submit">Salvar Especialista</button>
-                    </div>
-                </form>
+                    <form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-bold text-outline uppercase ml-1">Nome Completo</label>
+                            <input
+                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                                placeholder="Ex: Dr. Roberto Silva" type="text" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-bold text-outline uppercase ml-1">Registro / Código</label>
+                            <input
+                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                                placeholder="Ex: CRM 99.123" type="text" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-bold text-outline uppercase ml-1">Celular / WhatsApp</label>
+                            <input
+                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                                placeholder="(00) 00000-0000" type="tel" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-bold text-outline uppercase ml-1">E-mail Profissional</label>
+                            <input
+                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                                placeholder="roberto@clinica.com" type="email" />
+                        </div>
+                        <div class="space-y-1.5 lg:col-span-2">
+                            <label class="text-[11px] font-bold text-outline uppercase ml-1">Especialidades
+                                (Multiseleção)</label>
+                            <div
+                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-2.5 flex flex-wrap gap-2 shadow-sm min-h-[46px]">
+                                <span
+                                    class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-lg text-xs font-bold">
+                                    Cardiologia <button class="material-symbols-outlined text-xs">close</button>
+                                </span>
+                                <span
+                                    class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-lg text-xs font-bold">
+                                    Geriatria <button class="material-symbols-outlined text-xs">close</button>
+                                </span>
+                                <button class="text-xs text-outline font-bold hover:text-primary ml-auto">+
+                                    Selecionar</button>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5 md:col-span-2 lg:col-span-3">
+                            <label class="text-[11px] font-bold text-outline uppercase ml-1">Biografia / Descrição
+                                Profissional</label>
+                            <textarea
+                                class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm"
+                                placeholder="Conte um pouco sobre a experiência do profissional..." rows="3"></textarea>
+                        </div>
+                        <div class="md:col-span-2 lg:col-span-3 pt-6 flex justify-end gap-3">
+                            <button
+                                class="px-6 py-2.5 rounded-xl text-on-surface-variant font-bold hover:bg-surface-container-high transition-all"
+                                type="button">Cancelar</button>
+                            <button
+                                class="primary-gradient px-10 py-2.5 rounded-xl text-white font-bold shadow-xl shadow-primary/20"
+                                type="submit">Salvar Especialista</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </main>
+    <script>
+        function switchTab(tab) {
+            const btn1 = document.getElementById('tab-1');
+            const btn2 = document.getElementById('tab-2');
+            const content1 = document.getElementById('content-1');
+            const content2 = document.getElementById('content-2');
+
+            const activeClass = "px-6 md:px-8 py-2.5 rounded-full bg-surface-container-lowest text-primary font-bold shadow-sm transition-all text-sm";
+            const inactiveClass = "px-6 md:px-8 py-2.5 rounded-full text-on-surface-variant font-medium hover:bg-surface-container-high transition-all text-sm";
+
+            if (tab === 1) {
+                btn1.className = activeClass;
+                btn2.className = inactiveClass;
+                content1.style.display = "block";
+                content2.style.display = "none";
+            } else {
+                btn2.className = activeClass;
+                btn1.className = inactiveClass;
+                content1.style.display = "none";
+                content2.style.display = "block";
+            }
+        }
+    </script>
 </body>
 
 </html>
