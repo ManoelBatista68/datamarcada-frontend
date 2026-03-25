@@ -97,9 +97,6 @@
             backdrop-filter: blur(16px);
         }
 
-        .primary-gradient {
-            background: linear-gradient(135deg, #1a73e8 0%, #004e5f 100%);
-        }
 
         /* Bloqueio estrito de rolagem interna */
         html,
@@ -142,11 +139,11 @@
             <div
                 class="tw-flex tw-gap-1 tw-mb-8 tw-bg-white/50 tw-p-1 tw-rounded-xl tw-w-fit tw-border tw-border-[#ddd]">
                 <button id="tab-1" onclick="switchTab(1)"
-                    class="tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-lg tw-bg-white tw-text-primary tw-font-bold tw-shadow-sm tw-border tw-border-[#ddd] tw-transition-all tw-duration-200 tw-text-sm hover:tw-scale-[1.02]">
+                    class="tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-md tw-bg-white tw-text-primary tw-font-bold tw-border tw-border-[#ddd] tw-transition-colors tw-duration-200 tw-text-sm">
                     Especialidades e Produtos
                 </button>
                 <button id="tab-2" onclick="switchTab(2)"
-                    class="tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-lg tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm hover:tw-scale-[1.02]">
+                    class="tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-md tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-colors tw-duration-200 tw-text-sm">
                     Especialistas
                 </button>
             </div>
@@ -158,18 +155,17 @@
                         Estrutura Hierárquica
                     </h3>
                     <button onclick="window.parent.abrirModal('modal-nova-especialidade')"
-                        class="primary-gradient tw-text-white tw-px-5 tw-py-2 tw-rounded-xl tw-text-sm tw-font-semibold tw-flex tw-items-center tw-gap-2 tw-shadow-lg tw-shadow-primary/10 tw-transition-all tw-duration-200 hover:tw-brightness-110 active:tw-scale-95">
+                        class="tw-bg-[#1a73e8] tw-text-white tw-px-5 tw-py-2 tw-rounded-md tw-text-sm tw-font-semibold tw-flex tw-items-center tw-gap-2 tw-transition-colors hover:tw-bg-[#1557b0] hover:tw-brightness-110">
                         <span class="material-symbols-outlined tw-text-sm">add_circle</span>
                         Nova Especialidade
                     </button>
                 </div>
-                <div
-                    class="tw-bg-white tw-rounded-lg tw-overflow-hidden tw-border tw-border-[#eee] tw-transition-all tw-duration-200 hover:tw-shadow-md">
+                <div class="tw-bg-white tw-rounded-md tw-overflow-hidden tw-border tw-border-[#eee]">
                     <div
                         class="tw-p-6 tw-flex tw-flex-col sm:tw-flex-row tw-items-start sm:tw-items-center tw-justify-between tw-border-l-4 tw-border-primary tw-bg-white tw-gap-4">
                         <div class="tw-flex tw-items-center tw-gap-4">
                             <div
-                                class="tw-w-12 tw-h-12 tw-rounded-lg tw-bg-[#eff6ff] tw-flex tw-items-center tw-justify-center tw-text-primary tw-shrink-0 tw-border tw-border-[#ddd]">
+                                class="tw-w-12 tw-h-12 tw-rounded-md tw-bg-[#eff6ff] tw-flex tw-items-center tw-justify-center tw-text-primary tw-shrink-0 tw-border tw-border-[#ddd]">
                                 <span class="material-symbols-outlined">cardiology</span>
                             </div>
                             <div>
@@ -180,11 +176,11 @@
                         </div>
                         <div class="tw-flex tw-gap-2 tw-w-full sm:tw-w-auto tw-justify-end">
                             <button onclick="window.parent.abrirModal('modal-editar-especialidade')"
-                                class="tw-p-2 hover:tw-bg-surface-container-high tw-rounded-lg tw-text-primary tw-transition-colors">
+                                class="tw-p-2 hover:tw-bg-surface-container-high tw-rounded-md tw-text-primary tw-transition-colors">
                                 <span class="material-symbols-outlined">edit</span>
                             </button>
                             <button
-                                class="tw-bg-[#eff6ff] tw-text-primary tw-px-4 tw-py-2 tw-rounded-lg tw-text-xs tw-font-bold tw-flex tw-items-center tw-gap-2 tw-border tw-border-[#ddd] tw-transition-all tw-duration-200 hover:tw-bg-[#e0f2fe] hover:tw-scale-[1.02]">
+                                class="tw-bg-[#eff6ff] tw-text-primary tw-px-4 tw-py-2 tw-rounded-md tw-text-xs tw-font-bold tw-flex tw-items-center tw-gap-2 tw-border tw-border-[#ddd] tw-transition-colors hover:tw-bg-[#e0f2fe]">
                                 <span class="material-symbols-outlined tw-text-sm">add</span>
                                 Adicionar Sub-especialidade
                             </button>
@@ -192,7 +188,7 @@
                     </div>
                     <div class="tw-pl-6 md:tw-pl-12 tw-pr-6 tw-py-4 tw-space-y-4">
                         <div
-                            class="tw-bg-surface-container-low tw-rounded-xl tw-p-5 tw-border-l-2 tw-border-primary/30">
+                            class="tw-bg-surface-container-low tw-rounded-md tw-p-5 tw-border-l-2 tw-border-primary/30">
                             <div class="tw-flex tw-items-center tw-justify-between tw-mb-4">
                                 <div class="tw-flex tw-items-center tw-gap-3">
                                     <span
@@ -204,13 +200,13 @@
                                     </div>
                                 </div>
                                 <button
-                                    class="tw-bg-[#eff6ff] tw-text-primary tw-px-3 tw-py-1.5 tw-rounded-lg tw-text-xs tw-font-bold tw-transition-all tw-duration-200 tw-border tw-border-[#ddd] hover:tw-bg-primary hover:tw-text-white hover:tw-scale-[1.02]">
+                                    class="tw-bg-[#eff6ff] tw-text-primary tw-px-3 tw-py-1.5 tw-rounded-md tw-text-xs tw-font-bold tw-transition-colors tw-border tw-border-[#ddd] hover:tw-bg-primary hover:tw-text-white">
                                     Novo Produto
                                 </button>
                             </div>
                             <div class="tw-grid tw-grid-cols-1 xl:tw-grid-cols-2 tw-gap-4">
                                 <div
-                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-xl tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 hover:tw-ring-primary/40 tw-transition-all tw-duration-200 tw-shadow-sm hover:tw-shadow-md">
+                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-md tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 hover:tw-ring-primary/40 tw-transition-colors tw-shadow-sm">
                                     <div class="tw-flex tw-justify-between tw-items-start tw-mb-3">
                                         <div>
                                             <span
@@ -241,18 +237,18 @@
                                         </div>
                                         <div class="tw-flex tw-gap-2">
                                             <button
-                                                class="tw-p-1.5 hover:tw-bg-surface-container tw-text-outline tw-rounded-lg tw-transition-colors">
+                                                class="tw-p-1.5 hover:tw-bg-surface-container tw-text-outline tw-rounded-md tw-transition-colors">
                                                 <span class="material-symbols-outlined tw-text-sm">settings</span>
                                             </button>
                                             <button
-                                                class="tw-p-1.5 hover:tw-bg-error/10 tw-text-error tw-rounded-lg tw-transition-all tw-duration-200">
+                                                class="tw-p-1.5 hover:tw-bg-error/10 tw-text-error tw-rounded-md tw-transition-all tw-duration-200">
                                                 <span class="material-symbols-outlined tw-text-sm">delete</span>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div
-                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-xl tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 hover:tw-ring-primary/40 tw-transition-all tw-duration-200 tw-shadow-sm hover:tw-shadow-md">
+                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-md tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 hover:tw-ring-primary/40 tw-transition-colors tw-shadow-sm">
                                     <div class="tw-flex tw-justify-between tw-items-start tw-mb-3">
                                         <div>
                                             <span
@@ -279,11 +275,11 @@
                                         </div>
                                         <div class="tw-flex tw-gap-2">
                                             <button
-                                                class="tw-p-1.5 hover:tw-bg-surface-container tw-text-outline tw-rounded-lg tw-transition-colors">
+                                                class="tw-p-1.5 hover:tw-bg-surface-container tw-text-outline tw-rounded-md tw-transition-colors">
                                                 <span class="material-symbols-outlined tw-text-sm">settings</span>
                                             </button>
                                             <button onclick="window.parent.abrirModal('modal-excluir-especialidade')"
-                                                class="tw-p-1.5 hover:tw-bg-error/10 tw-text-error tw-rounded-lg tw-transition-all tw-duration-200">
+                                                class="tw-p-1.5 hover:tw-bg-error/10 tw-text-error tw-rounded-md tw-transition-all tw-duration-200">
                                                 <span class="material-symbols-outlined tw-text-sm">delete</span>
                                             </button>
                                         </div>
@@ -299,10 +295,10 @@
                     <div class="tw-flex tw-justify-between tw-items-center tw-mb-6">
                         <h3 class="tw-text-xl tw-font-bold tw-text-primary">Corpo Clínico</h3>
                         <button
-                            class="primary-gradient tw-text-white tw-px-5 tw-py-2 tw-rounded-lg tw-text-sm tw-font-bold tw-transition-all tw-duration-200 tw-shadow-md hover:tw-brightness-110 hover:tw-scale-[1.02] active:tw-scale-95">Novo
+                            class="tw-bg-[#1a73e8] tw-text-white tw-px-5 tw-py-2 tw-rounded-md tw-text-sm tw-font-bold tw-transition-all tw-duration-200 tw-shadow-md hover:tw-brightness-110 active:tw-scale-95">Novo
                             Especialista</button>
                     </div>
-                    <div class="tw-bg-white tw-rounded-lg tw-shadow-sm tw-overflow-x-auto tw-border tw-border-[#eee]">
+                    <div class="tw-bg-white tw-rounded-md tw-shadow-sm tw-overflow-x-auto tw-border tw-border-[#eee]">
                         <table class="tw-w-full tw-text-left tw-min-w-[600px]">
                             <thead
                                 class="tw-bg-[#f4f7f6] tw-text-[10px] tw-font-bold tw-uppercase tw-tracking-widest tw-text-slate-500 tw-border-b tw-border-[#eee]">
@@ -354,7 +350,7 @@
                     class="tw-mt-12 tw-bg-white tw-rounded-xl tw-p-6 md:tw-p-8 tw-border tw-border-[#ddd] tw-shadow-sm">
                     <div class="tw-flex tw-items-center tw-gap-4 tw-mb-8">
                         <div
-                            class="tw-w-12 tw-h-12 tw-rounded-full primary-gradient tw-flex tw-items-center tw-justify-center tw-text-white tw-shrink-0">
+                            class="tw-w-12 tw-h-12 tw-rounded-full tw-bg-[#1a73e8] tw-flex tw-items-center tw-justify-center tw-text-white tw-shrink-0">
                             <span class="material-symbols-outlined">person_add</span>
                         </div>
                         <div>
@@ -369,28 +365,28 @@
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome
                                 Completo</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-lg tw-px-4 tw-py-2.5 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-md tw-px-4 tw-py-2.5 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="Ex: Dr. Roberto Silva" type="text" />
                         </div>
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Registro /
                                 Código</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-lg tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-md tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="Ex: CRM 99.123" type="text" />
                         </div>
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Celular /
                                 WhatsApp</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-lg tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-md tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="roberto@clinica.com" type="email" />
                         </div>
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">E-mail
                                 Profissional</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-lg tw-px-4 tw-py-2.5 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-md tw-px-4 tw-py-2.5 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="roberto@clinica.com" type="email" />
                         </div>
                         <div class="tw-space-y-1.5 lg:tw-col-span-2">
@@ -398,7 +394,7 @@
                                 class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Especialidades
                                 (Multiseleção)</label>
                             <div
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-lg tw-px-4 tw-py-2 tw-flex tw-flex-wrap tw-gap-2 tw-min-h-[46px]">
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-md tw-px-4 tw-py-2 tw-flex tw-flex-wrap tw-gap-2 tw-min-h-[46px]">
                                 <span
                                     class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-[#eff6ff] tw-text-primary tw-px-2 tw-py-0.5 tw-rounded tw-text-xs tw-font-bold tw-border tw-border-[#ddd]">
                                     Cardiologia <button class="material-symbols-outlined tw-text-xs">close</button>
@@ -418,15 +414,15 @@
                                 Descrição
                                 Profissional</label>
                             <textarea
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-lg tw-px-4 tw-py-3 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-md tw-px-4 tw-py-3 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="Conte um pouco sobre a experiência do profissional..." rows="3"></textarea>
                         </div>
                         <div class="md:tw-col-span-2 lg:tw-col-span-3 tw-pt-6 tw-flex tw-justify-end tw-gap-3">
                             <button
-                                class="tw-px-6 tw-py-2.5 tw-rounded-lg tw-text-slate-500 tw-font-bold hover:tw-bg-slate-100 tw-transition-all tw-duration-200 hover:tw-scale-[1.02]"
+                                class="tw-px-6 tw-py-2.5 tw-rounded-md tw-text-slate-500 tw-font-bold hover:tw-bg-slate-100 tw-transition-all tw-duration-200"
                                 type="button">Cancelar</button>
                             <button
-                                class="primary-gradient tw-px-10 tw-py-2.5 tw-rounded-lg tw-text-white tw-font-bold tw-transition-all tw-duration-200 tw-shadow-xl tw-shadow-primary/10 hover:tw-brightness-110 hover:tw-scale-[1.02] active:tw-scale-95"
+                                class="tw-bg-[#1a73e8] tw-px-10 tw-py-2.5 tw-rounded-md tw-text-white tw-font-bold tw-transition-all tw-duration-200 tw-shadow-sm hover:tw-brightness-110 active:tw-scale-95"
                                 type="submit">Salvar Especialista</button>
                         </div>
                     </form>
@@ -461,8 +457,8 @@
             const content1 = document.getElementById('content-1');
             const content2 = document.getElementById('content-2');
 
-            const activeClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-lg tw-bg-white tw-text-primary tw-font-bold tw-shadow-sm tw-border tw-border-[#ddd] tw-transition-all tw-duration-200 tw-text-sm hover:tw-scale-[1.02]";
-            const inactiveClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-lg tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm hover:tw-scale-[1.02]";
+            const activeClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-md tw-bg-white tw-text-primary tw-font-bold tw-shadow-sm tw-border tw-border-[#ddd] tw-transition-all tw-duration-200 tw-text-sm";
+            const inactiveClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-md tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm";
 
             if (tab === 1) {
                 btn1.className = activeClass;
