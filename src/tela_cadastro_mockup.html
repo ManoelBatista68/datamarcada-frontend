@@ -35,6 +35,13 @@
         }
     </script>
     <style>
+        /* TRAVA DE GEOMETRIA: Evita que os campos vazem do grid e montem uns nos outros */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
@@ -370,7 +377,6 @@
             const content1 = document.getElementById('content-1');
             const content2 = document.getElementById('content-2');
 
-            // CLASSES DAS ABAS NO JAVASCRIPT CORRIGIDAS (Azul, Letra Branca, Sem Borda)
             const activeClass = "tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-[#1a73e8] tw-text-white tw-font-bold tw-shadow-sm tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer hover:tw-brightness-110";
             const inactiveClass = "tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-transparent tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer";
 
