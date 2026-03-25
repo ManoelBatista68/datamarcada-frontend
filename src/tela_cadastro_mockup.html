@@ -425,21 +425,31 @@
                 </div>
                 <p class="text-on-surface-variant text-sm">Adicione uma nova categoria de atendimento ao sistema.</p>
             </div>
+            <div
+                class="mx-8 mt-2 mb-6 bg-secondary-container/50 border-l-4 border-secondary px-4 py-3 rounded-lg flex items-start gap-3">
+                <span class="material-symbols-outlined text-secondary mt-0.5"
+                    style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                <div>
+                    <p class="text-on-secondary-container font-bold text-sm">Especialidade criada com sucesso!</p>
+                    <p class="text-on-secondary-container/80 text-xs">Código gerado: ESP-005</p>
+                </div>
+            </div>
             <div class="px-8 py-4 space-y-6">
                 <div class="flex gap-4">
                     <div class="space-y-2 flex-1">
-                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider">Nome da
-                            Especialidade <span class="text-error font-bold">*</span></label>
+                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider"
+                            for="specialty-name">Nome da Especialidade <span
+                                class="text-error font-bold">*</span></label>
                         <input
                             class="w-full bg-surface-container-lowest border-0 ring-1 ring-outline/20 focus:ring-2 focus:ring-primary rounded-xl px-4 py-3 text-on-surface placeholder:text-outline/50 transition-all outline-none"
-                            placeholder="Ex: Dermatologia" type="text" />
+                            id="specialty-name" placeholder="Ex: Dermatologia" required="" type="text" />
                     </div>
                     <div class="space-y-2 flex-1">
-                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider">CÓDIGO EMPRESA
-                            <span class="text-error font-bold">*</span></label>
+                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider"
+                            for="company-code">CÓDIGO EMPRESA <span class="text-error font-bold">*</span></label>
                         <input
                             class="w-full bg-surface-container-lowest border-0 ring-1 ring-outline/20 focus:ring-2 focus:ring-primary rounded-xl px-4 py-3 text-on-surface placeholder:text-outline/50 transition-all outline-none"
-                            placeholder="Ex: EMP-1234" type="text" />
+                            id="company-code" placeholder="Ex: EMP-1234" required="" type="text" />
                     </div>
                 </div>
                 <div class="flex gap-3 justify-end pt-2">
@@ -449,6 +459,73 @@
                     <button
                         class="bg-primary text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center gap-2"><span>Criar
                             Especialidade</span></button>
+                </div>
+                <div class="pt-4 space-y-4 border-t border-outline/10">
+                    <h3 class="text-xs font-bold text-on-surface uppercase tracking-wider">Especialidades Cadastradas
+                    </h3>
+                    <div class="relative mb-4">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline/60 text-[20px]">search</span>
+                        <input
+                            class="w-full bg-surface-container-low border border-outline/10 focus:ring-2 focus:ring-primary focus:border-transparent rounded-xl pl-10 pr-4 py-2 text-sm text-on-surface placeholder:text-outline/50 transition-all outline-none"
+                            placeholder="Buscar especialidade..." type="text" />
+                    </div>
+                    <div class="space-y-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                        <div
+                            class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl group transition-all">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-medium text-on-surface">Clínica Médica</span>
+                                <span
+                                    class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-secondary-container/50 text-on-secondary-container">Ativo</span>
+                            </div>
+                            <div class="flex gap-1">
+                                <button
+                                    class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-colors"
+                                    onclick="abrirModal('modal-editar-especialidade'); fecharModal('modal-nova-especialidade')"><span
+                                        class="material-symbols-outlined text-[18px]">edit</span></button>
+                                <button
+                                    class="p-1.5 text-on-surface-variant hover:text-error hover:bg-surface-container-high rounded-lg transition-colors"
+                                    onclick="abrirModal('modal-excluir-especialidade'); fecharModal('modal-nova-especialidade')"><span
+                                        class="material-symbols-outlined text-[18px]">delete</span></button>
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl group transition-all">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-medium text-on-surface">Cardiologia</span>
+                                <span
+                                    class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-secondary-container/50 text-on-secondary-container">Ativo</span>
+                            </div>
+                            <div class="flex gap-1">
+                                <button
+                                    class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-colors"
+                                    onclick="abrirModal('modal-editar-especialidade'); fecharModal('modal-nova-especialidade')"><span
+                                        class="material-symbols-outlined text-[18px]">edit</span></button>
+                                <button
+                                    class="p-1.5 text-on-surface-variant hover:text-error hover:bg-surface-container-high rounded-lg transition-colors"
+                                    onclick="abrirModal('modal-excluir-especialidade'); fecharModal('modal-nova-especialidade')"><span
+                                        class="material-symbols-outlined text-[18px]">delete</span></button>
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl group transition-all">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-medium text-on-surface">Pediatria</span>
+                                <span
+                                    class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-surface-variant text-on-surface-variant">Desativo</span>
+                            </div>
+                            <div class="flex gap-1">
+                                <button
+                                    class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-colors"
+                                    onclick="abrirModal('modal-editar-especialidade'); fecharModal('modal-nova-especialidade')"><span
+                                        class="material-symbols-outlined text-[18px]">edit</span></button>
+                                <button
+                                    class="p-1.5 text-on-surface-variant hover:text-error hover:bg-surface-container-high rounded-lg transition-colors"
+                                    onclick="abrirModal('modal-excluir-especialidade'); fecharModal('modal-nova-especialidade')"><span
+                                        class="material-symbols-outlined text-[18px]">delete</span></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
