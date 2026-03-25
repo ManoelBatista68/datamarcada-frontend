@@ -4,11 +4,18 @@
         <div class="modal-title" style="color:#1a73e8; margin-bottom:10px;">Editar Local / Link</div>
         <p style="font-size:12px; color:var(--text-sec); margin-bottom:10px;">Defina o local do encontro Presencial ou
             de que forma será o encontro On-Line.</p>
-        <input type="text" id="input-edit-local" class="modal-input" placeholder="Digite o local ou link...">
+        <input type="text" id="input-edit-local"
+            class="modal-input tw-h-[38px] tw-w-full tw-px-4 tw-rounded-[8px] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-outline-none tw-transition-all tw-duration-200"
+            placeholder="Digite o local ou link...">
         <input type="hidden" id="id-edit-local-hidden">
-        <div class="modal-actions"><button class="btn-modal" style="background:#e0e0e0; color:#333;"
-                onclick="fecharModalLocal()">Cancelar</button><button class="btn-modal"
-                style="background:#34a853; color:white;" onclick="salvarLocalUnicoFrontend()">Salvar</button></div>
+        <div class="modal-actions" style="margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end;">
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#e0e0e0; color:#333;" onclick="fecharModalLocal()">Cancelar</button>
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#34a853; color:white;" onclick="salvarLocalUnicoFrontend()">Salvar</button>
+        </div>
     </div>
 </div>
 
@@ -17,17 +24,17 @@
         <span class="material-icons modal-close-x" onclick="fecharModalLog()">close</span>
         <div class="modal-title" id="modal-log-title" style="margin-bottom:10px;"></div>
         <div id="log-list-container"
-            style="max-height: 250px; overflow-y: auto; margin-bottom: 10px; border: 1px solid var(--border-light); padding: 5px; border-radius: 4px; background: var(--bg-body);">
+            style="max-height: 250px; overflow-y: auto; margin-bottom: 10px; border: 1px solid var(--border-light); padding: 5px; border-radius: 8px; background: var(--bg-body);">
         </div>
         <div id="container-visto-cli"
-            style="display:none; margin-bottom: 10px; align-items: center; gap: 5px; background: #fce4ec; padding: 8px; border-radius: 4px; border: 1px solid #f8bbd0;">
+            style="display:none; margin-bottom: 10px; align-items: center; gap: 5px; background: #fce4ec; padding: 8px; border-radius: 8px; border: 1px solid #f8bbd0;">
             <input type="checkbox" id="chk-visto-cli" style="width:18px; height:18px; margin:0; cursor:pointer;">
             <label for="chk-visto-cli"
                 style="font-size:12px; font-weight:bold; color:#e91e63; cursor:pointer; margin:0;">Marcar Informação
                 como Vista</label>
         </div>
         <div id="container-visto-esp"
-            style="display:none; margin-bottom: 10px; align-items: center; gap: 5px; background: #fce4ec; padding: 8px; border-radius: 4px; border: 1px solid #f8bbd0;">
+            style="display:none; margin-bottom: 10px; align-items: center; gap: 5px; background: #fce4ec; padding: 8px; border-radius: 8px; border: 1px solid #f8bbd0;">
             <input type="checkbox" id="chk-visto-esp" style="width:18px; height:18px; margin:0; cursor:pointer;">
             <label for="chk-visto-esp"
                 style="font-size:12px; font-weight:bold; color:#e91e63; cursor:pointer; margin:0;">Marcar Informação
@@ -42,36 +49,45 @@
                 </div>
             </div>
             <div id="emoji-bar"
-                style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:5px; padding:6px; background:var(--bg-input); border:1px solid var(--border-light); border-radius:4px;">
-                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('✅')">✅</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('❌')">❌</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('⚠️')">⚠️</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('👍')">👍</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('👎')">👎</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('😊')">😊</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('🙏')">🙏</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('📅')">📅</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('⏰')">⏰</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('📌')">📌</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('📝')">📝</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('💊')">💊</span><span
-                    style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('💡')">💡</span>
+                style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:5px; padding:6px; background:var(--bg-input); border:1px solid var(--border-light); border-radius:8px;">
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('✅')">✅</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('❌')">❌</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('⚠️')">⚠️</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('👍')">👍</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('👎')">👎</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('😊')">😊</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('🙏')">🙏</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('📅')">📅</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('⏰')">⏰</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('📌')">📌</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('📝')">📝</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('💊')">💊</span>
+                <span style="cursor:pointer; font-size:16px;" onclick="inserirEmoji('💡')">💡</span>
             </div>
-            <textarea id="modal-log-text" class="modal-textarea" onclick="checarBloqueioTexto()"></textarea>
+            <textarea id="modal-log-text"
+                class="modal-textarea tw-w-full tw-rounded-[8px] tw-px-4 tw-py-3 tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-outline-none tw-transition-all tw-duration-200"
+                onclick="checarBloqueioTexto()"></textarea>
         </div>
-        <div class="modal-actions" style="justify-content: space-between; align-items: center; margin-top: 10px;">
-            <div>
-                <button class="btn-modal" style="background:#e0e0e0; color:#333;"
-                    onclick="fecharModalLog()">Fechar</button>
-                <button class="btn-modal" id="btn-anexo-log" style="background:#1a73e8; color:white; margin-left: 5px;"
+        <div class="modal-actions"
+            style="justify-content: space-between; align-items: center; margin-top: 15px; display: flex;">
+            <div style="display:flex; gap:10px;">
+                <button
+                    class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                    style="background:#e0e0e0; color:#333;" onclick="fecharModalLog()">Fechar</button>
+                <button
+                    class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-gap-2 tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                    id="btn-anexo-log" style="background:#1a73e8; color:white;"
                     onclick="document.getElementById('file-upload').click()" title="Anexar arquivo">📎 Anexo</button>
             </div>
             <div style="display:flex; gap:10px;">
-                <button class="btn-modal" id="btn-cancelar-edit"
-                    style="background:#f4d0d0; color:#c62828; display:none;"
+                <button
+                    class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                    id="btn-cancelar-edit" style="background:#f4d0d0; color:#c62828; display:none;"
                     onclick="cancelarEdicaoLog()">Cancelar</button>
-                <button class="btn-modal" id="btn-salvar-log" style="background:#34a853; color:white;"
-                    onclick="salvarEntradaLog()">Adicionar e Salvar</button>
+                <button
+                    class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                    id="btn-salvar-log" style="background:#34a853; color:white;" onclick="salvarEntradaLog()">Adicionar
+                    e Salvar</button>
             </div>
         </div>
     </div>
@@ -84,9 +100,12 @@
         <div class="modal-title" style="color:#ea4335; margin-bottom:10px;">Tempo Esgotado</div>
         <p style="margin-bottom:20px; font-size:14px; color:#555;">A Janela de Interação para esse evento foi fechada.
         </p>
-        <div class="modal-actions" style="justify-content:center;"><button class="btn-modal"
+        <div class="modal-actions" style="justify-content:center; display: flex;">
+            <button
+                class="btn-modal tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
                 style="background:#ea4335; color:white;"
-                onclick="document.getElementById('modal-janela-fechada').style.display='none'">OK</button></div>
+                onclick="document.getElementById('modal-janela-fechada').style.display='none'">OK</button>
+        </div>
     </div>
 </div>
 
@@ -96,12 +115,17 @@
         <div class="modal-title" style="color:#1a73e8; margin-bottom:10px;">Identificação do Arquivo</div>
         <p style="font-size:12px; color:var(--text-sec); margin-bottom:10px;">Informe do que se trata este arquivo (ex:
             Exame, Receita):</p>
-        <input type="text" id="upload-desc-input" class="modal-input" placeholder="Ex: Raio-X"
-            onkeydown="if(event.key==='Enter') confirmarUploadDesc()">
-        <div class="modal-actions" style="justify-content:flex-end;"><button class="btn-modal"
-                style="background:#e0e0e0; color:#333;" onclick="fecharModalUploadDesc()">Cancelar</button><button
-                class="btn-modal" style="background:#34a853; color:white;" onclick="confirmarUploadDesc()">Confirmar e
-                Enviar</button></div>
+        <input type="text" id="upload-desc-input"
+            class="modal-input tw-h-[38px] tw-w-full tw-px-4 tw-rounded-[8px] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-outline-none tw-transition-all tw-duration-200"
+            placeholder="Ex: Raio-X" onkeydown="if(event.key==='Enter') confirmarUploadDesc()">
+        <div class="modal-actions" style="margin-top: 15px; display: flex; gap: 10px; justify-content:flex-end;">
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#e0e0e0; color:#333;" onclick="fecharModalUploadDesc()">Cancelar</button>
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#34a853; color:white;" onclick="confirmarUploadDesc()">Confirmar e Enviar</button>
+        </div>
     </div>
 </div>
 
@@ -113,8 +137,11 @@
         <div id="relatorio-content"
             style="max-height: 60vh; overflow-y: auto; padding-right: 10px; font-size: 13px; line-height: 1.6; color: var(--text-main);">
         </div>
-        <div class="modal-actions"><button class="btn-modal" style="background:#e0e0e0; color:#333;"
-                onclick="fecharRelatorio()">Fechar</button></div>
+        <div class="modal-actions" style="margin-top: 15px; display: flex; justify-content: flex-end;">
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#e0e0e0; color:#333;" onclick="fecharRelatorio()">Fechar</button>
+        </div>
     </div>
 </div>
 
@@ -123,37 +150,49 @@
         <span class="material-icons modal-close-x" onclick="fecharModalNovoBloco()">close</span>
         <div class="modal-title" style="margin-bottom:15px;color:#1a73e8;font-weight:bold;">Criar Agenda em Bloco</div>
         <div class="block-section">
-            <div class="block-title">1. Selecione o Mês</div><select id="sel-mes-bloco" class="input-control"
-                style="width:100%; padding-left: 10px !important;" onchange="renderizarSemanas()"></select>
+            <div class="block-title">1. Selecione o Mês</div>
+            <select id="sel-mes-bloco"
+                class="input-control tw-h-[38px] tw-w-full tw-px-4 tw-rounded-[8px] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-outline-none tw-transition-all tw-duration-200"
+                style="padding-left: 10px !important;" onchange="renderizarSemanas()"></select>
         </div>
         <div class="block-section">
             <div class="block-title">2. Selecione as Semanas (Mínimo 24h)</div>
             <div id="container-semanas"></div>
         </div>
         <div id="container-status-bloco" class="block-section"
-            style="display:none; background:#fff3e0; padding:10px; border-radius:4px; border:1px solid #ffe0b2; cursor:help;"
+            style="display:none; background:#fff3e0; padding:10px; border-radius:8px; border:1px solid #ffe0b2; cursor:help;"
             title='Defina se os horários criados serão disponibilizados imediatamente para os Cliente. Para isso, selecione "Disponível"'>
             <div style="display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
                 <span style="font-size:12px; font-weight:bold; pointer-events:none;">Todo Agendamento nascerá
                     como:</span>
-                <select id="novo-status-bloco" class="input-control"
-                    style="width:auto; height:28px; font-size:12px; cursor:default; padding-left: 10px !important;">
+                <select id="novo-status-bloco"
+                    class="input-control tw-h-[38px] tw-px-4 tw-rounded-[8px] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-outline-none tw-transition-all tw-duration-200"
+                    style="width:auto; font-size:12px; cursor:pointer; padding-left: 10px !important;">
                     <option value="Indefinido" selected>Indefinido</option>
                     <option value="Disponível">Disponível</option>
                 </select>
             </div>
         </div>
         <div id="container-favoritos-bloco" class="block-section"
-            style="display:none; background:#f9f9f9; padding:10px; border-radius:4px; border:1px solid #ddd;">
+            style="display:none; background:#f9f9f9; padding:10px; border-radius:8px; border:1px solid #ddd;">
             <div class="block-title">⚡ Agendamentos Favoritos (Modelos)</div>
-            <div style="margin-bottom:8px;"><label style="font-size:11px; color:#555;">Carregar Modelo:</label><select
-                    id="sel-favoritos" class="input-control" style="width:100%; padding-left: 10px !important;"
-                    onchange="aplicarFavoritoUI()">
+            <div style="margin-bottom:8px;">
+                <label style="font-size:11px; color:#555;">Carregar Modelo:</label>
+                <select id="sel-favoritos"
+                    class="input-control tw-h-[38px] tw-w-full tw-px-4 tw-rounded-[8px] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-outline-none tw-transition-all tw-duration-200"
+                    style="padding-left: 10px !important;" onchange="aplicarFavoritoUI()">
                     <option value="">-- Selecione --</option>
-                </select></div>
-            <div class="fav-controls"><input type="text" id="nome-novo-fav" class="fav-input"
-                    placeholder="Nome para salvar..."><button class="btn-add-time" onclick="salvarFavoritoUI()"
-                    style="background:#34a853;color:white;border:none;">Salvar Atual</button></div>
+                </select>
+            </div>
+            <div class="fav-controls" style="display: flex; gap: 10px; margin-top: 10px;">
+                <input type="text" id="nome-novo-fav"
+                    class="fav-input tw-h-[38px] tw-w-full tw-px-4 tw-rounded-[8px] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-outline-none tw-transition-all tw-duration-200"
+                    placeholder="Nome para salvar...">
+                <button
+                    class="btn-add-time tw-h-[38px] tw-px-4 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                    onclick="salvarFavoritoUI()" style="background:#34a853;color:white; white-space: nowrap;">Salvar
+                    Atual</button>
+            </div>
             <div style="text-align:right; margin-top:5px;"><span
                     style="font-size:10px; color:#d93025; cursor:pointer; text-decoration:underline;"
                     onclick="excluirFavoritoUI()">Excluir selecionado</span></div>
@@ -162,9 +201,14 @@
             <div class="block-title">3. Defina Dias e Horários</div>
             <div id="container-dias"></div>
         </div>
-        <div class="modal-actions"><button class="btn-modal" style="background:#e0e0e0; color:#333;"
-                onclick="fecharModalNovoBloco()">Cancelar</button><button class="btn-modal"
-                style="background:#34a853; color:white;" onclick="salvarBloco()">Criar Agendas</button></div>
+        <div class="modal-actions" style="margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end;">
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#e0e0e0; color:#333;" onclick="fecharModalNovoBloco()">Cancelar</button>
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#34a853; color:white;" onclick="salvarBloco()">Criar Agendas</button>
+        </div>
     </div>
 </div>
 
@@ -175,9 +219,12 @@
         <div class="modal-title" style="color:#ea4335; margin-bottom:10px;">Atenção!</div>
         <p style="margin-bottom:20px; font-size:14px; color:#555;">Não foi possível enviar este agendamento!<br>Existe
             horários já criados na mesma data.</p>
-        <div class="modal-actions" style="justify-content:center;"><button class="btn-modal"
+        <div class="modal-actions" style="justify-content:center; display: flex;">
+            <button
+                class="btn-modal tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
                 style="background:#ea4335; color:white;"
-                onclick="document.getElementById('modal-erro-conflito').style.display='none'">OK</button></div>
+                onclick="document.getElementById('modal-erro-conflito').style.display='none'">OK</button>
+        </div>
     </div>
 </div>
 
@@ -186,9 +233,14 @@
         <span class="material-icons modal-close-x" onclick="recusarConfirmacao()">close</span>
         <div class="modal-title" id="confirm-title" style="color:#1a73e8; margin-bottom:10px;">Confirmação</div>
         <p id="confirm-msg" style="margin-bottom:20px; font-size:14px; color:#555;"></p>
-        <div class="modal-actions" style="justify-content:center;"><button class="btn-modal"
-                style="background:#e0e0e0; color:#333;" onclick="recusarConfirmacao()">Não</button><button
-                class="btn-modal" id="btn-confirm-yes" style="background:#34a853; color:white;">Sim</button></div>
+        <div class="modal-actions" style="display: flex; gap: 10px; justify-content:center;">
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#e0e0e0; color:#333;" onclick="recusarConfirmacao()">Não</button>
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                id="btn-confirm-yes" style="background:#34a853; color:white;">Sim</button>
+        </div>
     </div>
 </div>
 
@@ -197,8 +249,11 @@
         <span class="material-icons modal-close-x" onclick="fecharModalMensagem()">close</span>
         <div class="modal-title" id="msg-title" style="color:#1a73e8; margin-bottom:10px;">Aviso</div>
         <p id="msg-content" style="margin-bottom:20px; font-size:14px; color:#555;"></p>
-        <div class="modal-actions" style="justify-content:center;"><button class="btn-modal"
-                style="background:#1a73e8; color:white;" onclick="fecharModalMensagem()">OK</button></div>
+        <div class="modal-actions" style="justify-content:center; display: flex;">
+            <button
+                class="btn-modal tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#1a73e8; color:white;" onclick="fecharModalMensagem()">OK</button>
+        </div>
     </div>
 </div>
 
@@ -207,8 +262,11 @@
         <span class="material-icons modal-close-x" onclick="fecharModalInfo()">close</span>
         <div class="modal-title" id="modal-info-title">Informação</div>
         <div id="modal-info-content" class="modal-content-text"></div>
-        <div class="modal-actions"><button class="btn-modal" style="background:#1a73e8; color:white;"
-                onclick="fecharModalInfo()">Fechar</button></div>
+        <div class="modal-actions" style="margin-top: 15px; display: flex; justify-content: flex-end;">
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#1a73e8; color:white;" onclick="fecharModalInfo()">Fechar</button>
+        </div>
     </div>
 </div>
 
@@ -216,21 +274,39 @@
     <div class="modal-box">
         <span class="material-icons modal-close-x" onclick="fecharModalRecuperar()">close</span>
         <div class="modal-title">Recuperar Senha</div>
+
         <div id="recup-step-1">
             <p style="font-size:12px;color:var(--text-sec);margin-bottom:10px;">Digite seu e-mail.</p>
-            <input type="email" id="recup-email" class="modal-input" placeholder="Seu e-mail cadastrado">
-            <div class="modal-actions"><button class="btn-modal" style="background:#e0e0e0; color:#333;"
-                    onclick="fecharModalRecuperar()">Cancelar</button><button class="btn-modal"
-                    style="background:#1a73e8; color:white;" onclick="enviarCodigo()">Enviar</button></div>
+            <input type="email" id="recup-email"
+                class="modal-input tw-h-[38px] tw-w-full tw-px-4 tw-rounded-[8px] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-outline-none tw-transition-all tw-duration-200"
+                placeholder="Seu e-mail cadastrado">
+            <div class="modal-actions" style="margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button
+                    class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                    style="background:#e0e0e0; color:#333;" onclick="fecharModalRecuperar()">Cancelar</button>
+                <button
+                    class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                    style="background:#1a73e8; color:white;" onclick="enviarCodigo()">Enviar</button>
+            </div>
         </div>
+
         <div id="recup-step-2" style="display:none;">
             <p style="font-size:12px;color:var(--text-sec);margin-bottom:10px;">Verifique seu e-mail e digite o código.
             </p>
-            <input type="text" id="recup-codigo" class="modal-input" placeholder="Código">
-            <input type="password" id="recup-nova-senha" class="modal-input" placeholder="Nova Senha">
-            <div class="modal-actions"><button class="btn-modal" style="background:#e0e0e0; color:#333;"
-                    onclick="voltarStep1()">Voltar</button><button class="btn-modal"
-                    style="background:#34a853; color:white;" onclick="confirmarNovaSenha()">Salvar</button></div>
+            <input type="text" id="recup-codigo"
+                class="modal-input tw-h-[38px] tw-w-full tw-px-4 tw-rounded-[8px] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-outline-none tw-transition-all tw-duration-200 tw-mb-3"
+                placeholder="Código">
+            <input type="password" id="recup-nova-senha"
+                class="modal-input tw-h-[38px] tw-w-full tw-px-4 tw-rounded-[8px] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-outline-none tw-transition-all tw-duration-200"
+                placeholder="Nova Senha">
+            <div class="modal-actions" style="margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button
+                    class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                    style="background:#e0e0e0; color:#333;" onclick="voltarStep1()">Voltar</button>
+                <button
+                    class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                    style="background:#34a853; color:white;" onclick="confirmarNovaSenha()">Salvar</button>
+            </div>
         </div>
     </div>
 </div>
@@ -238,11 +314,18 @@
 <div id="modal-troca-senha" class="modal-overlay">
     <div class="modal-box">
         <span class="material-icons modal-close-x" onclick="fecharModalTrocaSenha()">close</span>
-        <div class="modal-title">Alterar Senha</div>
+        <div class="modal-title" style="margin-bottom:10px;">Alterar Senha</div>
         <p style="font-size:12px;color:var(--text-sec);margin-bottom:10px;">Nova senha.</p>
-        <input type="password" id="nova-senha-logado" class="modal-input" placeholder="Nova senha">
-        <div class="modal-actions"><button class="btn-modal" style="background:#e0e0e0; color:#333;"
-                onclick="fecharModalTrocaSenha()">Cancelar</button><button class="btn-modal"
-                style="background:#1a73e8; color:white;" onclick="confirmarTrocaSenhaLogado()">Salvar</button></div>
+        <input type="password" id="nova-senha-logado"
+            class="modal-input tw-h-[38px] tw-w-full tw-px-4 tw-rounded-[8px] tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-outline-none tw-transition-all tw-duration-200"
+            placeholder="Nova senha">
+        <div class="modal-actions" style="margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end;">
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#e0e0e0; color:#333;" onclick="fecharModalTrocaSenha()">Cancelar</button>
+            <button
+                class="btn-modal tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all tw-duration-200 hover:tw-brightness-110"
+                style="background:#1a73e8; color:white;" onclick="confirmarTrocaSenhaLogado()">Salvar</button>
+        </div>
     </div>
 </div>

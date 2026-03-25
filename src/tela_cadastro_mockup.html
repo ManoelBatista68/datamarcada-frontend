@@ -19,60 +19,17 @@
             theme: {
                 extend: {
                     colors: {
-                        "on-secondary": "#ffffff",
-                        "on-tertiary-fixed-variant": "#6a3c00",
-                        "error": "#d93025",
-                        "on-tertiary-container": "#ffcfa5",
-                        "secondary": "#3f665c",
-                        "secondary-container": "#bee8dc",
-                        "inverse-on-surface": "#eff1f3",
-                        "surface-container-low": "#f2f4f6",
-                        "on-background": "#191c1e",
                         "primary": "#1a73e8",
-                        "surface-dim": "#d8dadc",
-                        "on-secondary-fixed": "#00201a",
-                        "inverse-primary": "#8bd1e8",
-                        "tertiary-fixed-dim": "#ffb872",
-                        "primary-fixed-dim": "#8bd1e8",
-                        "surface-container": "#eceef0",
-                        "on-primary-fixed": "#001f27",
-                        "tertiary-fixed": "#ffdcbf",
-                        "on-primary": "#ffffff",
-                        "on-primary-container": "#1a73e8",
-                        "on-tertiary-fixed": "#2d1600",
-                        "tertiary-container": "#8b5001",
-                        "tertiary": "#6a3b00",
-                        "on-surface-variant": "#40484f",
-                        "primary-container": "#e8f0fe",
-                        "secondary-fixed": "#c1ebdf",
-                        "on-error-container": "#93000a",
-                        "outline-variant": "#c0c7d0",
-                        "surface-container-lowest": "#ffffff",
-                        "inverse-surface": "#2d3133",
-                        "on-tertiary": "#ffffff",
                         "on-surface": "#191c1e",
-                        "on-error": "#ffffff",
-                        "error-container": "#ffdad6",
-                        "primary-fixed": "#b2ebff",
-                        "surface-container-high": "#e6e8ea",
-                        "surface-variant": "#e0e3e5",
-                        "secondary-fixed-dim": "#a6cfc3",
-                        "on-secondary-fixed-variant": "#274e45",
-                        "on-primary-fixed-variant": "#004e5f",
-                        "surface-container-highest": "#e0e3e5",
-                        "background": "#f7f9fb",
-                        "surface-tint": "#13677b",
-                        "on-secondary-container": "#436a60",
+                        "on-surface-variant": "#40484f",
                         "outline": "#707880",
-                        "surface": "#f7f9fb",
-                        "surface-bright": "#f7f9fb"
+                        "error": "#d93025"
                     },
                     fontFamily: {
                         "headline": ["Manrope"],
                         "body": ["Inter"],
                         "label": ["Inter"]
-                    },
-                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                    }
                 },
             },
         }
@@ -84,27 +41,16 @@
 
         body {
             font-family: 'Inter', sans-serif;
+            overflow: hidden !important;
+            height: auto !important;
+            min-height: 100% !important;
+            background-color: #f4f7f6 !important;
         }
 
         h1,
         h2,
         h3 {
             font-family: 'Manrope', sans-serif;
-        }
-
-        .glass-effect {
-            background: rgba(247, 249, 251, 0.8);
-            backdrop-filter: blur(16px);
-        }
-
-
-        /* Bloqueio estrito de rolagem interna */
-        html,
-        body {
-            overflow: hidden !important;
-            height: auto !important;
-            min-height: 100% !important;
-            background-color: #f4f7f6 !important;
         }
 
         /* Animação suave de fade-in */
@@ -126,27 +72,28 @@
     </style>
 </head>
 
-<body class="tw-bg-surface tw-text-on-surface">
+<body class="tw-bg-[#f4f7f6] tw-text-on-surface">
     <main class="tw-min-h-screen">
         <div class="tw-p-4 md:tw-p-8 tw-max-w-full tw-mx-auto">
             <div class="tw-mb-10">
                 <h1 class="tw-text-3xl md:tw-text-4xl tw-font-extrabold tw-text-on-surface tw-tracking-tight tw-mb-2">
                     Cadastro Geral</h1>
                 <p class="tw-text-on-surface-variant tw-font-medium">Gerenciamento centralizado de especialidades,
-                    produtos e
-                    corpo clínico.</p>
+                    produtos e corpo clínico.</p>
             </div>
+
             <div
-                class="tw-flex tw-gap-1 tw-mb-8 tw-bg-white/50 tw-p-1 tw-rounded-xl tw-w-fit tw-border tw-border-[#ddd]">
+                class="tw-flex tw-gap-1 tw-mb-8 tw-bg-white/50 tw-p-1 tw-rounded-[8px] tw-w-fit tw-border tw-border-[#ddd]">
                 <button id="tab-1" onclick="switchTab(1)"
-                    class="tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-md tw-bg-white tw-text-primary tw-font-bold tw-border tw-border-[#ddd] tw-transition-colors tw-duration-200 tw-text-sm">
+                    class="tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-[#1a73e8] tw-text-white tw-font-bold tw-shadow-sm tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer hover:tw-brightness-110">
                     Especialidades e Produtos
                 </button>
                 <button id="tab-2" onclick="switchTab(2)"
-                    class="tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-md tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-colors tw-duration-200 tw-text-sm">
+                    class="tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-transparent tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer">
                     Especialistas
                 </button>
             </div>
+
             <div id="content-1" class="tw-space-y-8">
                 <div
                     class="tw-flex tw-flex-col sm:tw-flex-row tw-justify-between tw-items-start sm:tw-items-center tw-gap-4">
@@ -155,17 +102,17 @@
                         Estrutura Hierárquica
                     </h3>
                     <button onclick="window.parent.abrirModal('modal-nova-especialidade')"
-                        class="tw-bg-[#1a73e8] tw-text-white tw-px-5 tw-py-2 tw-rounded-md tw-text-sm tw-font-semibold tw-flex tw-items-center tw-gap-2 tw-transition-colors hover:tw-bg-[#1557b0] hover:tw-brightness-110">
+                        class="tw-bg-[#1a73e8] tw-text-white tw-h-[38px] tw-px-5 tw-rounded-[8px] tw-text-sm tw-font-semibold tw-flex tw-items-center tw-justify-center tw-gap-2 tw-transition-colors hover:tw-bg-[#1557b0] hover:tw-brightness-110 tw-border-none tw-cursor-pointer">
                         <span class="material-symbols-outlined tw-text-sm">add_circle</span>
                         Nova Especialidade
                     </button>
                 </div>
-                <div class="tw-bg-white tw-rounded-md tw-overflow-hidden tw-border tw-border-[#eee]">
+                <div class="tw-bg-white tw-rounded-[8px] tw-overflow-hidden tw-border tw-border-[#eee]">
                     <div
                         class="tw-p-6 tw-flex tw-flex-col sm:tw-flex-row tw-items-start sm:tw-items-center tw-justify-between tw-border-l-4 tw-border-primary tw-bg-white tw-gap-4">
                         <div class="tw-flex tw-items-center tw-gap-4">
                             <div
-                                class="tw-w-12 tw-h-12 tw-rounded-md tw-bg-[#eff6ff] tw-flex tw-items-center tw-justify-center tw-text-primary tw-shrink-0 tw-border tw-border-[#ddd]">
+                                class="tw-w-12 tw-h-12 tw-rounded-[8px] tw-bg-[#eff6ff] tw-flex tw-items-center tw-justify-center tw-text-primary tw-shrink-0 tw-border tw-border-[#ddd]">
                                 <span class="material-symbols-outlined">cardiology</span>
                             </div>
                             <div>
@@ -176,19 +123,18 @@
                         </div>
                         <div class="tw-flex tw-gap-2 tw-w-full sm:tw-w-auto tw-justify-end">
                             <button onclick="window.parent.abrirModal('modal-editar-especialidade')"
-                                class="tw-p-2 hover:tw-bg-surface-container-high tw-rounded-md tw-text-primary tw-transition-colors">
+                                class="tw-h-[38px] tw-w-[38px] tw-flex tw-items-center tw-justify-center hover:tw-bg-[#f2f4f6] tw-rounded-[8px] tw-text-primary tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
                                 <span class="material-symbols-outlined">edit</span>
                             </button>
                             <button
-                                class="tw-bg-[#eff6ff] tw-text-primary tw-px-4 tw-py-2 tw-rounded-md tw-text-xs tw-font-bold tw-flex tw-items-center tw-gap-2 tw-transition-colors hover:tw-bg-[#e0f2fe]">
+                                class="tw-bg-[#eff6ff] tw-text-primary tw-h-[38px] tw-px-4 tw-rounded-[8px] tw-text-xs tw-font-bold tw-flex tw-items-center tw-justify-center tw-gap-2 tw-transition-colors hover:tw-bg-[#e0f2fe] tw-border-none tw-cursor-pointer">
                                 <span class="material-symbols-outlined tw-text-sm">add</span>
                                 Adicionar Sub-especialidade
                             </button>
                         </div>
                     </div>
                     <div class="tw-pl-6 md:tw-pl-12 tw-pr-6 tw-py-4 tw-space-y-4">
-                        <div
-                            class="tw-bg-surface-container-low tw-rounded-md tw-p-5 tw-border-l-2 tw-border-primary/30">
+                        <div class="tw-bg-[#f2f4f6] tw-rounded-[8px] tw-p-5 tw-border-l-2 tw-border-primary/30">
                             <div class="tw-flex tw-items-center tw-justify-between tw-mb-4">
                                 <div class="tw-flex tw-items-center tw-gap-3">
                                     <span
@@ -200,13 +146,13 @@
                                     </div>
                                 </div>
                                 <button
-                                    class="tw-bg-[#eff6ff] tw-text-primary tw-px-3 tw-py-1.5 tw-rounded-md tw-text-xs tw-font-bold tw-transition-colors hover:tw-bg-primary hover:tw-text-white">
+                                    class="tw-bg-[#eff6ff] tw-text-primary tw-h-[38px] tw-px-4 tw-rounded-[8px] tw-text-xs tw-font-bold tw-transition-colors hover:tw-bg-primary hover:tw-text-white tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center">
                                     Novo Produto
                                 </button>
                             </div>
                             <div class="tw-grid tw-grid-cols-1 xl:tw-grid-cols-2 tw-gap-4">
                                 <div
-                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-md tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 hover:tw-ring-primary/40 tw-transition-colors tw-shadow-sm">
+                                    class="tw-bg-white tw-p-5 tw-rounded-[8px] tw-border tw-border-[#ddd] hover:tw-border-primary/40 tw-transition-colors tw-shadow-sm">
                                     <div class="tw-flex tw-justify-between tw-items-start tw-mb-3">
                                         <div>
                                             <span
@@ -215,8 +161,7 @@
                                             <h6 class="tw-font-bold tw-text-on-surface tw-mt-1">Ecocardiograma com
                                                 Doppler</h6>
                                             <p class="tw-text-xs tw-text-outline tw-font-mono">COD: PROD-9921 • Clinic
-                                                ID: CP-01
-                                            </p>
+                                                ID: CP-01</p>
                                         </div>
                                         <div class="tw-text-right">
                                             <p class="tw-text-xs tw-text-outline tw-line-through">R$ 450,00</p>
@@ -225,11 +170,10 @@
                                         </div>
                                     </div>
                                     <p class="tw-text-xs tw-text-on-surface-variant tw-mb-4 tw-line-clamp-2">Exame de
-                                        imagem não
-                                        invasivo que utiliza ondas sonoras para criar imagens em movimento do coração.
-                                    </p>
+                                        imagem não invasivo que utiliza ondas sonoras para criar imagens em movimento do
+                                        coração.</p>
                                     <div
-                                        class="tw-flex tw-items-center tw-justify-between tw-pt-3 tw-border-t tw-border-surface-container">
+                                        class="tw-flex tw-items-center tw-justify-between tw-pt-3 tw-border-t tw-border-[#eee]">
                                         <div
                                             class="tw-flex tw-items-center tw-gap-2 tw-text-[10px] tw-font-medium tw-text-on-surface-variant">
                                             <span class="material-symbols-outlined tw-text-sm">location_on</span>
@@ -237,49 +181,11 @@
                                         </div>
                                         <div class="tw-flex tw-gap-2">
                                             <button
-                                                class="tw-p-1.5 hover:tw-bg-surface-container tw-text-outline tw-rounded-md tw-transition-colors">
+                                                class="tw-h-[38px] tw-w-[38px] tw-flex tw-items-center tw-justify-center hover:tw-bg-[#f2f4f6] tw-text-outline tw-rounded-[8px] tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
                                                 <span class="material-symbols-outlined tw-text-sm">settings</span>
                                             </button>
                                             <button
-                                                class="tw-p-1.5 hover:tw-bg-error/10 tw-text-error tw-rounded-md tw-transition-all tw-duration-200">
-                                                <span class="material-symbols-outlined tw-text-sm">delete</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-md tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 hover:tw-ring-primary/40 tw-transition-colors tw-shadow-sm">
-                                    <div class="tw-flex tw-justify-between tw-items-start tw-mb-3">
-                                        <div>
-                                            <span
-                                                class="tw-text-[10px] tw-font-bold tw-text-cyan-700 tw-bg-cyan-50 tw-px-2 tw-py-0.5 tw-rounded tw-uppercase tw-tracking-tighter">Telemedicina</span>
-                                            <h6 class="tw-font-bold tw-text-on-surface tw-mt-1">Laudo Remoto de ECG</h6>
-                                            <p class="tw-text-xs tw-text-outline tw-font-mono">COD: PROD-8812 • Clinic
-                                                ID: CP-01
-                                            </p>
-                                        </div>
-                                        <div class="tw-text-right">
-                                            <p class="tw-text-lg tw-font-extrabold tw-text-primary tw-leading-none">R$
-                                                85,00</p>
-                                        </div>
-                                    </div>
-                                    <p class="tw-text-xs tw-text-on-surface-variant tw-mb-4 tw-line-clamp-2">
-                                        Interpretação técnica
-                                        de eletrocardiograma via plataforma digital com entrega em 24h.</p>
-                                    <div
-                                        class="tw-flex tw-items-center tw-justify-between tw-pt-3 tw-border-t tw-border-surface-container">
-                                        <div
-                                            class="tw-flex tw-items-center tw-gap-2 tw-text-[10px] tw-font-medium tw-text-slate-500">
-                                            <span class="material-symbols-outlined tw-text-sm">cloud</span>
-                                            Digital / Online
-                                        </div>
-                                        <div class="tw-flex tw-gap-2">
-                                            <button
-                                                class="tw-p-1.5 hover:tw-bg-surface-container tw-text-outline tw-rounded-md tw-transition-colors">
-                                                <span class="material-symbols-outlined tw-text-sm">settings</span>
-                                            </button>
-                                            <button onclick="window.parent.abrirModal('modal-excluir-especialidade')"
-                                                class="tw-p-1.5 hover:tw-bg-error/10 tw-text-error tw-rounded-md tw-transition-all tw-duration-200">
+                                                class="tw-h-[38px] tw-w-[38px] tw-flex tw-items-center tw-justify-center hover:tw-bg-error/10 tw-text-error tw-rounded-[8px] tw-transition-all tw-duration-200 tw-border-none tw-bg-transparent tw-cursor-pointer">
                                                 <span class="material-symbols-outlined tw-text-sm">delete</span>
                                             </button>
                                         </div>
@@ -290,17 +196,21 @@
                     </div>
                 </div>
             </div>
+
             <div id="content-2" style="display: none;">
                 <div class="tw-mt-12">
                     <div class="tw-flex tw-justify-between tw-items-center tw-mb-6">
                         <h3 class="tw-text-xl tw-font-bold tw-text-primary">Corpo Clínico</h3>
-                        <button class="action-add tw-bg-transparent tw-border-0 tw-p-0 tw-cursor-pointer" title="Criar novo especialista">
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #1a73e8; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(26,115,232,0.3);">
-                                <span class="material-symbols-outlined" style="font-size: 24px; color: white;">person_add</span>
-                            </div>
-                        </button>
+                        <div class="action-add tw-cursor-pointer"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: #1a73e8; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(26,115,232,0.3); transition: all 0.2s ease;"
+                            onmouseover="this.style.filter='brightness(1.1)'"
+                            onmouseout="this.style.filter='brightness(1)'">
+                            <span class="material-symbols-outlined"
+                                style="font-size: 24px; color: white;">person_add</span>
+                        </div>
                     </div>
-                    <div class="tw-bg-white tw-rounded-md tw-shadow-sm tw-overflow-x-auto tw-border tw-border-[#eee]">
+                    <div
+                        class="tw-bg-white tw-rounded-[8px] tw-shadow-sm tw-overflow-x-auto tw-border tw-border-[#eee]">
                         <table class="tw-w-full tw-text-left tw-min-w-[600px]">
                             <thead
                                 class="tw-bg-[#f4f7f6] tw-text-[10px] tw-font-bold tw-uppercase tw-tracking-widest tw-text-slate-500 tw-border-b tw-border-[#eee]">
@@ -334,20 +244,21 @@
                                     <td class="tw-px-6 tw-py-4">
                                         <div class="tw-flex tw-flex-wrap tw-gap-1">
                                             <span
-                                                class="tw-px-2 tw-py-0.5 tw-bg-[#eff6ff] tw-text-primary tw-text-[10px] tw-font-bold tw-rounded tw-border tw-border-[#ddd]">Cardiologia</span>
+                                                class="tw-px-2 tw-py-0.5 tw-bg-[#eff6ff] tw-text-primary tw-text-[10px] tw-font-bold tw-rounded">Cardiologia</span>
                                             <span
-                                                class="tw-px-2 tw-py-0.5 tw-bg-slate-100 tw-text-slate-600 tw-text-[10px] tw-font-bold tw-rounded tw-border tw-border-slate-200">Ecocardiografia</span>
+                                                class="tw-px-2 tw-py-0.5 tw-bg-[#f2f4f6] tw-text-slate-600 tw-text-[10px] tw-font-bold tw-rounded">Ecocardiografia</span>
                                         </div>
                                     </td>
                                     <td class="tw-px-6 tw-py-4 tw-text-right">
                                         <button
-                                            class="tw-text-primary hover:tw-underline tw-text-xs tw-font-bold">Gerenciar</button>
+                                            class="tw-text-primary hover:tw-underline tw-text-xs tw-font-bold tw-bg-transparent tw-border-none tw-cursor-pointer">Gerenciar</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
+
                 <div
                     class="tw-mt-12 tw-bg-white tw-rounded-xl tw-p-6 md:tw-p-8 tw-border tw-border-[#ddd] tw-shadow-sm">
                     <div class="tw-flex tw-items-center tw-gap-4 tw-mb-8">
@@ -358,37 +269,38 @@
                         <div>
                             <h2 class="tw-text-2xl tw-font-bold tw-tracking-tight">Novo Especialista</h2>
                             <p class="tw-text-sm tw-text-on-surface-variant tw-font-medium">Cadastre um novo
-                                profissional para a
-                                unidade <span class="tw-text-primary">CP-01 (Clinical Pavilion)</span></p>
+                                profissional para a unidade <span class="tw-text-primary">CP-01 (Clinical
+                                    Pavilion)</span></p>
                         </div>
                     </div>
+
                     <form class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6">
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome
                                 Completo</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="Ex: Dr. Roberto Silva" type="text" />
                         </div>
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Registro /
                                 Código</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="Ex: CRM 99.123" type="text" />
                         </div>
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Celular /
                                 WhatsApp</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
-                                placeholder="roberto@clinica.com" type="email" />
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
+                                placeholder="(11) 99999-9999" type="text" />
                         </div>
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">E-mail
                                 Profissional</label>
                             <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-lg tw-h-[38px] tw-px-4 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="roberto@clinica.com" type="email" />
                         </div>
                         <div class="tw-space-y-1.5 lg:tw-col-span-2">
@@ -396,54 +308,51 @@
                                 class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Especialidades
                                 (Multiseleção)</label>
                             <div
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-lg tw-px-4 tw-flex tw-items-center tw-flex-wrap tw-gap-2 tw-min-h-[38px]">
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-[8px] tw-px-4 tw-min-h-[38px] tw-flex tw-items-center tw-flex-wrap tw-gap-2 tw-py-1">
                                 <span
-                                    class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-[#eff6ff] tw-text-primary tw-px-2 tw-py-0.5 tw-rounded tw-text-xs tw-font-bold tw-border tw-border-[#ddd]">
-                                    Cardiologia <button class="material-symbols-outlined tw-text-xs">close</button>
+                                    class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-[#eff6ff] tw-text-primary tw-px-2 tw-py-0.5 tw-rounded tw-text-xs tw-font-bold">
+                                    Cardiologia <button type="button"
+                                        class="material-symbols-outlined tw-text-xs tw-bg-transparent tw-border-none tw-p-0 tw-cursor-pointer">close</button>
                                 </span>
                                 <span
-                                    class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-[#eff6ff] tw-text-primary tw-px-2 tw-py-0.5 tw-rounded tw-text-xs tw-font-bold tw-border tw-border-[#ddd]">
-                                    Geriatria <button class="material-symbols-outlined tw-text-xs">close</button>
+                                    class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-[#eff6ff] tw-text-primary tw-px-2 tw-py-0.5 tw-rounded tw-text-xs tw-font-bold">
+                                    Geriatria <button type="button"
+                                        class="material-symbols-outlined tw-text-xs tw-bg-transparent tw-border-none tw-p-0 tw-cursor-pointer">close</button>
                                 </span>
-                                <button
-                                    class="tw-text-xs tw-text-slate-400 tw-font-bold hover:tw-text-primary tw-ml-auto">+
+                                <button type="button"
+                                    class="tw-text-xs tw-text-slate-400 tw-font-bold hover:tw-text-primary tw-ml-auto tw-bg-transparent tw-border-none tw-cursor-pointer">+
                                     Selecionar</button>
                             </div>
                         </div>
                         <div class="tw-space-y-1.5 md:tw-col-span-2 lg:tw-col-span-3">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Biografia
-                                /
-                                Descrição
-                                Profissional</label>
+                                / Descrição Profissional</label>
                             <textarea
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-md tw-px-4 tw-py-3 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-px-4 tw-py-3 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
                                 placeholder="Conte um pouco sobre a experiência do profissional..." rows="3"></textarea>
                         </div>
+
                         <div class="md:tw-col-span-2 lg:tw-col-span-3 tw-pt-6 tw-flex tw-justify-end tw-gap-3">
                             <button
-                                class="tw-px-6 tw-h-[38px] tw-rounded-lg tw-font-bold tw-transition-all tw-duration-200"
-                                style="background:#e0e0e0; color:#333;"
-                                type="button">Cancelar</button>
+                                class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-transition-all tw-duration-200 tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center"
+                                style="background:#e0e0e0; color:#333;" type="button">Cancelar</button>
                             <button
-                                class="tw-px-10 tw-h-[38px] tw-rounded-lg tw-font-bold tw-transition-all tw-duration-200 tw-shadow-sm hover:tw-brightness-110 active:tw-scale-95"
-                                style="background:#34a853; color:white;"
-                                type="submit">Salvar Especialista</button>
+                                class="tw-h-[38px] tw-px-10 tw-rounded-[8px] tw-font-bold tw-transition-all tw-duration-200 tw-shadow-sm hover:tw-brightness-110 active:tw-scale-95 tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center"
+                                style="background:#34a853; color:white;" type="submit">Salvar Especialista</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </main>
+
     <script>
         let lastHeight = 0;
         let resizeTimer;
 
         function sendHeight() {
-            // Usa offsetHeight para evitar loop de scrollHeight
             const height = document.body.offsetHeight;
             const delta = Math.abs(height - lastHeight);
-
-            // Threshold de 15px para estabilidade
             if (delta > 15 || lastHeight === 0) {
                 lastHeight = height;
                 window.parent.postMessage({ type: 'resize-iframe', height: height }, '*');
@@ -461,8 +370,9 @@
             const content1 = document.getElementById('content-1');
             const content2 = document.getElementById('content-2');
 
-            const activeClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-md tw-bg-white tw-text-primary tw-font-bold tw-shadow-sm tw-border tw-border-[#ddd] tw-transition-all tw-duration-200 tw-text-sm";
-            const inactiveClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-md tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm";
+            // CLASSES DAS ABAS NO JAVASCRIPT CORRIGIDAS (Azul, Letra Branca, Sem Borda)
+            const activeClass = "tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-[#1a73e8] tw-text-white tw-font-bold tw-shadow-sm tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer hover:tw-brightness-110";
+            const inactiveClass = "tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-transparent tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer";
 
             if (tab === 1) {
                 btn1.className = activeClass;
@@ -477,7 +387,6 @@
                 content2.style.display = "block";
                 content2.className = "tw-fade-in-smooth";
             }
-            // Dispara redimensionamento após troca de aba
             debouncedSendHeight();
         }
 
