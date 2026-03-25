@@ -100,6 +100,31 @@
         .primary-gradient {
             background: linear-gradient(135deg, #004e5f 0%, #13677b 100%);
         }
+
+        /* Bloqueio estrito de rolagem interna */
+        html,
+        body {
+            overflow: hidden !important;
+            height: auto !important;
+            min-height: 100% !important;
+        }
+
+        /* Animação suave de fade-in */
+        .tw-fade-in-smooth {
+            animation: fadeInSmooth 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeInSmooth {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -131,12 +156,13 @@
                         Estrutura Hierárquica
                     </h3>
                     <button onclick="window.parent.abrirModal('modal-nova-especialidade')"
-                        class="primary-gradient tw-text-white tw-px-5 tw-py-2 tw-rounded-xl tw-text-sm tw-font-semibold tw-flex tw-items-center tw-gap-2 tw-shadow-lg tw-shadow-primary/10">
+                        class="primary-gradient tw-text-white tw-px-5 tw-py-2 tw-rounded-xl tw-text-sm tw-font-semibold tw-flex tw-items-center tw-gap-2 tw-shadow-lg tw-shadow-primary/10 tw-transition-all tw-duration-200 hover:tw-brightness-110 active:tw-scale-95">
                         <span class="material-symbols-outlined tw-text-sm">add_circle</span>
                         Nova Especialidade
                     </button>
                 </div>
-                <div class="tw-bg-surface-container-low tw-rounded-xl tw-overflow-hidden">
+                <div
+                    class="tw-bg-surface-container-low tw-rounded-xl tw-overflow-hidden tw-transition-all tw-duration-200 hover:tw-shadow-md">
                     <div
                         class="tw-p-6 tw-flex tw-flex-col sm:tw-flex-row tw-items-start sm:tw-items-center tw-justify-between tw-border-l-4 tw-border-primary tw-bg-surface-container-lowest tw-gap-4">
                         <div class="tw-flex tw-items-center tw-gap-4">
@@ -176,13 +202,13 @@
                                     </div>
                                 </div>
                                 <button
-                                    class="tw-bg-primary/5 tw-text-primary tw-px-3 tw-py-1.5 tw-rounded-lg tw-text-xs tw-font-bold hover:tw-bg-primary/10 tw-transition-colors">
+                                    class="tw-bg-primary/5 tw-text-primary tw-px-3 tw-py-1.5 tw-rounded-lg tw-text-xs tw-font-bold tw-transition-all tw-duration-200 hover:tw-bg-primary hover:tw-text-white active:tw-scale-95">
                                     Novo Produto
                                 </button>
                             </div>
                             <div class="tw-grid tw-grid-cols-1 xl:tw-grid-cols-2 tw-gap-4">
                                 <div
-                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-xl tw-border tw-border-transparent hover:tw-border-outline-variant/30 tw-transition-all tw-shadow-sm">
+                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-xl tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 hover:tw-ring-primary/40 tw-transition-all tw-duration-200 tw-shadow-sm hover:tw-shadow-md">
                                     <div class="tw-flex tw-justify-between tw-items-start tw-mb-3">
                                         <div>
                                             <span
@@ -217,14 +243,14 @@
                                                 <span class="material-symbols-outlined tw-text-sm">settings</span>
                                             </button>
                                             <button
-                                                class="tw-p-1.5 hover:tw-bg-error-container tw-text-error tw-rounded-lg tw-transition-colors">
+                                                class="tw-p-1.5 hover:tw-bg-error/10 tw-text-error tw-rounded-lg tw-transition-all tw-duration-200">
                                                 <span class="material-symbols-outlined tw-text-sm">delete</span>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div
-                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-xl tw-border tw-border-transparent hover:tw-border-outline-variant/30 tw-transition-all tw-shadow-sm">
+                                    class="tw-bg-surface-container-lowest tw-p-5 tw-rounded-xl tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 hover:tw-ring-primary/40 tw-transition-all tw-duration-200 tw-shadow-sm hover:tw-shadow-md">
                                     <div class="tw-flex tw-justify-between tw-items-start tw-mb-3">
                                         <div>
                                             <span
@@ -255,7 +281,7 @@
                                                 <span class="material-symbols-outlined tw-text-sm">settings</span>
                                             </button>
                                             <button onclick="window.parent.abrirModal('modal-excluir-especialidade')"
-                                                class="tw-p-1.5 hover:tw-bg-error-container tw-text-error tw-rounded-lg tw-transition-colors">
+                                                class="tw-p-1.5 hover:tw-bg-error/10 tw-text-error tw-rounded-lg tw-transition-all tw-duration-200">
                                                 <span class="material-symbols-outlined tw-text-sm">delete</span>
                                             </button>
                                         </div>
@@ -342,7 +368,7 @@
                             <label class="tw-text-[11px] tw-font-bold tw-text-outline tw-uppercase tw-ml-1">Nome
                                 Completo</label>
                             <input
-                                class="tw-w-full tw-bg-surface-container-lowest tw-border-none tw-rounded-xl tw-px-4 tw-py-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary tw-transition-all tw-shadow-sm"
+                                class="tw-w-full tw-bg-surface-container-lowest tw-border-0 tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 focus:tw-ring-2 focus:tw-ring-primary tw-rounded-xl tw-px-4 tw-py-3 tw-text-sm tw-transition-all tw-duration-200 tw-shadow-sm"
                                 placeholder="Ex: Dr. Roberto Silva" type="text" />
                         </div>
                         <div class="tw-space-y-1.5">
@@ -398,7 +424,7 @@
                                 class="tw-px-6 tw-py-2.5 tw-rounded-xl tw-text-on-surface-variant tw-font-bold hover:tw-bg-surface-container-high tw-transition-all"
                                 type="button">Cancelar</button>
                             <button
-                                class="primary-gradient tw-px-10 tw-py-2.5 tw-rounded-xl tw-text-white tw-font-bold tw-shadow-xl tw-shadow-primary/20"
+                                class="primary-gradient tw-px-10 tw-py-2.5 tw-rounded-xl tw-text-white tw-font-bold tw-transition-all tw-duration-200 tw-shadow-xl tw-shadow-primary/10 hover:tw-brightness-110 active:tw-scale-95"
                                 type="submit">Salvar Especialista</button>
                         </div>
                     </form>
@@ -407,28 +433,57 @@
         </div>
     </main>
     <script>
+        let lastHeight = 0;
+        let resizeTimer;
+
+        function sendHeight() {
+            // Usa offsetHeight para evitar loop de scrollHeight
+            const height = document.body.offsetHeight;
+            const delta = Math.abs(height - lastHeight);
+
+            // Threshold de 15px para estabilidade
+            if (delta > 15 || lastHeight === 0) {
+                lastHeight = height;
+                window.parent.postMessage({ type: 'resize-iframe', height: height }, '*');
+            }
+        }
+
+        const debouncedSendHeight = () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(sendHeight, 150);
+        };
+
         function switchTab(tab) {
             const btn1 = document.getElementById('tab-1');
             const btn2 = document.getElementById('tab-2');
             const content1 = document.getElementById('content-1');
             const content2 = document.getElementById('content-2');
 
-            const activeClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-full tw-bg-surface-container-lowest tw-text-primary tw-font-bold tw-shadow-sm tw-transition-all tw-text-sm";
-            const inactiveClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-full tw-text-on-surface-variant tw-font-medium hover:tw-bg-surface-container-high tw-transition-all tw-text-sm";
+            const activeClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-full tw-bg-surface-container-lowest tw-text-primary tw-font-bold tw-shadow-sm tw-transition-all tw-duration-200 tw-text-sm";
+            const inactiveClass = "tw-px-6 md:tw-px-8 tw-py-2.5 tw-rounded-full tw-text-on-surface-variant tw-font-medium hover:tw-bg-surface-container-high hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm";
 
             if (tab === 1) {
                 btn1.className = activeClass;
                 btn2.className = inactiveClass;
                 content1.style.display = "block";
+                content1.className = "tw-space-y-8 tw-fade-in-smooth";
                 content2.style.display = "none";
             } else {
                 btn2.className = activeClass;
                 btn1.className = inactiveClass;
                 content1.style.display = "none";
                 content2.style.display = "block";
+                content2.className = "tw-fade-in-smooth";
             }
+            // Dispara redimensionamento após troca de aba
+            debouncedSendHeight();
         }
 
+        window.onload = () => {
+            sendHeight();
+            const observer = new ResizeObserver(debouncedSendHeight);
+            observer.observe(document.body);
+        };
     </script>
 </body>
 

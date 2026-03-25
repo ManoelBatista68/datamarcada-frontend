@@ -468,8 +468,8 @@
                     <span class="material-icons" style="font-size:16px">arrow_back</span> Voltar à Agenda
                 </button>
             </div>
-            <iframe src="./tela_cadastro_mockup.html"
-                style="width: 100%; height: calc(100vh - 50px); border: none; border-radius: 0 0 8px 8px;"></iframe>
+            <iframe src="./tela_cadastro_mockup.html" scrolling="no"
+                style="width: 100%; height: calc(100vh - 50px); border: none; border-radius: 0 0 8px 8px; overflow: hidden;"></iframe>
         </div>
 
         <button class="fab mobile-only" id="fab-novo" onclick="abrirModalNovoBloco()"
@@ -747,6 +747,26 @@
             const modal = document.getElementById(id);
             if (modal) modal.style.display = 'none';
         }
+
+        // REDIMENSIONAMENTO DINÂMICO (Hotfix Anti-Loop)
+        let lastIframeHeight = 0;
+        window.addEventListener('message', function (e) {
+            if (e.data && e.data.type === 'resize-iframe') {
+                const iframe = document.querySelector('iframe[src*="tela_cadastro_mockup"]');
+                if (iframe) {
+                    const receivedHeight = e.data.height;
+                    const delta = Math.abs(receivedHeight - lastIframeHeight);
+
+                    // Threshold de 15px para evitar micro-oscilações e loop de feedback
+                    if (delta > 15 || lastIframeHeight === 0) {
+                        const minHeight = Math.max(800, window.innerHeight - 64);
+                        const finalHeight = Math.max(minHeight, receivedHeight);
+                        lastIframeHeight = finalHeight;
+                        iframe.style.height = finalHeight + 'px';
+                    }
+                }
+            }
+        });
     </script>
 
     <!-- Modais para o iFrame de Cadastro (Breakout) -->
@@ -794,7 +814,7 @@
                                     for="specialty-name">Nome da Especialidade <span
                                         class="tw-text-error tw-font-bold">*</span></label>
                                 <input
-                                    class="tw-w-full tw-bg-surface-container-lowest tw-border-0 tw-ring-1 tw-ring-outline/20 focus:tw-ring-2 focus:tw-ring-primary tw-rounded-xl tw-px-4 tw-py-3 tw-text-on-surface placeholder:tw-text-outline/50 tw-transition-all tw-outline-none"
+                                    class="tw-w-full tw-bg-surface-container-lowest tw-border-0 tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 focus:tw-ring-2 focus:tw-ring-primary tw-rounded-xl tw-px-4 tw-py-3 tw-text-on-surface placeholder:tw-text-outline/50 tw-transition-all tw-duration-200 tw-outline-none"
                                     id="specialty-name" placeholder="Ex: Dermatologia" required="" type="text" />
                             </div>
                             <div class="tw-space-y-2 tw-flex-1">
@@ -803,7 +823,7 @@
                                     for="company-code">CÓDIGO EMPRESA <span
                                         class="tw-text-error tw-font-bold">*</span></label>
                                 <input
-                                    class="tw-w-full tw-bg-surface-container-lowest tw-border-0 tw-ring-1 tw-ring-outline/20 focus:tw-ring-2 focus:tw-ring-primary tw-rounded-xl tw-px-4 tw-py-3 tw-text-on-surface placeholder:tw-text-outline/50 tw-transition-all tw-outline-none"
+                                    class="tw-w-full tw-bg-surface-container-lowest tw-border-0 tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 focus:tw-ring-2 focus:tw-ring-primary tw-rounded-xl tw-px-4 tw-py-3 tw-text-on-surface placeholder:tw-text-outline/50 tw-transition-all tw-duration-200 tw-outline-none"
                                     id="company-code" placeholder="Ex: EMP-1234" required="" type="text" />
                             </div>
                         </div>
@@ -812,7 +832,7 @@
                                 class="tw-px-6 tw-py-2.5 tw-rounded-xl tw-font-bold tw-text-on-surface-variant hover:tw-bg-surface-container-high tw-transition-colors tw-text-sm tw-bg-transparent tw-border-0 tw-cursor-pointer"
                                 onclick="fecharModal('modal-nova-especialidade')">Cancelar</button>
                             <button
-                                class="tw-bg-primary tw-text-white tw-border-0 tw-px-6 tw-py-2.5 tw-rounded-xl tw-font-bold tw-text-sm tw-shadow-sm tw-transition-all active:tw-scale-95 tw-flex tw-items-center tw-gap-2 tw-cursor-pointer"><span>Criar
+                                class="tw-bg-primary tw-text-white tw-border-0 tw-px-6 tw-py-2.5 tw-rounded-xl tw-font-bold tw-text-sm tw-shadow-sm tw-shadow-primary/20 tw-transition-all tw-duration-200 hover:tw-brightness-110 active:tw-scale-95 tw-flex tw-items-center tw-gap-2 tw-cursor-pointer"><span>Criar
                                     Especialidade</span></button>
                         </div>
                         <div class="tw-pt-4 tw-space-y-4 tw-border-t tw-border-outline/10 tw-text-left">
@@ -828,7 +848,7 @@
                             </div>
                             <div class="tw-space-y-2 tw-max-h-40 tw-overflow-y-auto tw-pr-2 tw-custom-scrollbar">
                                 <div
-                                    class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-surface-container-low tw-rounded-xl tw-group tw-transition-all">
+                                    class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-surface-container-low tw-rounded-xl tw-group tw-transition-all tw-duration-200 hover:tw-bg-surface-container-high">
                                     <div class="tw-flex tw-items-center tw-gap-2">
                                         <span class="tw-text-sm tw-font-medium tw-text-on-surface">Clínica Médica</span>
                                         <span
@@ -846,7 +866,7 @@
                                     </div>
                                 </div>
                                 <div
-                                    class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-surface-container-low tw-rounded-xl tw-group tw-transition-all">
+                                    class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-surface-container-low tw-rounded-xl tw-group tw-transition-all tw-duration-200 hover:tw-bg-surface-container-high">
                                     <div class="tw-flex tw-items-center tw-gap-2">
                                         <span class="tw-text-sm tw-font-medium tw-text-on-surface">Cardiologia</span>
                                         <span
@@ -864,7 +884,7 @@
                                     </div>
                                 </div>
                                 <div
-                                    class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-surface-container-low tw-rounded-xl tw-group tw-transition-all">
+                                    class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-surface-container-low tw-rounded-xl tw-group tw-transition-all tw-duration-200 hover:tw-bg-surface-container-high">
                                     <div class="tw-flex tw-items-center tw-gap-2">
                                         <span class="tw-text-sm tw-font-medium tw-text-on-surface">Pediatria</span>
                                         <span
@@ -916,7 +936,7 @@
                                     da
                                     Especialidade</label>
                                 <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-slate-200 focus:tw-border-primary focus:tw-ring-4 focus:tw-ring-primary/10 tw-rounded-lg tw-px-4 tw-py-3 tw-text-slate-900 tw-font-medium tw-transition-all tw-outline-none"
+                                    class="tw-w-full tw-bg-white tw-border-0 tw-ring-1 tw-ring-inset tw-ring-outline-variant/30 focus:tw-ring-2 focus:tw-ring-primary tw-rounded-lg tw-px-4 tw-py-3 tw-text-slate-900 tw-font-medium tw-transition-all tw-duration-200 tw-outline-none"
                                     placeholder="Ex: Dermatologia" type="text" value="Cardiologia" />
                             </div>
                             <div>
@@ -931,7 +951,7 @@
                             </div>
                             <div class="tw-flex tw-items-center tw-gap-3 tw-pt-2">
                                 <button
-                                    class="tw-flex-1 tw-bg-primary tw-text-white tw-py-3 tw-rounded-lg tw-font-semibold tw-text-sm tw-transition-all tw-shadow-md tw-border-0 tw-cursor-pointer">Salvar
+                                    class="tw-flex-1 tw-bg-primary tw-text-white tw-py-3 tw-rounded-lg tw-font-semibold tw-text-sm tw-transition-all tw-duration-200 tw-shadow-md tw-shadow-primary/20 hover:tw-brightness-110 active:tw-scale-95 tw-border-0 tw-cursor-pointer">Salvar
                                     Alterações</button>
                                 <button
                                     class="tw-flex-1 tw-bg-white tw-border tw-border-slate-200 tw-text-slate-600 hover:tw-bg-slate-50 tw-py-3 tw-rounded-lg tw-font-semibold tw-text-sm tw-transition-all tw-cursor-pointer"
