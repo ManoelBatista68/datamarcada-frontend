@@ -1528,6 +1528,115 @@ async function carregar() {
     }
 }
 
+/**
+ * Busca Especialidades e Sub-especialidades em paralelo e renderiza a hierarquia no Iframe de Cadastros.
+ * Este método utiliza a estratégia de "Iframe Bridge" para injetar dados reais no design Tailwind do mockup.
+ */
+async function carregarEstruturaHierarquica() {
+    console.log("📂 [HIERARQUIA] Iniciando carga dinâmica...");
+    const iframe = document.querySelector('iframe[src*="tela_cadastro_mockup"]');
+    if (!iframe) return;
+
+    try {
+        // Busca paralela para máxima performance
+        const [resEsp, resSub] = await Promise.all([
+            ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'listar_especialidades_geral', codigoempresa: userCodigoEmpresa }),
+            ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'listar_sub_especialidades', codigoempresa: userCodigoEmpresa })
+        ]);
+
+        if (!resEsp.sucesso || !resSub.sucesso) {
+            console.error("❌ [HIERARQUIA] Falha na busca de dados:", resEsp.erro || resSub.erro);
+            return;
+        }
+
+        const especialidades = resEsp.dados || [];
+        const subEspecialidades = resSub.dados || [];
+
+        // Agrupar sub-especialidades por pai (Especialidade)
+        const subMap = {};
+        subEspecialidades.forEach(s => {
+            if (!subMap[s.especialidade_id]) subMap[s.especialidade_id] = [];
+            subMap[s.especialidade_id].push(s);
+        });
+
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        const container = doc.getElementById('container-hierarquia');
+        if (!container) return;
+
+        if (especialidades.length === 0) {
+            container.innerHTML = `
+                <div class="tw-p-10 tw-text-center tw-text-slate-400 tw-italic tw-bg-white tw-rounded-lg tw-border-2 tw-border-dashed tw-border-slate-100">
+                    Nenhuma especialidade cadastrada ainda. Use o botão acima para começar.
+                </div>`;
+            return;
+        }
+
+        let html = '';
+        especialidades.forEach(esp => {
+            const subs = subMap[esp.id] || [];
+
+            html += `
+            <div class="tw-bg-white tw-rounded-[8px] tw-overflow-hidden tw-border tw-border-[#eee] tw-shadow-sm tw-fade-in-smooth">
+                <div class="tw-p-6 tw-flex tw-flex-col sm:tw-flex-row tw-items-start sm:tw-items-center tw-justify-between tw-border-l-4 tw-border-primary tw-bg-white tw-gap-4">
+                    <div class="tw-flex tw-items-center tw-gap-4">
+                        <div class="tw-w-12 tw-h-12 tw-rounded-[8px] tw-bg-[#eff6ff] tw-flex tw-items-center tw-justify-center tw-text-primary tw-shrink-0 tw-border tw-border-[#ddd]">
+                            <span class="material-symbols-outlined">medical_services</span>
+                        </div>
+                        <div>
+                            <h4 class="tw-font-bold tw-text-on-surface tw-text-lg tw-leading-tight">${escapeHtml(esp.nome)}</h4>
+                            <p class="tw-text-xs tw-font-mono tw-text-outline tw-uppercase tw-tracking-wider">ID: ${esp.id}</p>
+                        </div>
+                    </div>
+                    <div class="tw-flex tw-gap-2 tw-w-full sm:tw-w-auto tw-justify-end">
+                        <button onclick="window.parent.prepararEdicaoEspecialidade(${esp.id}, '${escapeHtml(esp.nome)}')"
+                            class="tw-h-[38px] tw-w-[38px] tw-flex tw-items-center tw-justify-center hover:tw-bg-[#f2f4f6] tw-rounded-[8px] tw-text-primary tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <button onclick="window.parent.prepararNovoSubEspecialidade(${esp.id}, '${escapeHtml(esp.nome)}')"
+                            class="tw-bg-[#eff6ff] tw-text-primary tw-h-[38px] tw-px-4 tw-rounded-[8px] tw-text-xs tw-font-bold tw-flex tw-items-center tw-justify-center tw-gap-2 tw-transition-colors hover:tw-bg-[#e0f2fe] tw-border-none tw-cursor-pointer">
+                            <span class="material-symbols-outlined tw-text-sm">add</span>
+                            Adicionar Sub
+                        </button>
+                    </div>
+                </div>
+                ${subs.length > 0 ? `
+                <div class="tw-pl-6 md:tw-pl-12 tw-pr-6 tw-py-4 tw-space-y-3 tw-bg-slate-50/30">
+                    ${subs.map(sub => `
+                        <div class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-white tw-rounded-[8px] tw-border tw-border-slate-100 hover:tw-border-primary/20 tw-transition-colors">
+                            <div class="tw-flex tw-items-center tw-gap-3">
+                                <span class="material-symbols-outlined tw-text-primary/40 tw-text-lg">subdirectory_arrow_right</span>
+                                <h5 class="tw-font-semibold tw-text-on-surface tw-text-sm">${escapeHtml(sub.nome)}</h5>
+                            </div>
+                            <div class="tw-flex tw-gap-2">
+                                <button onclick="window.parent.prepararEdicaoSubEspecialidade(${sub.id}, '${escapeHtml(sub.nome)}', ${esp.id})"
+                                    class="tw-h-[30px] tw-w-[30px] tw-flex tw-items-center tw-justify-center hover:tw-bg-slate-100 tw-rounded-full tw-text-slate-400 tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
+                                    <span class="material-symbols-outlined tw-text-sm">edit</span>
+                                </button>
+                                <button onclick="window.parent.prepararExclusaoSubEspecialidade(${sub.id}, '${escapeHtml(sub.nome)}')"
+                                    class="tw-h-[30px] tw-w-[30px] tw-flex tw-items-center tw-justify-center hover:tw-bg-red-50 tw-text-error/60 tw-rounded-full tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
+                                    <span class="material-symbols-outlined tw-text-sm">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+            </div>`;
+        });
+
+        container.innerHTML = html;
+
+        // Sincronizar altura do iframe após injeção
+        if (iframe.contentWindow && typeof iframe.contentWindow.sendHeight === 'function') {
+            iframe.contentWindow.sendHeight();
+        }
+
+    } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
+        console.error("❌ [HIERARQUIA] Erro fatal na renderização:", e);
+    }
+}
+
 function alternarTela(tela) {
     if (document.getElementById('menu-principal')) document.getElementById('menu-principal').classList.remove('show-menu');
     if (document.getElementById('menu-periodo')) document.getElementById('menu-periodo').classList.remove('show-menu');
@@ -1544,6 +1653,7 @@ function alternarTela(tela) {
         if (document.getElementById('view-cadastro')) document.getElementById('view-cadastro').style.display = 'block';
         if (document.getElementById('fab-novo')) document.getElementById('fab-novo').style.display = 'none';
         if (typeof fecharMenuSeMobile === 'function') fecharMenuSeMobile('menu-principal');
+        carregarEstruturaHierarquica();
     } else {
         if (document.getElementById('view-periodo')) document.getElementById('view-periodo').style.display = 'none';
         if (document.getElementById('view-cadastro')) document.getElementById('view-cadastro').style.display = 'none';
@@ -1759,6 +1869,7 @@ async function salvarEspecialidade() {
             if (typeof fecharModal === 'function') fecharModal('modal-nova-especialidade');
             mostrarMensagem("Sucesso", "Especialidade criada com o código: " + (res.dados?.codigo_especialidade || "Gerado pelo BD"));
             await carregarEspecialidades();
+            await carregarEstruturaHierarquica();
         } else {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
@@ -1777,7 +1888,10 @@ async function excluirEspecialidade(id) {
                 acao: 'excluir_especialidades',
                 id: id
             });
-            if (res.sucesso) carregarEspecialidades();
+            if (res.sucesso) {
+                await carregarEspecialidades();
+                await carregarEstruturaHierarquica();
+            }
         } catch (e) {
             if (e.message === "SESSION_EXPIRED") return;
             mostrarMensagem("Erro", "Falha ao excluir especialidade.");
@@ -1869,6 +1983,7 @@ async function salvarSubEspecialidade() {
             if (typeof fecharModal === 'function') fecharModal('modal-nova-subespecialidade');
             mostrarMensagem("Sucesso", "Sub-especialidade criada com o código: " + (res.dados?.codigo_sub_especialidade || "Gerado pelo BD"));
             await carregarSubEspecialidades(espId);
+            await carregarEstruturaHierarquica();
         } else {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
@@ -1888,7 +2003,10 @@ async function excluirSubEspecialidade(id) {
                 acao: 'excluir_sub_especialidades',
                 id: id
             });
-            if (res.sucesso) carregarSubEspecialidades(espId);
+            if (res.sucesso) {
+                await carregarSubEspecialidades(espId);
+                await carregarEstruturaHierarquica();
+            }
         } catch (e) {
             if (e.message === "SESSION_EXPIRED") return;
             mostrarMensagem("Erro", "Falha ao excluir sub-especialidade.");
@@ -1916,12 +2034,23 @@ function filtrarListaSubEspecialidades() {
     });
 }
 
-function prepararEdicaoSubEspecialidade(id, nome) {
+function prepararEdicaoSubEspecialidade(id, nome, espId) {
     const hiddenId = document.getElementById('edit-sub-especialidade-id');
     const inputNome = document.getElementById('edit-sub-especialidade-nome');
+    const selectPai = document.getElementById('edit-sub-especialidade-pai') || document.getElementById('sub-especialidade-pai');
+
     if (hiddenId) hiddenId.value = id;
     if (inputNome) inputNome.value = nome;
+    if (selectPai && espId) selectPai.value = espId;
+
     if (typeof abrirModal === 'function') abrirModal('modal-editar-subespecialidade');
+}
+
+function prepararNovoSubEspecialidade(espId, espNome) {
+    const selectPai = document.getElementById('sub-especialidade-pai') || document.getElementById('select-pai-especialidade');
+    if (selectPai && espId) selectPai.value = espId;
+
+    if (typeof abrirModal === 'function') abrirModal('modal-nova-subespecialidade');
 }
 
 function prepararExclusaoSubEspecialidade(id, nome) {
@@ -1953,6 +2082,7 @@ async function atualizarSubEspecialidade() {
             fecharModal('modal-editar-subespecialidade');
             mostrarMensagem("Sucesso", "Sub-especialidade atualizada.");
             await carregarSubEspecialidades(espId);
+            await carregarEstruturaHierarquica();
         } else {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
@@ -1982,6 +2112,7 @@ async function confirmarExclusaoSubEspecialidade() {
         if (res.sucesso) {
             fecharModal('modal-excluir-subespecialidade');
             await carregarSubEspecialidades(espId);
+            await carregarEstruturaHierarquica();
         } else {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
@@ -2043,6 +2174,7 @@ async function atualizarEspecialidade() {
             fecharModal('modal-editar-especialidade');
             mostrarMensagem("Sucesso", "Especialidade atualizada com sucesso.");
             await carregarEspecialidades();
+            await carregarEstruturaHierarquica();
         } else {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
@@ -2071,6 +2203,7 @@ async function confirmarExclusaoEspecialidade() {
             fecharModal('modal-excluir-especialidade');
             mostrarMensagem("Sucesso", "Especialidade removida.");
             await carregarEspecialidades();
+            await carregarEstruturaHierarquica();
         } else {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
