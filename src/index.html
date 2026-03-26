@@ -759,12 +759,11 @@
         });
     </script>
 
-    <div id="modal-nova-especialidade" class="tw-fixed tw-inset-0 tw-bg-slate-900/60 tw-backdrop-blur-sm"
-        style="display: none; z-index: 50000;">
-        <div class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-overflow-hidden"
-            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: calc(100% - 32px); max-width: 500px; max-height: 90vh;">
+    <div id="modal-nova-especialidade" class="modal-overlay" style="display: none; z-index: 50000;">
+        <div class="modal-box"
+            style="max-width: 500px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
 
-            <div class="tw-p-6 tw-pb-4 tw-bg-white tw-border-b tw-border-[#eee] tw-flex-shrink-0 tw-relative tw-z-10">
+            <div class="tw-p-6 tw-bg-white tw-border-b tw-border-[#eee] tw-shrink-0 tw-relative">
                 <span
                     class="material-icons tw-absolute tw-top-6 tw-right-6 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
                     onclick="fecharModal('modal-nova-especialidade')">close</span>
@@ -772,7 +771,7 @@
                 <p class="tw-text-[12px] tw-text-slate-500 tw-m-0">Cadastre e gerencie as especialidades principais.</p>
             </div>
 
-            <div class="tw-p-6 tw-overflow-y-auto tw-custom-scrollbar tw-flex-1">
+            <div class="tw-p-6 tw-overflow-y-auto tw-custom-scrollbar tw-flex-1" style="max-height: 65vh;">
                 <div class="tw-space-y-4">
                     <div class="tw-space-y-1.5">
                         <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
@@ -910,12 +909,11 @@
         </div>
     </div>
 
-    <div id="modal-nova-subespecialidade" class="tw-fixed tw-inset-0 tw-bg-slate-900/60 tw-backdrop-blur-sm"
-        style="display: none; z-index: 50030;">
-        <div class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-overflow-hidden"
-            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: calc(100% - 32px); max-width: 500px; max-height: 90vh;">
+    <div id="modal-nova-subespecialidade" class="modal-overlay" style="display: none; z-index: 50030;">
+        <div class="modal-box"
+            style="max-width: 500px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
 
-            <div class="tw-p-6 tw-pb-4 tw-bg-white tw-border-b tw-border-[#eee] tw-flex-shrink-0 tw-relative tw-z-10">
+            <div class="tw-p-6 tw-bg-white tw-border-b tw-border-[#eee] tw-shrink-0 tw-relative">
                 <span
                     class="material-icons tw-absolute tw-top-6 tw-right-6 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
                     onclick="fecharModal('modal-nova-subespecialidade')">close</span>
@@ -923,7 +921,7 @@
                 <p class="tw-text-[12px] tw-text-slate-500 tw-m-0">Cadastre e gerencie as sub-categorias do sistema.</p>
             </div>
 
-            <div class="tw-p-6 tw-overflow-y-auto tw-custom-scrollbar tw-flex-1">
+            <div class="tw-p-6 tw-overflow-y-auto tw-custom-scrollbar tw-flex-1" style="max-height: 65vh;">
                 <div class="tw-space-y-4">
                     <div class="tw-space-y-1.5">
                         <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Especialidade
