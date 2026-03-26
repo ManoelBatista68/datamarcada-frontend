@@ -75,8 +75,8 @@ class ApiClient {
 
                 const msg = (errorData.error_description || errorData.message || errorData.error || "").toLowerCase();
 
-                // DETECÇÃO GLOBAL DE SESSÃO EXPIRADA (Broad Scope)
-                if (response.status === 401 || response.status === 403 || msg.includes("jwt") || msg.includes("token") || msg.includes("expired")) {
+                // DETECÇÃO GLOBAL DE SESSÃO EXPIRADA (Broad Scope - Apenas para rotas não públicas)
+                if (!isPublicRoute && (response.status === 401 || response.status === 403 || msg.includes("jwt") || msg.includes("token") || msg.includes("expired"))) {
                     this.handleSessionExpired();
                     throw new Error("SESSION_EXPIRED");
                 }
