@@ -1602,20 +1602,63 @@ async function carregarEstruturaHierarquica() {
                 ${subs.length > 0 ? `
                 <div class="tw-pl-6 md:tw-pl-12 tw-pr-6 tw-py-4 tw-space-y-3 tw-bg-slate-50/30">
                     ${subs.map(sub => `
-                        <div class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-white tw-rounded-[8px] tw-border tw-border-slate-100 hover:tw-border-primary/20 tw-transition-colors">
-                            <div class="tw-flex tw-items-center tw-gap-3">
-                                <span class="material-symbols-outlined tw-text-primary/40 tw-text-lg">subdirectory_arrow_right</span>
-                                <h5 class="tw-font-semibold tw-text-on-surface tw-text-sm">${escapeHtml(sub.nome)}</h5>
+                        <div class="tw-bg-white tw-rounded-[8px] tw-border tw-border-slate-200 tw-shadow-sm tw-overflow-hidden">
+                            <div class="tw-flex tw-items-center tw-justify-between tw-p-4 tw-bg-slate-50/50">
+                                <div class="tw-flex tw-items-center tw-gap-3">
+                                    <span class="material-symbols-outlined tw-text-primary/40 tw-text-lg">subdirectory_arrow_right</span>
+                                    <div>
+                                        <h5 class="tw-font-bold tw-text-on-surface tw-text-sm">${escapeHtml(sub.nome)}</h5>
+                                        <p class="tw-text-[10px] tw-font-mono tw-text-outline tw-uppercase">Sub ID: ${sub.id}</p>
+                                    </div>
+                                </div>
+                                <div class="tw-flex tw-gap-2">
+                                    <button onclick="window.parent.abrirModal('modal-novo-produto')"
+                                        class="tw-bg-[#eff6ff] tw-text-primary tw-h-[32px] tw-px-3 tw-rounded-[6px] tw-text-[10px] tw-font-bold tw-transition-colors hover:tw-bg-primary hover:tw-text-white tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-gap-1">
+                                        <span class="material-symbols-outlined tw-text-sm">add</span> Novo Produto
+                                    </button>
+                                    <button onclick="window.parent.prepararEdicaoSubEspecialidade(${sub.id}, '${escapeHtml(sub.nome)}', ${esp.id})"
+                                        class="tw-h-[32px] tw-w-[32px] tw-flex tw-items-center tw-justify-center hover:tw-bg-slate-200 tw-rounded-full tw-text-slate-400 tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
+                                        <span class="material-symbols-outlined tw-text-sm">edit</span>
+                                    </button>
+                                    <button onclick="window.parent.prepararExclusaoSubEspecialidade(${sub.id}, '${escapeHtml(sub.nome)}')"
+                                        class="tw-h-[32px] tw-w-[32px] tw-flex tw-items-center tw-justify-center hover:tw-bg-red-50 tw-text-error/60 tw-rounded-full tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
+                                        <span class="material-symbols-outlined tw-text-sm">delete</span>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="tw-flex tw-gap-2">
-                                <button onclick="window.parent.prepararEdicaoSubEspecialidade(${sub.id}, '${escapeHtml(sub.nome)}', ${esp.id})"
-                                    class="tw-h-[30px] tw-w-[30px] tw-flex tw-items-center tw-justify-center hover:tw-bg-slate-100 tw-rounded-full tw-text-slate-400 tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
-                                    <span class="material-symbols-outlined tw-text-sm">edit</span>
-                                </button>
-                                <button onclick="window.parent.prepararExclusaoSubEspecialidade(${sub.id}, '${escapeHtml(sub.nome)}')"
-                                    class="tw-h-[30px] tw-w-[30px] tw-flex tw-items-center tw-justify-center hover:tw-bg-red-50 tw-text-error/60 tw-rounded-full tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
-                                    <span class="material-symbols-outlined tw-text-sm">delete</span>
-                                </button>
+                            
+                            <!-- NÍVEL DE PRODUTO: Visual Estático (Mockup) conforme diretriz -->
+                            <div class="tw-p-4 tw-bg-white">
+                                <div class="tw-grid tw-grid-cols-1 xl:tw-grid-cols-2 tw-gap-4">
+                                    <div class="tw-bg-white tw-p-4 tw-rounded-[8px] tw-border tw-border-slate-100 hover:tw-border-primary/20 tw-transition-colors tw-shadow-sm">
+                                        <div class="tw-flex tw-justify-between tw-items-start tw-mb-3">
+                                            <div>
+                                                <span class="tw-text-[9px] tw-font-bold tw-text-emerald-700 tw-bg-emerald-50 tw-px-2 tw-py-0.5 tw-rounded tw-uppercase">Exame Presencial</span>
+                                                <h6 class="tw-font-bold tw-text-on-surface tw-mt-1 tw-text-sm">Ecocardiograma com Doppler</h6>
+                                                <p class="tw-text-[10px] tw-text-outline tw-font-mono">COD: PROD-9921 • ID: ${sub.id}-1</p>
+                                            </div>
+                                            <div class="tw-text-right">
+                                                <p class="tw-text-[10px] tw-text-outline tw-line-through">R$ 450,00</p>
+                                                <p class="tw-text-base tw-font-extrabold tw-text-primary tw-leading-none">R$ 380,00</p>
+                                            </div>
+                                        </div>
+                                        <p class="tw-text-[11px] tw-text-on-surface-variant tw-mb-3 tw-line-clamp-2">Exame de imagem não invasivo que utiliza ondas sonoras para criar imagens em movimento do coração.</p>
+                                        <div class="tw-flex tw-items-center tw-justify-between tw-pt-3 tw-border-t tw-border-slate-50">
+                                            <div class="tw-flex tw-items-center tw-gap-2 tw-text-[9px] tw-font-medium tw-text-on-surface-variant">
+                                                <span class="material-symbols-outlined tw-text-xs">location_on</span>
+                                                Pavilhão A, Sala 402
+                                            </div>
+                                            <div class="tw-flex tw-gap-1">
+                                                <button class="tw-h-[28px] tw-w-[28px] tw-flex tw-items-center tw-justify-center hover:tw-bg-slate-100 tw-text-slate-400 tw-rounded-md tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-not-allowed">
+                                                    <span class="material-symbols-outlined tw-text-xs">settings</span>
+                                                </button>
+                                                <button class="tw-h-[28px] tw-w-[28px] tw-flex tw-items-center tw-justify-center hover:tw-bg-red-50 tw-text-error/40 tw-rounded-md tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-not-allowed">
+                                                    <span class="material-symbols-outlined tw-text-xs">delete</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     `).join('')}
