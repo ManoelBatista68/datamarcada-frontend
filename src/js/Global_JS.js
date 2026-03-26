@@ -1589,7 +1589,7 @@ async function carregarEstruturaHierarquica() {
                         </div>
                     </div>
                     <div class="tw-flex tw-gap-2 tw-w-full sm:tw-w-auto tw-justify-end">
-                        <button onclick="window.parent.prepararNovoSubEspecialidade(${esp.id}, '${escapeHtml(esp.nome)}')"
+                        <button onclick="window.parent.prepararNovoSubEspecialidade('${esp.id}', '${escapeHtml(esp.nome)}')"
                             class="tw-bg-[#eff6ff] tw-text-primary tw-h-[38px] tw-px-4 tw-rounded-[8px] tw-text-xs tw-font-bold tw-flex tw-items-center tw-justify-center tw-gap-2 tw-transition-colors hover:tw-bg-[#e0f2fe] tw-border-none tw-cursor-pointer">
                             <span class="material-symbols-outlined tw-text-sm">add</span>
                             Adicionar Sub
