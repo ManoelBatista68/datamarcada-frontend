@@ -203,9 +203,13 @@ async function fazerLogin() {
 }
 
 function fazerLogout() {
+    // Limpeza em massa de modais (Garante que nenhum overlay obstrua o login)
+    document.querySelectorAll('[id^="modal-"]').forEach(m => m.style.display = 'none');
+
     localStorage.removeItem('appAgendaUserEmail');
     localStorage.removeItem('appAgendaUserTipo');
     localStorage.removeItem('appAgendaUserCodigoEmpresa');
+    localStorage.removeItem('saas_token_jwt'); // Garante limpeza total de segurança
 
     userEmail = "";
     tipoUsuarioAtual = "Especialista";
