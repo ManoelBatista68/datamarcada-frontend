@@ -1677,18 +1677,21 @@ function desativarSinos() { if (filtroSinoAtivo !== null) { filtroSinoAtivo = nu
 async function carregarEspecialidades() {
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
-            acao: 'listar_especialidades'
+            acao: 'listar_especialidades_geral', // Rota segura do pool
+            codigoempresa: userCodigoEmpresa     // Credencial multi-tenant
         });
         if (res.sucesso) {
             renderizarEspecialidades(res.dados);
             const selectPai = document.getElementById('sub-especialidade-pai');
             if (selectPai) {
-                selectPai.innerHTML = '<option value="">-- Selecione a Especialidade Pai --</option>';
+                selectPai.innerHTML = '<option disabled selected value="">-- Selecione a Especialidade Pai --</option>';
                 res.dados.forEach(e => {
                     selectPai.innerHTML += `<option value="${e.id}">${e.nome}</option>`;
                 });
                 selectPai.onchange = (e) => carregarSubEspecialidades(e.target.value);
             }
+            // Inicializa a UI do modal de Sub-especialidades com feedback:
+            carregarSubEspecialidades(null);
         }
     } catch (e) {
         console.error("Erro ao carregar especialidades:", e);
@@ -1762,14 +1765,16 @@ async function excluirEspecialidade(id) {
 async function carregarSubEspecialidades(espId) {
     const list = document.getElementById('lista-sub-especialidades');
     if (!espId) {
-        list.innerHTML = "Selecione uma especialidade para ver as sub-especialidades.";
+        if (list) list.innerHTML = "<p style='color: #666; font-size: 13px; text-align: center; padding: 20px;'>👆 Selecione uma Especialidade Relacionada acima para listar.</p>";
         return;
     }
-    list.innerHTML = "Carregando...";
+    if (list) list.innerHTML = "<p style='color: #1a73e8; font-size: 13px; text-align: center; padding: 20px; font-weight: bold;'>⌛ Carregando...</p>";
+
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
-            acao: 'listar_sub_especialidades_v2',
-            especialidade_id: espId
+            acao: 'listar_sub_especialidades', // Rota segura do pool
+            especialidade_id: espId,
+            codigoempresa: userCodigoEmpresa   // Credencial multi-tenant
         });
         if (res.sucesso) {
             renderizarSubEspecialidades(res.dados);
@@ -1851,7 +1856,7 @@ async function salvarSubEspecialidade() {
 }
 
 async function excluirSubEspecialidade(id) {
-    const espId = document.getElementById('select-pai-especialidade').value;
+    const espId = document.getElementById('sub-especialidade-pai').value;
     mostrarConfirmacao("Excluir Sub-Especialidade", "Deseja realmente excluir esta sub-especialidade?", async () => {
         try {
             const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
