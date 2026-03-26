@@ -1099,7 +1099,6 @@ function salvarBloco() {
             const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
                 acao: 'salvarAgendamentosEmLote',
                 email: userEmail,
-                codigoempresa: userCodigoEmpresa,
                 payload: payload
             });
 
@@ -1124,7 +1123,7 @@ function acaoMarcarAtendido(idUnico, element) {
     mostrarConfirmacao("Confirmar Atendimento", "Marcar este agendamento como ATENDIDO?", async function () {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
         try {
-            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'marcarAtendido', idUnico, codigoempresa: userCodigoEmpresa });
+            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'marcarAtendido', idUnico });
             await carregar();
         } catch (e) {
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
@@ -1137,7 +1136,7 @@ function acaoMarcarCancelado(idUnico, element) {
     mostrarConfirmacao("Cancelar Agendamento", "Deseja realmente cancelar?", async function () {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
         try {
-            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'marcarCancelado', idUnico, codigoempresa: userCodigoEmpresa });
+            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'marcarCancelado', idUnico });
             await carregar();
         } catch (e) {
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
@@ -1171,8 +1170,7 @@ function salvar(idUnico) {
             const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
                 acao: 'salvarAlteracao',
                 idUnico: idUnico,
-                dados: d,
-                codigoempresa: userCodigoEmpresa
+                dados: d
             });
             if (res.conflict) { if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none'; if (document.getElementById('modal-erro-conflito')) document.getElementById('modal-erro-conflito').style.display = 'flex'; }
             else if (res.sucesso) { mostrarMensagem("Sucesso", "Agendamento salvo!"); await carregar(); }
@@ -1188,7 +1186,7 @@ function excluir(idUnico) {
     mostrarConfirmacao("Excluir", "Deseja apagar este agendamento?", async function () {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
         try {
-            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'excluirLinha', idUnico, codigoempresa: userCodigoEmpresa });
+            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'excluirLinha', idUnico });
             await carregar();
         } catch (err) {
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
@@ -1474,8 +1472,7 @@ async function carregar() {
     try {
         const payload = {
             acao: 'listar_agenda',
-            email: userEmail,
-            codigoempresa: userCodigoEmpresa
+            email: userEmail
         };
 
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', payload);
@@ -1676,8 +1673,7 @@ function desativarSinos() { if (filtroSinoAtivo !== null) { filtroSinoAtivo = nu
 async function carregarEspecialidades() {
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
-            acao: 'listar_especialidades_geral',
-            codigoempresa: userCodigoEmpresa
+            acao: 'listar_especialidades_geral'
         });
         if (res.sucesso) {
             renderizarEspecialidades(res.dados);
@@ -1727,13 +1723,12 @@ async function salvarEspecialidade() {
 
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
-            acao: 'salvar_especialidade',
-            codigoempresa: userCodigoEmpresa,
+            acao: 'salvar_especialidades',
             nome: nome
         });
         if (res.sucesso) {
             inputNome.value = "";
-            if(typeof fecharModal === 'function') fecharModal('modal-nova-especialidade');
+            if (typeof fecharModal === 'function') fecharModal('modal-nova-especialidade');
             mostrarMensagem("Sucesso", "Especialidade criada com o código: " + (res.dados?.codigo_especialidade || "Gerado pelo BD"));
             await carregarEspecialidades();
         } else {
@@ -1750,8 +1745,7 @@ async function excluirEspecialidade(id) {
     mostrarConfirmacao("Excluir Especialidade", "Deseja realmente excluir esta especialidade? Todas as sub-especialidades vinculadas também serão removidas.", async () => {
         try {
             const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
-                acao: 'excluir_especialidade',
-                codigoempresa: userCodigoEmpresa,
+                acao: 'excluir_especialidades',
                 id: id
             });
             if (res.sucesso) carregarEspecialidades();
@@ -1771,7 +1765,6 @@ async function carregarSubEspecialidades(espId) {
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
             acao: 'listar_sub_especialidades',
-            codigoempresa: userCodigoEmpresa,
             especialidade_id: espId
         });
         if (res.sucesso) {
@@ -1807,12 +1800,12 @@ async function salvarSubEspecialidade() {
     // Fallback: Tenta os dois ids (o antigo caso exista e o novo que injetamos)
     const espPai = document.getElementById('sub-especialidade-pai') || document.getElementById('select-pai-especialidade');
     const inputNome = document.getElementById('sub-especialidade-nome') || document.getElementById('nova-sub-especialidade');
-    
+
     if (!espPai || !inputNome) return;
 
     const espId = espPai.value;
     const nome = inputNome.value.trim();
-    
+
     if (!espId) return mostrarMensagem("Aviso", "Selecione a especialidade pai.");
     if (!nome) return mostrarMensagem("Aviso", "Digite o nome da sub-especialidade.");
 
@@ -1820,14 +1813,13 @@ async function salvarSubEspecialidade() {
 
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
-            acao: 'salvar_sub_especialidade',
-            codigoempresa: userCodigoEmpresa,
+            acao: 'salvar_sub_especialidades',
             especialidade_id: espId,
             nome: nome
         });
         if (res.sucesso) {
             inputNome.value = "";
-            if(typeof fecharModal === 'function') fecharModal('modal-nova-subespecialidade');
+            if (typeof fecharModal === 'function') fecharModal('modal-nova-subespecialidade');
             mostrarMensagem("Sucesso", "Sub-especialidade criada com o código: " + (res.dados?.codigo_sub_especialidade || "Gerado pelo BD"));
             await carregarSubEspecialidades(espId);
         } else {
@@ -1845,8 +1837,7 @@ async function excluirSubEspecialidade(id) {
     mostrarConfirmacao("Excluir Sub-Especialidade", "Deseja realmente excluir esta sub-especialidade?", async () => {
         try {
             const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
-                acao: 'excluir_sub_especialidade',
-                codigoempresa: userCodigoEmpresa,
+                acao: 'excluir_sub_especialidades',
                 id: id
             });
             if (res.sucesso) carregarSubEspecialidades(espId);
