@@ -1005,7 +1005,8 @@
                     <div class="tw-space-y-1.5">
                         <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
                             Sub-especialidade</label>
-                        <input
+                        <input type="hidden" id="edit-sub-especialidade-id" />
+                        <input id="edit-sub-especialidade-nome"
                             class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
                             type="text" value="Cardiologia Pediátrica" />
                     </div>
@@ -1025,7 +1026,8 @@
                         onclick="fecharModal('modal-editar-subespecialidade')">Cancelar</button>
                     <button
                         class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                        style="background:#34a853; color:white;">Salvar Alterações</button>
+                        style="background:#34a853; color:white;" onclick="atualizarSubEspecialidade()">Salvar
+                        Alterações</button>
                 </div>
             </div>
         </div>
@@ -1044,7 +1046,9 @@
                     <span class="material-symbols-outlined tw-text-error tw-text-4xl">warning</span>
                 </div>
                 <div class="tw-text-xl tw-font-bold tw-text-error tw-mb-2">Confirmar Exclusão</div>
+                <input type="hidden" id="excluir-sub-especialidade-id" />
                 <p class="tw-text-sm tw-text-slate-600 tw-mb-6">Você está prestes a remover <span
+                        id="excluir-sub-especialidade-nome-display"
                         class="tw-font-bold tw-text-slate-900">Ecocardiograma com Doppler</span>. Esta ação é
                     definitiva.</p>
 
@@ -1055,7 +1059,8 @@
                         onclick="fecharModal('modal-excluir-subespecialidade')">Cancelar</button>
                     <button
                         class="tw-h-[38px] tw-flex-1 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                        style="background:#d93025; color:white;">Excluir</button>
+                        style="background:#d93025; color:white;"
+                        onclick="confirmarExclusaoSubEspecialidade()">Excluir</button>
                 </div>
             </div>
         </div>

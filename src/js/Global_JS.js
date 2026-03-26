@@ -1801,15 +1801,16 @@ function renderizarSubEspecialidades(dados) {
     <div class="tw-flex tw-flex-col">
         <span class="nome-sub-especialidade tw-text-sm tw-font-medium tw-text-on-surface">${escapeHtml(item.nome)}</span>
         <div class="tw-flex tw-items-center tw-gap-2 tw-mt-1">
-            <span class="tw-text-[10px] tw-text-slate-400 tw-font-mono">${item.id || 'N/A'}</span>
             <span class="tw-px-2 tw-py-0.5 tw-rounded-full tw-text-[9px] tw-font-bold tw-uppercase tw-bg-secondary-container/50 tw-text-on-secondary-container">Ativo</span>
         </div>
     </div>
     <div class="tw-flex tw-gap-1">
-        <button class="tw-p-1.5 tw-text-on-surface-variant hover:tw-text-primary hover:tw-bg-white tw-rounded-md tw-transition-colors tw-bg-transparent tw-border-0 tw-cursor-pointer" title="Editar">
+        <button class="tw-p-1.5 tw-text-on-surface-variant hover:tw-text-primary hover:tw-bg-white tw-rounded-md tw-transition-colors tw-bg-transparent tw-border-0 tw-cursor-pointer" 
+            onclick="prepararEdicaoSubEspecialidade('${item.id}', '${escapeHtml(item.nome)}'); fecharModal('modal-nova-subespecialidade');" title="Editar">
             <span class="material-symbols-outlined tw-text-[18px]">edit</span>
         </button>
-        <button class="tw-p-1.5 tw-text-on-surface-variant hover:tw-text-error hover:tw-bg-white tw-rounded-md tw-transition-colors tw-bg-transparent tw-border-0 tw-cursor-pointer" onclick="excluirSubEspecialidade('${item.id}')" title="Excluir">
+        <button class="tw-p-1.5 tw-text-on-surface-variant hover:tw-text-error hover:tw-bg-white tw-rounded-md tw-transition-colors tw-bg-transparent tw-border-0 tw-cursor-pointer" 
+            onclick="prepararExclusaoSubEspecialidade('${item.id}', '${escapeHtml(item.nome)}'); fecharModal('modal-nova-subespecialidade');" title="Excluir">
             <span class="material-symbols-outlined tw-text-[18px]">delete</span>
         </button>
     </div>
@@ -1888,4 +1889,80 @@ function filtrarListaSubEspecialidades() {
             item.style.display = 'none';
         }
     });
+}
+
+function prepararEdicaoSubEspecialidade(id, nome) {
+    const hiddenId = document.getElementById('edit-sub-especialidade-id');
+    const inputNome = document.getElementById('edit-sub-especialidade-nome');
+    if (hiddenId) hiddenId.value = id;
+    if (inputNome) inputNome.value = nome;
+    if (typeof abrirModal === 'function') abrirModal('modal-editar-subespecialidade');
+}
+
+function prepararExclusaoSubEspecialidade(id, nome) {
+    const hiddenId = document.getElementById('excluir-sub-especialidade-id');
+    const displayNome = document.getElementById('excluir-sub-especialidade-nome-display');
+    if (hiddenId) hiddenId.value = id;
+    if (displayNome) displayNome.textContent = nome;
+    if (typeof abrirModal === 'function') abrirModal('modal-excluir-subespecialidade');
+}
+
+async function atualizarSubEspecialidade() {
+    const id = document.getElementById('edit-sub-especialidade-id')?.value;
+    const nome = document.getElementById('edit-sub-especialidade-nome')?.value.trim();
+    const espId = document.getElementById('sub-especialidade-pai')?.value;
+
+    if (!nome) return mostrarMensagem("Aviso", "O nome não pode ser vazio.");
+
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'salvar_sub_especialidades',
+            id: id,
+            nome: nome,
+            especialidade_id: espId,
+            codigoempresa: userCodigoEmpresa
+        });
+        if (res.sucesso) {
+            fecharModal('modal-editar-subespecialidade');
+            mostrarMensagem("Sucesso", "Sub-especialidade atualizada.");
+            await carregarSubEspecialidades(espId);
+        } else {
+            mostrarMensagem("Erro", "Falha: " + res.erro);
+        }
+    } catch (e) {
+        console.error("Erro ao atualizar sub-especialidade:", e);
+        mostrarMensagem("Erro", "Falha ao atualizar.");
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+    }
+}
+
+async function confirmarExclusaoSubEspecialidade() {
+    const id = document.getElementById('excluir-sub-especialidade-id')?.value;
+    const espId = document.getElementById('sub-especialidade-pai')?.value;
+
+    if (!id) return;
+
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'excluir_sub_especialidades',
+            id: id,
+            codigoempresa: userCodigoEmpresa
+        });
+        if (res.sucesso) {
+            fecharModal('modal-excluir-subespecialidade');
+            await carregarSubEspecialidades(espId);
+        } else {
+            mostrarMensagem("Erro", "Falha: " + res.erro);
+        }
+    } catch (e) {
+        console.error("Erro ao excluir sub-especialidade:", e);
+        mostrarMensagem("Erro", "Falha ao excluir.");
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+    }
 }
