@@ -1753,6 +1753,7 @@ async function salvarEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
         mostrarMensagem("Erro", "Falha ao salvar especialidade.");
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
@@ -1768,6 +1769,7 @@ async function excluirEspecialidade(id) {
             });
             if (res.sucesso) carregarEspecialidades();
         } catch (e) {
+            if (e.message === "SESSION_EXPIRED") return;
             mostrarMensagem("Erro", "Falha ao excluir especialidade.");
         }
     });
@@ -1861,6 +1863,7 @@ async function salvarSubEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
         mostrarMensagem("Erro", "Falha ao salvar sub-especialidade.");
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
@@ -1877,6 +1880,7 @@ async function excluirSubEspecialidade(id) {
             });
             if (res.sucesso) carregarSubEspecialidades(espId);
         } catch (e) {
+            if (e.message === "SESSION_EXPIRED") return;
             mostrarMensagem("Erro", "Falha ao excluir sub-especialidade.");
         }
     });
@@ -1943,6 +1947,7 @@ async function atualizarSubEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao atualizar sub-especialidade:", e);
         mostrarMensagem("Erro", "Falha ao atualizar.");
     } finally {
@@ -1971,6 +1976,7 @@ async function confirmarExclusaoSubEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao excluir sub-especialidade:", e);
         mostrarMensagem("Erro", "Falha ao excluir.");
     } finally {
@@ -2031,6 +2037,7 @@ async function atualizarEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao atualizar especialidade:", e);
         mostrarMensagem("Erro", "Falha ao atualizar.");
     } finally {
@@ -2058,6 +2065,7 @@ async function confirmarExclusaoEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao excluir especialidade:", e);
         mostrarMensagem("Erro", "Falha ao excluir.");
     } finally {

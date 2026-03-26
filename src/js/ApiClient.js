@@ -4,6 +4,23 @@ const SUPABASE_URL = "https://xugyekefbinusnrmzcrj.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1Z3lla2VmYmludXNucm16Y3JqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMjE3NzEsImV4cCI6MjA4OTY5Nzc3MX0.dac0acC0OkKbJ48BM4c-PKZf8N0JOb3Xh7f47lkPd-Y";
 
 class ApiClient {
+    static handleSessionExpired() {
+        console.error("⛔ [SESSÃO] Expiração ou Token Inválido detectado. Limpando sessão...");
+        localStorage.removeItem('saas_token_jwt');
+
+        if (typeof mostrarMensagem === 'function') {
+            mostrarMensagem("Sessão Expirada", "Sua sessão expirou por inatividade ou o token é inválido. Por favor, faça login novamente.");
+        } else {
+            alert("Sua sessão expirou. Por favor, faça login novamente.");
+        }
+
+        if (typeof fazerLogout === 'function') {
+            fazerLogout();
+        } else {
+            window.location.reload();
+        }
+    }
+
     static async request(endpoint, options = {}) {
         // Busca o token do localStorage a cada requisição para ser sempre dinâmico
         const tokenRaw = localStorage.getItem('saas_token_jwt');
@@ -11,19 +28,14 @@ class ApiClient {
         // Camada de Sanitização: Remove aspas (JSON literal) e espaços invisíveis
         const token = tokenRaw ? tokenRaw.trim().replace(/^"|"$/g, '') : null;
 
-        // Injeção de Debug Seguro (Apenas prefixo e comprimento)
-        if (token) {
-            console.log(`[DEBUG] 📡 API: ${endpoint} | Token: ${token.substring(0, 10)}... | Len: ${token.length}`);
-        } else {
-            console.warn(`[DEBUG] ⚠️ API: ${endpoint} | Token AUSENTE no localStorage!`);
+        // Camada B: Guarda de Segurança Ativa (Tratada como Sessão Expirada se ausente)
+        if (!token || token === 'undefined' || token === 'null' || token === '') {
+            this.handleSessionExpired();
+            throw new Error("SESSION_EXPIRED");
         }
 
-        // Camada B: Guarda de Segurança Ativa
-        if (!token || token === 'undefined' || token === 'null' || token === '') {
-            const errorMsg = "🛑 Interrupção Local: Tentativa de API sem Token de Sessão válido.";
-            console.error(errorMsg);
-            throw new Error(errorMsg);
-        }
+        // Injeção de Debug Seguro
+        console.log(`[DEBUG] 📡 API: ${endpoint} | Token: ${token.substring(0, 10)}...`);
 
         const headers = {
             'Content-Type': 'application/json',
@@ -50,28 +62,12 @@ class ApiClient {
                     errorData = { message: 'Erro HTTP ' + response.status };
                 }
 
-                const errorMsg = (errorData.error_description || errorData.message || errorData.error || "").toLowerCase();
+                const msg = (errorData.error_description || errorData.message || errorData.error || "").toLowerCase();
 
-                // DETECÇÃO GLOBAL DE SESSÃO EXPIRADA (JWT Expired)
-                if (response.status === 401 || errorMsg.includes("jwt expired") || errorMsg.includes("token expired") || errorMsg.includes("invalid jwt")) {
-                    console.error("⛔ [SESSÃO] Expiração detectada. Invocando limpeza global...");
-
-                    localStorage.removeItem('saas_token_jwt');
-
-                    if (typeof mostrarMensagem === 'function') {
-                        mostrarMensagem("Sessão Expirada", "Sua sessão expirou por inatividade. Por favor, faça login novamente.");
-                    } else {
-                        alert("Sua sessão expirou. Por favor, faça login novamente.");
-                    }
-
-                    if (typeof fazerLogout === 'function') {
-                        fazerLogout();
-                    } else {
-                        // Fallback caso a função não esteja no escopo (ex: tela de login)
-                        window.location.reload();
-                    }
-
-                    throw new Error("Sessão expirada. Redirecionando...");
+                // DETECÇÃO GLOBAL DE SESSÃO EXPIRADA (Broad Scope)
+                if (response.status === 401 || response.status === 403 || msg.includes("jwt") || msg.includes("token") || msg.includes("expired")) {
+                    this.handleSessionExpired();
+                    throw new Error("SESSION_EXPIRED");
                 }
 
                 throw new Error(errorData.error_description || errorData.message || 'Erro HTTP ' + response.status);
@@ -79,6 +75,7 @@ class ApiClient {
 
             return await response.json();
         } catch (error) {
+            if (error.message === "SESSION_EXPIRED") throw error;
             console.error(`[API ERROR] Falha na rota ${endpoint}:`, error);
             throw error;
         }
