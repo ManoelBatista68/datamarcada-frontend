@@ -788,17 +788,11 @@
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
                                 Especialidade <span class="tw-text-error">*</span></label>
-                            <input
+                            <input id="especialidade-nome"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
                                 placeholder="Ex: Dermatologia" required type="text" />
                         </div>
-                        <div class="tw-space-y-1.5">
-                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">CÓDIGO
-                                EMPRESA <span class="tw-text-error">*</span></label>
-                            <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                                placeholder="Ex: EMP-1234" required type="text" />
-                        </div>
+
                     </div>
 
                     <div class="tw-flex tw-justify-end tw-gap-3 tw-mt-5">
@@ -806,9 +800,10 @@
                             class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
                             style="background:#e0e0e0; color:#333;"
                             onclick="fecharModal('modal-nova-especialidade')">Cancelar</button>
-                        <button
+                        <button id="btn-salvar-especialidade"
                             class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all hover:tw-brightness-110"
-                            style="background:#34a853; color:white;">Criar Especialidade</button>
+                            style="background:#34a853; color:white;" onclick="salvarEspecialidade()">Criar
+                            Especialidade</button>
                     </div>
 
                     <hr class="tw-border-t tw-border-[#eee] tw-my-6" />
@@ -952,17 +947,11 @@
                                 <option>Neurologia</option>
                             </select>
                         </div>
-                        <div class="tw-space-y-1.5">
-                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">CÓDIGO
-                                EMPRESA <span class="tw-text-error">*</span></label>
-                            <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                                placeholder="ex: CPC-001" type="text" />
-                        </div>
+
                         <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
                                 Sub-especialidade <span class="tw-text-error">*</span></label>
-                            <input
+                            <input id="sub-especialidade-nome"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
                                 placeholder="ex: Cardiologia Pediátrica" type="text" />
                         </div>
@@ -973,9 +962,10 @@
                             class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
                             style="background:#e0e0e0; color:#333;"
                             onclick="fecharModal('modal-nova-subespecialidade')">Cancelar</button>
-                        <button
+                        <button id="btn-salvar-subespecialidade"
                             class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all hover:tw-brightness-110"
-                            style="background:#34a853; color:white;">Criar Sub-especialidade</button>
+                            style="background:#34a853; color:white;" onclick="salvarSubespecialidade()">Criar
+                            Sub-especialidade</button>
                     </div>
 
                     <hr class="tw-border-t tw-border-[#eee] tw-my-6" />

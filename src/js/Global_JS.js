@@ -1717,8 +1717,13 @@ function renderizarEspecialidades(dados) {
 }
 
 async function salvarEspecialidade() {
-    const nome = document.getElementById('nova-especialidade').value.trim();
+    // Busca input ID que atualizamos no index.html
+    const inputNome = document.getElementById('especialidade-nome');
+    if (!inputNome) return;
+    const nome = inputNome.value.trim();
     if (!nome) return mostrarMensagem("Aviso", "Digite o nome da especialidade.");
+
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
 
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
@@ -1727,11 +1732,17 @@ async function salvarEspecialidade() {
             nome: nome
         });
         if (res.sucesso) {
-            document.getElementById('nova-especialidade').value = "";
-            carregarEspecialidades();
+            inputNome.value = "";
+            if(typeof fecharModal === 'function') fecharModal('modal-nova-especialidade');
+            mostrarMensagem("Sucesso", "Especialidade criada com o código: " + (res.dados?.codigo_especialidade || "Gerado pelo BD"));
+            await carregarEspecialidades();
+        } else {
+            mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
         mostrarMensagem("Erro", "Falha ao salvar especialidade.");
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
     }
 }
 
@@ -1793,10 +1804,19 @@ function renderizarSubEspecialidades(dados) {
 }
 
 async function salvarSubEspecialidade() {
-    const espId = document.getElementById('select-pai-especialidade').value;
-    const nome = document.getElementById('nova-sub-especialidade').value.trim();
+    // Fallback: Tenta os dois ids (o antigo caso exista e o novo que injetamos)
+    const espPai = document.getElementById('sub-especialidade-pai') || document.getElementById('select-pai-especialidade');
+    const inputNome = document.getElementById('sub-especialidade-nome') || document.getElementById('nova-sub-especialidade');
+    
+    if (!espPai || !inputNome) return;
+
+    const espId = espPai.value;
+    const nome = inputNome.value.trim();
+    
     if (!espId) return mostrarMensagem("Aviso", "Selecione a especialidade pai.");
     if (!nome) return mostrarMensagem("Aviso", "Digite o nome da sub-especialidade.");
+
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
 
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
@@ -1806,11 +1826,17 @@ async function salvarSubEspecialidade() {
             nome: nome
         });
         if (res.sucesso) {
-            document.getElementById('nova-sub-especialidade').value = "";
-            carregarSubEspecialidades(espId);
+            inputNome.value = "";
+            if(typeof fecharModal === 'function') fecharModal('modal-nova-subespecialidade');
+            mostrarMensagem("Sucesso", "Sub-especialidade criada com o código: " + (res.dados?.codigo_sub_especialidade || "Gerado pelo BD"));
+            await carregarSubEspecialidades(espId);
+        } else {
+            mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
         mostrarMensagem("Erro", "Falha ao salvar sub-especialidade.");
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
     }
 }
 
