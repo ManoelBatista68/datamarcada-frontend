@@ -1680,7 +1680,7 @@ async function carregarEspecialidades() {
         });
         if (res.sucesso) {
             renderizarEspecialidades(res.dados);
-            const selectPai = document.getElementById('select-pai-especialidade');
+            const selectPai = document.getElementById('sub-especialidade-pai');
             if (selectPai) {
                 selectPai.innerHTML = '<option value="">-- Selecione a Especialidade Pai --</option>';
                 res.dados.forEach(e => {

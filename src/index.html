@@ -940,11 +940,9 @@
                             <label
                                 class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Especialidade
                                 Relacionada <span class="tw-text-error">*</span></label>
-                            <select
+                            <select id="sub-especialidade-pai"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer">
                                 <option disabled selected value="">Selecione a Especialidade Pai</option>
-                                <option>Cardiologia</option>
-                                <option>Neurologia</option>
                             </select>
                         </div>
 
@@ -964,7 +962,7 @@
                             onclick="fecharModal('modal-nova-subespecialidade')">Cancelar</button>
                         <button id="btn-salvar-subespecialidade"
                             class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all hover:tw-brightness-110"
-                            style="background:#34a853; color:white;" onclick="salvarSubespecialidade()">Criar
+                            style="background:#34a853; color:white;" onclick="salvarSubEspecialidade()">Criar
                             Sub-especialidade</button>
                     </div>
 
@@ -982,7 +980,7 @@
                                 placeholder="Buscar sub-especialidade..." type="text" />
                         </div>
 
-                        <div class="tw-space-y-2">
+                        <div id="lista-sub-especialidades" class="tw-space-y-2">
                             <div
                                 class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-white tw-border tw-border-[#eee] tw-rounded-[8px] hover:tw-bg-[#eff6ff] tw-transition-all">
                                 <div class="tw-flex tw-flex-col">
