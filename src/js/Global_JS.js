@@ -1676,7 +1676,7 @@ function desativarSinos() { if (filtroSinoAtivo !== null) { filtroSinoAtivo = nu
 async function carregarEspecialidades() {
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
-            acao: 'listar_especialidades_geral'
+            acao: 'listar_especialidades'
         });
         if (res.sucesso) {
             renderizarEspecialidades(res.dados);
@@ -1767,7 +1767,7 @@ async function carregarSubEspecialidades(espId) {
     list.innerHTML = "Carregando...";
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
-            acao: 'listar_sub_especialidades',
+            acao: 'listar_sub_especialidades_v2',
             especialidade_id: espId
         });
         if (res.sucesso) {
