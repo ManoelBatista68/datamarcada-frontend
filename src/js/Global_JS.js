@@ -1586,7 +1586,6 @@ async function carregarEstruturaHierarquica() {
                         </div>
                         <div>
                             <h4 class="tw-font-bold tw-text-on-surface tw-text-lg tw-leading-tight">${escapeHtml(esp.nome)}</h4>
-                            <p class="tw-text-xs tw-font-mono tw-text-outline tw-uppercase tw-tracking-wider">ID: ${esp.id}</p>
                         </div>
                     </div>
                     <div class="tw-flex tw-gap-2 tw-w-full sm:tw-w-auto tw-justify-end">
@@ -1615,7 +1614,6 @@ async function carregarEstruturaHierarquica() {
                                         <span class="material-symbols-outlined tw-text-primary/40 tw-text-lg">subdirectory_arrow_right</span>
                                         <div>
                                             <h5 class="tw-font-bold tw-text-on-surface tw-text-sm">${escapeHtml(sub.nome)}</h5>
-                                            <p class="tw-text-[10px] tw-font-mono tw-text-outline tw-uppercase">Sub ID: ${sub.id}</p>
                                         </div>
                                     </div>
                                     <div class="tw-flex tw-gap-2">
@@ -1639,7 +1637,6 @@ async function carregarEstruturaHierarquica() {
                                                     <div>
                                                         <span class="tw-text-[9px] tw-font-bold tw-text-emerald-700 tw-bg-emerald-50 tw-px-2 tw-py-0.5 tw-rounded tw-uppercase">Exame Presencial</span>
                                                         <h6 class="tw-font-bold tw-text-on-surface tw-mt-1 tw-text-sm">Ecocardiograma com Doppler</h6>
-                                                        <p class="tw-text-[10px] tw-text-outline tw-font-mono">COD: PROD-9921 • ID: ${sub.id}-1</p>
                                                     </div>
                                                     <div class="tw-text-right">
                                                         <p class="tw-text-[10px] tw-text-outline tw-line-through">R$ 450,00</p>
