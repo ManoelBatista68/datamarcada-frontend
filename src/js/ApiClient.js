@@ -8,12 +8,6 @@ class ApiClient {
         console.error("⛔ [SESSÃO] Expiração ou Token Inválido detectado. Limpando sessão...");
         localStorage.removeItem('saas_token_jwt');
 
-        if (typeof mostrarMensagem === 'function') {
-            mostrarMensagem("Sessão Expirada", "Sua sessão expirou por inatividade ou o token é inválido. Por favor, faça login novamente.");
-        } else {
-            alert("Sua sessão expirou. Por favor, faça login novamente.");
-        }
-
         if (typeof fazerLogout === 'function') {
             fazerLogout();
         } else {
