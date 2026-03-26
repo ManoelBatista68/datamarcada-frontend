@@ -25,24 +25,35 @@ class ApiClient {
         // Busca o token do localStorage a cada requisição para ser sempre dinâmico
         const tokenRaw = localStorage.getItem('saas_token_jwt');
 
-        // Camada de Sanitização: Remove aspas (JSON literal) e espaços invisíveis
+        // Camada de Sanitização
         const token = tokenRaw ? tokenRaw.trim().replace(/^"|"$/g, '') : null;
 
-        // Camada B: Guarda de Segurança Ativa (Tratada como Sessão Expirada se ausente)
-        if (!token || token === 'undefined' || token === 'null' || token === '') {
+        // Detecção de Rota Pública ou Bypass Manual
+        const isPublicRoute = endpoint.includes('/auth/v1/') || options.skipAuth;
+
+        // Camada B: Guarda de Segurança Ativa (Apenas para rotas protegidas)
+        if (!isPublicRoute && (!token || token === 'undefined' || token === 'null' || token === '')) {
             this.handleSessionExpired();
             throw new Error("SESSION_EXPIRED");
         }
 
         // Injeção de Debug Seguro
-        console.log(`[DEBUG] 📡 API: ${endpoint} | Token: ${token.substring(0, 10)}...`);
+        if (token) {
+            console.log(`[DEBUG] 📡 API: ${endpoint} | Token: ${token.substring(0, 10)}...`);
+        } else {
+            console.log(`[DEBUG] 📡 API (Public): ${endpoint}`);
+        }
 
         const headers = {
             'Content-Type': 'application/json',
             'apikey': SUPABASE_ANON_KEY,
-            'Authorization': 'Bearer ' + token,
             'x-client-info': 'supabase-js/2.45.0'
         };
+
+        // Injeção Condicional do Authorization (Apenas se houver token)
+        if (token) {
+            headers['Authorization'] = 'Bearer ' + token;
+        }
 
         if (options.headers) {
             Object.assign(headers, options.headers);
