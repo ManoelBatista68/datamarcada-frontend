@@ -145,6 +145,7 @@ async function iniciarApp() {
     await new Promise(resolve => setTimeout(resolve, 50));
     await carregar();
     iniciarRastreadorInatividade();
+    await carregarEspecialidades();
 }
 
 async function fazerLogin() {
