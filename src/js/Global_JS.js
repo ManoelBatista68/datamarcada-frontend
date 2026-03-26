@@ -1099,6 +1099,7 @@ function salvarBloco() {
             const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
                 acao: 'salvarAgendamentosEmLote',
                 email: userEmail,
+                codigoempresa: userCodigoEmpresa,
                 payload: payload
             });
 
@@ -1123,7 +1124,7 @@ function acaoMarcarAtendido(idUnico, element) {
     mostrarConfirmacao("Confirmar Atendimento", "Marcar este agendamento como ATENDIDO?", async function () {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
         try {
-            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'marcarAtendido', idUnico });
+            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'marcarAtendido', idUnico, codigoempresa: userCodigoEmpresa });
             await carregar();
         } catch (e) {
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
@@ -1136,7 +1137,7 @@ function acaoMarcarCancelado(idUnico, element) {
     mostrarConfirmacao("Cancelar Agendamento", "Deseja realmente cancelar?", async function () {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
         try {
-            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'marcarCancelado', idUnico });
+            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'marcarCancelado', idUnico, codigoempresa: userCodigoEmpresa });
             await carregar();
         } catch (e) {
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
@@ -1170,7 +1171,8 @@ function salvar(idUnico) {
             const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
                 acao: 'salvarAlteracao',
                 idUnico: idUnico,
-                dados: d
+                dados: d,
+                codigoempresa: userCodigoEmpresa
             });
             if (res.conflict) { if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none'; if (document.getElementById('modal-erro-conflito')) document.getElementById('modal-erro-conflito').style.display = 'flex'; }
             else if (res.sucesso) { mostrarMensagem("Sucesso", "Agendamento salvo!"); await carregar(); }
@@ -1186,7 +1188,7 @@ function excluir(idUnico) {
     mostrarConfirmacao("Excluir", "Deseja apagar este agendamento?", async function () {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
         try {
-            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'excluirLinha', idUnico });
+            await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'excluirLinha', idUnico, codigoempresa: userCodigoEmpresa });
             await carregar();
         } catch (err) {
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
@@ -1472,7 +1474,8 @@ async function carregar() {
     try {
         const payload = {
             acao: 'listar_agenda',
-            email: userEmail
+            email: userEmail,
+            codigoempresa: userCodigoEmpresa
         };
 
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', payload);
