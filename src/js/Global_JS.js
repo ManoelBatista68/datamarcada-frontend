@@ -1703,18 +1703,29 @@ function renderizarEspecialidades(dados) {
     if (!list) return;
     list.innerHTML = "";
     if (dados.length === 0) {
-        list.innerHTML = "<p style='color: #666; font-size: 13px;'>Nenhuma especialidade cadastrada.</p>";
+        list.innerHTML = "<p style='color: #666; font-size: 13px; text-align: center; padding: 20px;'>Nenhuma especialidade cadastrada.</p>";
         return;
     }
     dados.forEach(esp => {
         const div = document.createElement('div');
-        div.className = 'item-cadastro';
         div.innerHTML = `
-            <span>${esp.nome}</span>
-            <button class="btn-del-mini" onclick="excluirEspecialidade('${esp.id}')" title="Excluir especialidade">
-                <span class="material-icons" style="font-size: 18px;">delete</span>
+<div class="item-especialidade tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-white tw-border tw-border-[#eee] tw-rounded-[8px] hover:tw-bg-[#eff6ff] tw-transition-all">
+    <span class="nome-especialidade tw-text-sm tw-font-bold tw-text-on-surface">${escapeHtml(esp.nome)}</span>
+    <div class="tw-flex tw-items-center tw-gap-3">
+        <span class="tw-px-2 tw-py-0.5 tw-bg-green-50 tw-text-green-700 tw-text-[9px] tw-font-bold tw-rounded-full">ATIVO</span>
+        <div class="tw-flex tw-gap-1">
+            <button class="tw-p-1 tw-text-slate-400 hover:tw-text-primary tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors" 
+                onclick="prepararEdicaoEspecialidade('${esp.id}', '${escapeHtml(esp.nome)}'); fecharModal('modal-nova-especialidade');" title="Editar">
+                <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
             </button>
-        `;
+            <button class="tw-p-1 tw-text-slate-400 hover:tw-text-error tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors" 
+                onclick="prepararExclusaoEspecialidade('${esp.id}', '${escapeHtml(esp.nome)}'); fecharModal('modal-nova-especialidade');" title="Excluir">
+                <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+            </button>
+        </div>
+    </div>
+</div>
+`;
         list.appendChild(div);
     });
 }
@@ -1961,6 +1972,93 @@ async function confirmarExclusaoSubEspecialidade() {
         }
     } catch (e) {
         console.error("Erro ao excluir sub-especialidade:", e);
+        mostrarMensagem("Erro", "Falha ao excluir.");
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+    }
+}
+
+function filtrarListaEspecialidades() {
+    const termo = (document.getElementById('busca-especialidade').value || "").toLowerCase().trim();
+    const items = document.querySelectorAll('.item-especialidade');
+
+    items.forEach(item => {
+        const nome = (item.querySelector('.nome-especialidade').textContent || "").toLowerCase();
+        if (nome.includes(termo)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+function prepararEdicaoEspecialidade(id, nome) {
+    const hiddenId = document.getElementById('edit-especialidade-id');
+    const inputNome = document.getElementById('edit-especialidade-nome');
+    if (hiddenId) hiddenId.value = id;
+    if (inputNome) inputNome.value = nome;
+    if (typeof abrirModal === 'function') abrirModal('modal-editar-especialidade');
+}
+
+function prepararExclusaoEspecialidade(id, nome) {
+    const hiddenId = document.getElementById('excluir-especialidade-id');
+    const displayNome = document.getElementById('excluir-especialidade-nome-display');
+    if (hiddenId) hiddenId.value = id;
+    if (displayNome) displayNome.textContent = nome;
+    if (typeof abrirModal === 'function') abrirModal('modal-excluir-especialidade');
+}
+
+async function atualizarEspecialidade() {
+    const id = document.getElementById('edit-especialidade-id')?.value;
+    const nome = document.getElementById('edit-especialidade-nome')?.value.trim();
+
+    if (!nome) return mostrarMensagem("Aviso", "O nome não pode ser vazio.");
+
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'salvar_especialidades',
+            id: id,
+            nome: nome,
+            codigoempresa: userCodigoEmpresa
+        });
+        if (res.sucesso) {
+            fecharModal('modal-editar-especialidade');
+            mostrarMensagem("Sucesso", "Especialidade atualizada com sucesso.");
+            await carregarEspecialidades();
+        } else {
+            mostrarMensagem("Erro", "Falha: " + res.erro);
+        }
+    } catch (e) {
+        console.error("Erro ao atualizar especialidade:", e);
+        mostrarMensagem("Erro", "Falha ao atualizar.");
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+    }
+}
+
+async function confirmarExclusaoEspecialidade() {
+    const id = document.getElementById('excluir-especialidade-id')?.value;
+    if (!id) return;
+
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'excluir_especialidades',
+            id: id,
+            codigoempresa: userCodigoEmpresa
+        });
+        if (res.sucesso) {
+            fecharModal('modal-excluir-especialidade');
+            mostrarMensagem("Sucesso", "Especialidade removida.");
+            await carregarEspecialidades();
+        } else {
+            mostrarMensagem("Erro", "Falha: " + res.erro);
+        }
+    } catch (e) {
+        console.error("Erro ao excluir especialidade:", e);
         mostrarMensagem("Erro", "Falha ao excluir.");
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
