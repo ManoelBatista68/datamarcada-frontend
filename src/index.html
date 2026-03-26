@@ -733,7 +733,14 @@
     <script>
         function abrirModal(id) {
             const modal = document.getElementById(id);
-            if (modal) modal.style.display = 'block';
+            // GARANTE O FLEXBOX NO MOMENTO DE ABRIR PARA CENTRALIZAR!
+            if (modal) {
+                if (modal.classList.contains('tw-fixed')) {
+                    modal.style.display = 'flex';
+                } else {
+                    modal.style.display = 'block';
+                }
+            }
         }
         function fecharModal(id) {
             const modal = document.getElementById(id);
@@ -759,78 +766,85 @@
         });
     </script>
 
-    <div id="modal-nova-especialidade" class="modal-overlay" style="display: none; z-index: 50000;">
-        <div class="modal-box"
-            style="max-width: 500px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
+    <div id="medpavilion-modals-root">
 
-            <div class="tw-p-6 tw-bg-white tw-border-b tw-border-[#eee] tw-shrink-0 tw-relative">
-                <span
-                    class="material-icons tw-absolute tw-top-6 tw-right-6 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
-                    onclick="fecharModal('modal-nova-especialidade')">close</span>
-                <div class="tw-text-xl tw-font-bold tw-text-primary tw-mb-1">Nova Especialidade</div>
-                <p class="tw-text-[12px] tw-text-slate-500 tw-m-0">Cadastre e gerencie as especialidades principais.</p>
-            </div>
-
-            <div class="tw-p-6 tw-overflow-y-auto tw-custom-scrollbar tw-flex-1" style="max-height: 65vh;">
-                <div class="tw-space-y-4">
-                    <div class="tw-space-y-1.5">
-                        <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
-                            Especialidade <span class="tw-text-error">*</span></label>
-                        <input
-                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                            placeholder="Ex: Dermatologia" required type="text" />
-                    </div>
-                    <div class="tw-space-y-1.5">
-                        <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">CÓDIGO EMPRESA
-                            <span class="tw-text-error">*</span></label>
-                        <input
-                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                            placeholder="Ex: EMP-1234" required type="text" />
-                    </div>
+        <div id="modal-nova-especialidade"
+            class="tw-fixed tw-inset-0 tw-items-center tw-justify-center tw-bg-slate-900/60 tw-backdrop-blur-sm"
+            style="display: none; z-index: 50000;">
+            <div class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-w-[90%] tw-max-w-[500px]"
+                style="max-height: 90vh;">
+                <div
+                    class="tw-p-6 tw-pb-4 tw-bg-white tw-border-b tw-border-[#eee] tw-shrink-0 tw-relative tw-rounded-t-[8px]">
+                    <span
+                        class="material-icons tw-absolute tw-top-6 tw-right-6 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
+                        onclick="fecharModal('modal-nova-especialidade')">close</span>
+                    <div class="tw-text-xl tw-font-bold tw-text-primary tw-mb-1">Nova Especialidade</div>
+                    <p class="tw-text-[12px] tw-text-slate-500 tw-m-0">Cadastre e gerencie as especialidades principais.
+                    </p>
                 </div>
 
-                <div class="tw-flex tw-justify-end tw-gap-3 tw-mt-5">
-                    <button
-                        class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                        style="background:#e0e0e0; color:#333;"
-                        onclick="fecharModal('modal-nova-especialidade')">Cancelar</button>
-                    <button
-                        class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all hover:tw-brightness-110"
-                        style="background:#34a853; color:white;">Criar Especialidade</button>
-                </div>
-
-                <hr class="tw-border-t tw-border-[#eee] tw-my-6" />
-
-                <div class="tw-space-y-3">
-                    <h4 class="tw-text-[11px] tw-font-bold tw-text-slate-500 tw-uppercase tw-tracking-wider">
-                        Especialidades Cadastradas</h4>
-                    <div class="tw-relative">
-                        <span
-                            class="material-symbols-outlined tw-absolute tw-left-3 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400"
-                            style="font-size: 18px;">search</span>
-                        <input
-                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-outline-none tw-transition-all"
-                            placeholder="Buscar especialidade..." type="text" />
+                <div class="tw-p-6 tw-overflow-y-auto tw-custom-scrollbar tw-flex-1">
+                    <div class="tw-space-y-4">
+                        <div class="tw-space-y-1.5">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
+                                Especialidade <span class="tw-text-error">*</span></label>
+                            <input
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
+                                placeholder="Ex: Dermatologia" required type="text" />
+                        </div>
+                        <div class="tw-space-y-1.5">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">CÓDIGO
+                                EMPRESA <span class="tw-text-error">*</span></label>
+                            <input
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
+                                placeholder="Ex: EMP-1234" required type="text" />
+                        </div>
                     </div>
 
-                    <div class="tw-space-y-2">
-                        <div
-                            class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-white tw-border tw-border-[#eee] tw-rounded-[8px] hover:tw-bg-[#eff6ff] tw-transition-all">
-                            <span class="tw-text-sm tw-font-bold tw-text-on-surface">Cardiologia</span>
-                            <div class="tw-flex tw-items-center tw-gap-3">
-                                <span
-                                    class="tw-px-2 tw-py-0.5 tw-bg-green-50 tw-text-green-700 tw-text-[9px] tw-font-bold tw-rounded-full">ATIVO</span>
-                                <div class="tw-flex tw-gap-1">
-                                    <button
-                                        class="tw-p-1 tw-text-slate-400 hover:tw-text-primary tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors"
-                                        onclick="fecharModal('modal-nova-especialidade'); abrirModal('modal-editar-especialidade')">
-                                        <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
-                                    </button>
-                                    <button
-                                        class="tw-p-1 tw-text-slate-400 hover:tw-text-error tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors"
-                                        onclick="fecharModal('modal-nova-especialidade'); abrirModal('modal-excluir-especialidade')">
-                                        <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
-                                    </button>
+                    <div class="tw-flex tw-justify-end tw-gap-3 tw-mt-5">
+                        <button
+                            class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
+                            style="background:#e0e0e0; color:#333;"
+                            onclick="fecharModal('modal-nova-especialidade')">Cancelar</button>
+                        <button
+                            class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all hover:tw-brightness-110"
+                            style="background:#34a853; color:white;">Criar Especialidade</button>
+                    </div>
+
+                    <hr class="tw-border-t tw-border-[#eee] tw-my-6" />
+
+                    <div class="tw-space-y-3">
+                        <h4 class="tw-text-[11px] tw-font-bold tw-text-slate-500 tw-uppercase tw-tracking-wider">
+                            Especialidades Cadastradas</h4>
+                        <div class="tw-relative">
+                            <span
+                                class="material-symbols-outlined tw-absolute tw-left-3 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400"
+                                style="font-size: 18px;">search</span>
+                            <input
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-outline-none tw-transition-all"
+                                placeholder="Buscar especialidade..." type="text" />
+                        </div>
+
+                        <div class="tw-space-y-2">
+                            <div
+                                class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-white tw-border tw-border-[#eee] tw-rounded-[8px] hover:tw-bg-[#eff6ff] tw-transition-all">
+                                <span class="tw-text-sm tw-font-bold tw-text-on-surface">Cardiologia</span>
+                                <div class="tw-flex tw-items-center tw-gap-3">
+                                    <span
+                                        class="tw-px-2 tw-py-0.5 tw-bg-green-50 tw-text-green-700 tw-text-[9px] tw-font-bold tw-rounded-full">ATIVO</span>
+                                    <div class="tw-flex tw-gap-1">
+                                        <button
+                                            class="tw-p-1 tw-text-slate-400 hover:tw-text-primary tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors"
+                                            onclick="fecharModal('modal-nova-especialidade'); abrirModal('modal-editar-especialidade')">
+                                            <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
+                                        </button>
+                                        <button
+                                            class="tw-p-1 tw-text-slate-400 hover:tw-text-error tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors"
+                                            onclick="fecharModal('modal-nova-especialidade'); abrirModal('modal-excluir-especialidade')">
+                                            <span class="material-symbols-outlined"
+                                                style="font-size: 18px;">delete</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -838,162 +852,169 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="modal-editar-especialidade" class="tw-fixed tw-inset-0 tw-bg-slate-900/60 tw-backdrop-blur-sm"
-        style="display: none; z-index: 50010;">
-        <div class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-p-6"
-            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: calc(100% - 32px); max-width: 450px;">
-            <span
-                class="material-icons tw-absolute tw-top-4 tw-right-4 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
-                onclick="fecharModal('modal-editar-especialidade')">close</span>
-
-            <div class="tw-text-xl tw-font-bold tw-text-primary tw-mb-1">Editar Especialidade</div>
-            <p class="tw-text-[12px] tw-text-slate-500 tw-mb-5">Atualize as informações cadastrais.</p>
-
-            <div class="tw-space-y-4 tw-mb-6">
-                <div class="tw-space-y-1.5">
-                    <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
-                        Especialidade</label>
-                    <input
-                        class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                        type="text" value="Cardiologia" />
-                </div>
-                <div class="tw-space-y-1.5">
-                    <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Status</label>
-                    <select
-                        class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-appearance-none tw-cursor-pointer">
-                        <option value="active" selected>Ativo</option>
-                        <option value="inactive">Inativo</option>
-                    </select>
-                </div>
-            </div>
-            <div class="tw-flex tw-justify-end tw-gap-3">
-                <button
-                    class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                    style="background:#e0e0e0; color:#333;"
-                    onclick="fecharModal('modal-editar-especialidade')">Cancelar</button>
-                <button
-                    class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                    style="background:#34a853; color:white;">Salvar Alterações</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-excluir-especialidade" class="tw-fixed tw-inset-0 tw-bg-slate-900/60 tw-backdrop-blur-sm"
-        style="display: none; z-index: 50020;">
-        <div class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-p-8 tw-text-center"
-            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: calc(100% - 32px); max-width: 400px;">
-            <span
-                class="material-icons tw-absolute tw-top-4 tw-right-4 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
-                onclick="fecharModal('modal-excluir-especialidade')">close</span>
-
+        <div id="modal-editar-especialidade"
+            class="tw-fixed tw-inset-0 tw-items-center tw-justify-center tw-bg-slate-900/60 tw-backdrop-blur-sm"
+            style="display: none; z-index: 50010;">
             <div
-                class="tw-w-16 tw-h-16 tw-rounded-full tw-bg-red-50 tw-flex tw-items-center tw-justify-center tw-mx-auto tw-mb-4 tw-border tw-border-red-100">
-                <span class="material-symbols-outlined tw-text-error tw-text-4xl">warning</span>
-            </div>
-            <div class="tw-text-xl tw-font-bold tw-text-error tw-mb-2">Excluir Especialidade?</div>
-            <p class="tw-text-sm tw-text-slate-600 tw-mb-6">Você está prestes a excluir a especialidade <span
-                    class="tw-font-bold tw-text-slate-900">Cardiologia</span> do sistema. Todos os itens vinculados
-                serão afetados.</p>
-
-            <div class="tw-flex tw-justify-center tw-gap-3">
-                <button
-                    class="tw-h-[38px] tw-flex-1 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                    style="background:#e0e0e0; color:#333;"
-                    onclick="fecharModal('modal-excluir-especialidade')">Cancelar</button>
-                <button
-                    class="tw-h-[38px] tw-flex-1 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                    style="background:#d93025; color:white;">Sim, Excluir</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-nova-subespecialidade" class="modal-overlay" style="display: none; z-index: 50030;">
-        <div class="modal-box"
-            style="max-width: 500px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
-
-            <div class="tw-p-6 tw-bg-white tw-border-b tw-border-[#eee] tw-shrink-0 tw-relative">
+                class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-p-6 tw-w-[90%] tw-max-w-[450px]">
                 <span
-                    class="material-icons tw-absolute tw-top-6 tw-right-6 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
-                    onclick="fecharModal('modal-nova-subespecialidade')">close</span>
-                <div class="tw-text-xl tw-font-bold tw-text-primary tw-mb-1">Nova Sub-especialidade</div>
-                <p class="tw-text-[12px] tw-text-slate-500 tw-m-0">Cadastre e gerencie as sub-categorias do sistema.</p>
-            </div>
+                    class="material-icons tw-absolute tw-top-4 tw-right-4 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
+                    onclick="fecharModal('modal-editar-especialidade')">close</span>
 
-            <div class="tw-p-6 tw-overflow-y-auto tw-custom-scrollbar tw-flex-1" style="max-height: 65vh;">
-                <div class="tw-space-y-4">
+                <div class="tw-text-xl tw-font-bold tw-text-primary tw-mb-1">Editar Especialidade</div>
+                <p class="tw-text-[12px] tw-text-slate-500 tw-mb-5">Atualize as informações cadastrais.</p>
+
+                <div class="tw-space-y-4 tw-mb-6">
                     <div class="tw-space-y-1.5">
-                        <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Especialidade
-                            Relacionada <span class="tw-text-error">*</span></label>
+                        <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
+                            Especialidade</label>
+                        <input
+                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
+                            type="text" value="Cardiologia" />
+                    </div>
+                    <div class="tw-space-y-1.5">
+                        <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Status</label>
                         <select
-                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer">
-                            <option disabled selected value="">Selecione a Especialidade Pai</option>
-                            <option>Cardiologia</option>
-                            <option>Neurologia</option>
+                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-appearance-none tw-cursor-pointer">
+                            <option value="active" selected>Ativo</option>
+                            <option value="inactive">Inativo</option>
                         </select>
                     </div>
-                    <div class="tw-space-y-1.5">
-                        <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">CÓDIGO EMPRESA
-                            <span class="tw-text-error">*</span></label>
-                        <input
-                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                            placeholder="ex: CPC-001" type="text" />
-                    </div>
-                    <div class="tw-space-y-1.5">
-                        <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
-                            Sub-especialidade <span class="tw-text-error">*</span></label>
-                        <input
-                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                            placeholder="ex: Cardiologia Pediátrica" type="text" />
-                    </div>
                 </div>
-
-                <div class="tw-flex tw-justify-end tw-gap-3 tw-mt-5">
+                <div class="tw-flex tw-justify-end tw-gap-3">
                     <button
                         class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
                         style="background:#e0e0e0; color:#333;"
-                        onclick="fecharModal('modal-nova-subespecialidade')">Cancelar</button>
+                        onclick="fecharModal('modal-editar-especialidade')">Cancelar</button>
                     <button
-                        class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all hover:tw-brightness-110"
-                        style="background:#34a853; color:white;">Criar Sub-especialidade</button>
+                        class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
+                        style="background:#34a853; color:white;">Salvar Alterações</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-excluir-especialidade"
+            class="tw-fixed tw-inset-0 tw-items-center tw-justify-center tw-bg-slate-900/60 tw-backdrop-blur-sm"
+            style="display: none; z-index: 50020;">
+            <div
+                class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-p-8 tw-text-center tw-w-[90%] tw-max-w-[400px]">
+                <span
+                    class="material-icons tw-absolute tw-top-4 tw-right-4 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
+                    onclick="fecharModal('modal-excluir-especialidade')">close</span>
+
+                <div
+                    class="tw-w-16 tw-h-16 tw-rounded-full tw-bg-red-50 tw-flex tw-items-center tw-justify-center tw-mx-auto tw-mb-4 tw-border tw-border-red-100">
+                    <span class="material-symbols-outlined tw-text-error tw-text-4xl">warning</span>
+                </div>
+                <div class="tw-text-xl tw-font-bold tw-text-error tw-mb-2">Excluir Especialidade?</div>
+                <p class="tw-text-sm tw-text-slate-600 tw-mb-6">Você está prestes a excluir a especialidade <span
+                        class="tw-font-bold tw-text-slate-900">Cardiologia</span> do sistema. Todos os itens vinculados
+                    serão afetados.</p>
+
+                <div class="tw-flex tw-justify-center tw-gap-3">
+                    <button
+                        class="tw-h-[38px] tw-flex-1 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
+                        style="background:#e0e0e0; color:#333;"
+                        onclick="fecharModal('modal-excluir-especialidade')">Cancelar</button>
+                    <button
+                        class="tw-h-[38px] tw-flex-1 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
+                        style="background:#d93025; color:white;">Sim, Excluir</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-nova-subespecialidade"
+            class="tw-fixed tw-inset-0 tw-items-center tw-justify-center tw-bg-slate-900/60 tw-backdrop-blur-sm"
+            style="display: none; z-index: 50030;">
+            <div class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-w-[90%] tw-max-w-[500px]"
+                style="max-height: 90vh;">
+                <div
+                    class="tw-p-6 tw-pb-4 tw-bg-white tw-border-b tw-border-[#eee] tw-shrink-0 tw-relative tw-rounded-t-[8px]">
+                    <span
+                        class="material-icons tw-absolute tw-top-6 tw-right-6 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
+                        onclick="fecharModal('modal-nova-subespecialidade')">close</span>
+                    <div class="tw-text-xl tw-font-bold tw-text-primary tw-mb-1">Nova Sub-especialidade</div>
+                    <p class="tw-text-[12px] tw-text-slate-500 tw-m-0">Cadastre e gerencie as sub-categorias do sistema.
+                    </p>
                 </div>
 
-                <hr class="tw-border-t tw-border-[#eee] tw-my-6" />
-
-                <div class="tw-space-y-3">
-                    <h4 class="tw-text-[11px] tw-font-bold tw-text-slate-500 tw-uppercase tw-tracking-wider">
-                        Sub-especialidades Cadastradas</h4>
-                    <div class="tw-relative">
-                        <span
-                            class="material-symbols-outlined tw-absolute tw-left-3 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400"
-                            style="font-size: 18px;">search</span>
-                        <input
-                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-outline-none tw-transition-all"
-                            placeholder="Buscar sub-especialidade..." type="text" />
+                <div class="tw-p-6 tw-overflow-y-auto tw-custom-scrollbar tw-flex-1">
+                    <div class="tw-space-y-4">
+                        <div class="tw-space-y-1.5">
+                            <label
+                                class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Especialidade
+                                Relacionada <span class="tw-text-error">*</span></label>
+                            <select
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer">
+                                <option disabled selected value="">Selecione a Especialidade Pai</option>
+                                <option>Cardiologia</option>
+                                <option>Neurologia</option>
+                            </select>
+                        </div>
+                        <div class="tw-space-y-1.5">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">CÓDIGO
+                                EMPRESA <span class="tw-text-error">*</span></label>
+                            <input
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
+                                placeholder="ex: CPC-001" type="text" />
+                        </div>
+                        <div class="tw-space-y-1.5">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
+                                Sub-especialidade <span class="tw-text-error">*</span></label>
+                            <input
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
+                                placeholder="ex: Cardiologia Pediátrica" type="text" />
+                        </div>
                     </div>
 
-                    <div class="tw-space-y-2">
-                        <div
-                            class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-white tw-border tw-border-[#eee] tw-rounded-[8px] hover:tw-bg-[#eff6ff] tw-transition-all">
-                            <div class="tw-flex tw-flex-col">
-                                <span class="tw-text-sm tw-font-bold tw-text-on-surface">Cirurgia Pediátrica</span>
-                                <span class="tw-text-[10px] tw-text-slate-400">Pai: Pediatria</span>
-                            </div>
-                            <div class="tw-flex tw-items-center tw-gap-3">
-                                <span
-                                    class="tw-px-2 tw-py-0.5 tw-bg-green-50 tw-text-green-700 tw-text-[9px] tw-font-bold tw-rounded-full">ATIVO</span>
-                                <div class="tw-flex tw-gap-1">
-                                    <button
-                                        class="tw-p-1 tw-text-slate-400 hover:tw-text-primary tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors"
-                                        onclick="fecharModal('modal-nova-subespecialidade'); abrirModal('modal-editar-subespecialidade')">
-                                        <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
-                                    </button>
-                                    <button
-                                        class="tw-p-1 tw-text-slate-400 hover:tw-text-error tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors"
-                                        onclick="fecharModal('modal-nova-subespecialidade'); abrirModal('modal-excluir-subespecialidade')">
-                                        <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
-                                    </button>
+                    <div class="tw-flex tw-justify-end tw-gap-3 tw-mt-5">
+                        <button
+                            class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
+                            style="background:#e0e0e0; color:#333;"
+                            onclick="fecharModal('modal-nova-subespecialidade')">Cancelar</button>
+                        <button
+                            class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all hover:tw-brightness-110"
+                            style="background:#34a853; color:white;">Criar Sub-especialidade</button>
+                    </div>
+
+                    <hr class="tw-border-t tw-border-[#eee] tw-my-6" />
+
+                    <div class="tw-space-y-3">
+                        <h4 class="tw-text-[11px] tw-font-bold tw-text-slate-500 tw-uppercase tw-tracking-wider">
+                            Sub-especialidades Cadastradas</h4>
+                        <div class="tw-relative">
+                            <span
+                                class="material-symbols-outlined tw-absolute tw-left-3 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400"
+                                style="font-size: 18px;">search</span>
+                            <input
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-outline-none tw-transition-all"
+                                placeholder="Buscar sub-especialidade..." type="text" />
+                        </div>
+
+                        <div class="tw-space-y-2">
+                            <div
+                                class="tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-white tw-border tw-border-[#eee] tw-rounded-[8px] hover:tw-bg-[#eff6ff] tw-transition-all">
+                                <div class="tw-flex tw-flex-col">
+                                    <span class="tw-text-sm tw-font-bold tw-text-on-surface">Cirurgia Pediátrica</span>
+                                    <span class="tw-text-[10px] tw-text-slate-400">Pai: Pediatria</span>
+                                </div>
+                                <div class="tw-flex tw-items-center tw-gap-3">
+                                    <span
+                                        class="tw-px-2 tw-py-0.5 tw-bg-green-50 tw-text-green-700 tw-text-[9px] tw-font-bold tw-rounded-full">ATIVO</span>
+                                    <div class="tw-flex tw-gap-1">
+                                        <button
+                                            class="tw-p-1 tw-text-slate-400 hover:tw-text-primary tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors"
+                                            onclick="fecharModal('modal-nova-subespecialidade'); abrirModal('modal-editar-subespecialidade')">
+                                            <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
+                                        </button>
+                                        <button
+                                            class="tw-p-1 tw-text-slate-400 hover:tw-text-error tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors"
+                                            onclick="fecharModal('modal-nova-subespecialidade'); abrirModal('modal-excluir-subespecialidade')">
+                                            <span class="material-symbols-outlined"
+                                                style="font-size: 18px;">delete</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1001,76 +1022,77 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="modal-editar-subespecialidade" class="tw-fixed tw-inset-0 tw-bg-slate-900/60 tw-backdrop-blur-sm"
-        style="display: none; z-index: 50040;">
-        <div class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-p-6"
-            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: calc(100% - 32px); max-width: 450px;">
-            <span
-                class="material-icons tw-absolute tw-top-4 tw-right-4 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
-                onclick="fecharModal('modal-editar-subespecialidade')">close</span>
-
-            <div class="tw-text-xl tw-font-bold tw-text-primary tw-mb-1">Editar Sub-especialidade</div>
-            <p class="tw-text-[12px] tw-text-slate-500 tw-mb-5">Gerencie os detalhes desta categoria no sistema.</p>
-
-            <div class="tw-space-y-4 tw-mb-6">
-                <div class="tw-space-y-1.5">
-                    <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
-                        Sub-especialidade</label>
-                    <input
-                        class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                        type="text" value="Cardiologia Pediátrica" />
-                </div>
-                <div class="tw-space-y-1.5">
-                    <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Status</label>
-                    <select
-                        class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-appearance-none tw-cursor-pointer">
-                        <option selected value="active">Ativo</option>
-                        <option value="inactive">Inativo</option>
-                    </select>
-                </div>
-            </div>
-            <div class="tw-flex tw-justify-end tw-gap-3">
-                <button
-                    class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                    style="background:#e0e0e0; color:#333;"
-                    onclick="fecharModal('modal-editar-subespecialidade')">Cancelar</button>
-                <button
-                    class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                    style="background:#34a853; color:white;">Salvar Alterações</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-excluir-subespecialidade" class="tw-fixed tw-inset-0 tw-bg-slate-900/60 tw-backdrop-blur-sm"
-        style="display: none; z-index: 50050;">
-        <div class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-p-8 tw-text-center"
-            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: calc(100% - 32px); max-width: 400px;">
-            <span
-                class="material-icons tw-absolute tw-top-4 tw-right-4 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
-                onclick="fecharModal('modal-excluir-subespecialidade')">close</span>
-
+        <div id="modal-editar-subespecialidade"
+            class="tw-fixed tw-inset-0 tw-items-center tw-justify-center tw-bg-slate-900/60 tw-backdrop-blur-sm"
+            style="display: none; z-index: 50040;">
             <div
-                class="tw-w-16 tw-h-16 tw-rounded-full tw-bg-red-50 tw-flex tw-items-center tw-justify-center tw-mx-auto tw-mb-4 tw-border tw-border-red-100">
-                <span class="material-symbols-outlined tw-text-error tw-text-4xl">warning</span>
-            </div>
-            <div class="tw-text-xl tw-font-bold tw-text-error tw-mb-2">Confirmar Exclusão</div>
-            <p class="tw-text-sm tw-text-slate-600 tw-mb-6">Você está prestes a remover <span
-                    class="tw-font-bold tw-text-slate-900">Ecocardiograma com Doppler</span>. Esta ação é
-                definitiva.</p>
+                class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-p-6 tw-w-[90%] tw-max-w-[450px]">
+                <span
+                    class="material-icons tw-absolute tw-top-4 tw-right-4 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
+                    onclick="fecharModal('modal-editar-subespecialidade')">close</span>
 
-            <div class="tw-flex tw-justify-center tw-gap-3">
-                <button
-                    class="tw-h-[38px] tw-flex-1 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                    style="background:#e0e0e0; color:#333;"
-                    onclick="fecharModal('modal-excluir-subespecialidade')">Cancelar</button>
-                <button
-                    class="tw-h-[38px] tw-flex-1 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                    style="background:#d93025; color:white;">Excluir</button>
+                <div class="tw-text-xl tw-font-bold tw-text-primary tw-mb-1">Editar Sub-especialidade</div>
+                <p class="tw-text-[12px] tw-text-slate-500 tw-mb-5">Gerencie os detalhes desta categoria no sistema.</p>
+
+                <div class="tw-space-y-4 tw-mb-6">
+                    <div class="tw-space-y-1.5">
+                        <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
+                            Sub-especialidade</label>
+                        <input
+                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
+                            type="text" value="Cardiologia Pediátrica" />
+                    </div>
+                    <div class="tw-space-y-1.5">
+                        <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Status</label>
+                        <select
+                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-appearance-none tw-cursor-pointer">
+                            <option selected value="active">Ativo</option>
+                            <option value="inactive">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="tw-flex tw-justify-end tw-gap-3">
+                    <button
+                        class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
+                        style="background:#e0e0e0; color:#333;"
+                        onclick="fecharModal('modal-editar-subespecialidade')">Cancelar</button>
+                    <button
+                        class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
+                        style="background:#34a853; color:white;">Salvar Alterações</button>
+                </div>
             </div>
         </div>
-    </div>
+
+        <div id="modal-excluir-subespecialidade"
+            class="tw-fixed tw-inset-0 tw-items-center tw-justify-center tw-bg-slate-900/60 tw-backdrop-blur-sm"
+            style="display: none; z-index: 50050;">
+            <div
+                class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-p-8 tw-text-center tw-w-[90%] tw-max-w-[400px]">
+                <span
+                    class="material-icons tw-absolute tw-top-4 tw-right-4 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
+                    onclick="fecharModal('modal-excluir-subespecialidade')">close</span>
+
+                <div
+                    class="tw-w-16 tw-h-16 tw-rounded-full tw-bg-red-50 tw-flex tw-items-center tw-justify-center tw-mx-auto tw-mb-4 tw-border tw-border-red-100">
+                    <span class="material-symbols-outlined tw-text-error tw-text-4xl">warning</span>
+                </div>
+                <div class="tw-text-xl tw-font-bold tw-text-error tw-mb-2">Confirmar Exclusão</div>
+                <p class="tw-text-sm tw-text-slate-600 tw-mb-6">Você está prestes a remover <span
+                        class="tw-font-bold tw-text-slate-900">Ecocardiograma com Doppler</span>. Esta ação é
+                    definitiva.</p>
+
+                <div class="tw-flex tw-justify-center tw-gap-3">
+                    <button
+                        class="tw-h-[38px] tw-flex-1 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
+                        style="background:#e0e0e0; color:#333;"
+                        onclick="fecharModal('modal-excluir-subespecialidade')">Cancelar</button>
+                    <button
+                        class="tw-h-[38px] tw-flex-1 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
+                        style="background:#d93025; color:white;">Excluir</button>
+                </div>
+            </div>
+        </div>
 
     </div>
 </body>
