@@ -42,14 +42,38 @@ class ApiClient {
             const url = `${SUPABASE_URL}${endpoint}`;
             const response = await fetch(url, config);
 
-            if (response.status === 401) {
-                console.error("⛔ Sessão Expirada ou Acesso Negado.");
-                if (typeof fazerLogout === 'function') fazerLogout();
-                throw new Error("Sessão expirada. Faça login novamente.");
-            }
-
             if (!response.ok) {
-                const errorData = await response.json();
+                let errorData = {};
+                try {
+                    errorData = await response.json();
+                } catch (e) {
+                    errorData = { message: 'Erro HTTP ' + response.status };
+                }
+
+                const errorMsg = (errorData.error_description || errorData.message || errorData.error || "").toLowerCase();
+
+                // DETECÇÃO GLOBAL DE SESSÃO EXPIRADA (JWT Expired)
+                if (response.status === 401 || errorMsg.includes("jwt expired") || errorMsg.includes("token expired") || errorMsg.includes("invalid jwt")) {
+                    console.error("⛔ [SESSÃO] Expiração detectada. Invocando limpeza global...");
+
+                    localStorage.removeItem('saas_token_jwt');
+
+                    if (typeof mostrarMensagem === 'function') {
+                        mostrarMensagem("Sessão Expirada", "Sua sessão expirou por inatividade. Por favor, faça login novamente.");
+                    } else {
+                        alert("Sua sessão expirou. Por favor, faça login novamente.");
+                    }
+
+                    if (typeof fazerLogout === 'function') {
+                        fazerLogout();
+                    } else {
+                        // Fallback caso a função não esteja no escopo (ex: tela de login)
+                        window.location.reload();
+                    }
+
+                    throw new Error("Sessão expirada. Redirecionando...");
+                }
+
                 throw new Error(errorData.error_description || errorData.message || 'Erro HTTP ' + response.status);
             }
 
