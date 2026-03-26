@@ -1783,19 +1783,33 @@ function renderizarSubEspecialidades(dados) {
     const list = document.getElementById('lista-sub-especialidades');
     if (!list) return;
     list.innerHTML = "";
+
     if (dados.length === 0) {
-        list.innerHTML = "<p style='color: #666; font-size: 13px;'>Nenhuma sub-especialidade cadastrada para esta especialidade.</p>";
+        list.innerHTML = "<p style='color: #666; font-size: 13px; text-align: center; padding: 20px;'>Nenhuma sub-especialidade cadastrada.</p>";
         return;
     }
+
     dados.forEach(item => {
         const div = document.createElement('div');
-        div.className = 'item-cadastro';
         div.innerHTML = `
-            <span>${item.nome}</span>
-            <button class="btn-del-mini" onclick="excluirSubEspecialidade('${item.id}')" title="Excluir sub-especialidade">
-                <span class="material-icons" style="font-size: 18px;">delete</span>
-            </button>
-        `;
+<div class="item-sub-especialidade tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-[#eff6ff]/30 tw-border tw-border-[#eee] tw-rounded-md tw-group tw-transition-all tw-duration-200 hover:tw-bg-[#eff6ff] hover:tw-border-[#bae6fd]">
+    <div class="tw-flex tw-flex-col">
+        <span class="nome-sub-especialidade tw-text-sm tw-font-medium tw-text-on-surface">${escapeHtml(item.nome)}</span>
+        <div class="tw-flex tw-items-center tw-gap-2 tw-mt-1">
+            <span class="tw-text-[10px] tw-text-slate-400 tw-font-mono">${item.id || 'N/A'}</span>
+            <span class="tw-px-2 tw-py-0.5 tw-rounded-full tw-text-[9px] tw-font-bold tw-uppercase tw-bg-secondary-container/50 tw-text-on-secondary-container">Ativo</span>
+        </div>
+    </div>
+    <div class="tw-flex tw-gap-1">
+        <button class="tw-p-1.5 tw-text-on-surface-variant hover:tw-text-primary hover:tw-bg-white tw-rounded-md tw-transition-colors tw-bg-transparent tw-border-0 tw-cursor-pointer" title="Editar">
+            <span class="material-symbols-outlined tw-text-[18px]">edit</span>
+        </button>
+        <button class="tw-p-1.5 tw-text-on-surface-variant hover:tw-text-error hover:tw-bg-white tw-rounded-md tw-transition-colors tw-bg-transparent tw-border-0 tw-cursor-pointer" onclick="excluirSubEspecialidade('${item.id}')" title="Excluir">
+            <span class="material-symbols-outlined tw-text-[18px]">delete</span>
+        </button>
+    </div>
+</div>
+`;
         list.appendChild(div);
     });
 }
@@ -1847,6 +1861,26 @@ async function excluirSubEspecialidade(id) {
             if (res.sucesso) carregarSubEspecialidades(espId);
         } catch (e) {
             mostrarMensagem("Erro", "Falha ao excluir sub-especialidade.");
+        }
+    });
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function filtrarListaSubEspecialidades() {
+    const termo = (document.getElementById('busca-sub-especialidade').value || "").toLowerCase().trim();
+    const items = document.querySelectorAll('.item-sub-especialidade');
+
+    items.forEach(item => {
+        const nome = (item.querySelector('.nome-sub-especialidade').textContent || "").toLowerCase();
+        if (nome.includes(termo)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
         }
     });
 }
