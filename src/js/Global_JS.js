@@ -164,7 +164,7 @@ async function fazerLogin() {
         const res = await ApiClient.post('/auth/v1/token?grant_type=password', {
             email: email,
             password: senha
-        });
+        }, { skipAuth: true });
 
         const token = res.access_token;
         const user = res.user;

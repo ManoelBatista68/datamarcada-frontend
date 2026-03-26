@@ -28,8 +28,8 @@ class ApiClient {
         // Camada de Sanitização
         const token = tokenRaw ? tokenRaw.trim().replace(/^"|"$/g, '') : null;
 
-        // Detecção de Rota Pública ou Bypass Manual
-        const isPublicRoute = endpoint.includes('/auth/v1/') || options.skipAuth;
+        // Detecção de Rota Pública ou Bypass Manual (Prioriza flag skipAuth)
+        const isPublicRoute = (options && options.skipAuth) || endpoint.includes('/auth/v1/');
 
         // Camada B: Guarda de Segurança Ativa (Apenas para rotas protegidas)
         if (!isPublicRoute && (!token || token === 'undefined' || token === 'null' || token === '')) {
@@ -55,7 +55,7 @@ class ApiClient {
             headers['Authorization'] = 'Bearer ' + token;
         }
 
-        if (options.headers) {
+        if (options && options.headers) {
             Object.assign(headers, options.headers);
         }
 
@@ -92,6 +92,19 @@ class ApiClient {
         }
     }
 
-    static async get(endpoint) { return this.request(endpoint, { method: 'GET' }); }
-    static async post(endpoint, payload) { return this.request(endpoint, { method: 'POST', body: JSON.stringify(payload) }); }
+    static async get(endpoint, options = {}) {
+        return this.request(endpoint, { ...options, method: 'GET' });
+    }
+
+    static async post(endpoint, payload, options = {}) {
+        return this.request(endpoint, { ...options, method: 'POST', body: JSON.stringify(payload) });
+    }
+
+    static async put(endpoint, payload, options = {}) {
+        return this.request(endpoint, { ...options, method: 'PUT', body: JSON.stringify(payload) });
+    }
+
+    static async delete(endpoint, options = {}) {
+        return this.request(endpoint, { ...options, method: 'DELETE' });
+    }
 }
