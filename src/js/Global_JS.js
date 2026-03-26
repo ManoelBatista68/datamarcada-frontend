@@ -203,8 +203,14 @@ async function fazerLogin() {
 }
 
 function fazerLogout() {
-    // Limpeza em massa de modais (Garante que nenhum overlay obstrua o login)
-    document.querySelectorAll('[id^="modal-"]').forEach(m => m.style.display = 'none');
+    // Limpeza em massa de modais (Garante que nenhum overlay obstrua o login - Superando especificidade do Tailwind)
+    try {
+        document.querySelectorAll('[id^="modal-"]').forEach(m => {
+            m.style.setProperty('display', 'none', 'important');
+        });
+    } catch (err) {
+        console.warn("⚠️ [UI] Falha na limpeza de modais durante o logout:", err);
+    }
 
     localStorage.removeItem('appAgendaUserEmail');
     localStorage.removeItem('appAgendaUserTipo');
