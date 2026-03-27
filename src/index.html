@@ -1091,25 +1091,64 @@
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Sub-especialidade
                                 Relacionada <span class="tw-text-error">*</span></label>
-                            <select
+                            <select id="novo-produto-sub-id"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer">
-                                <option>Dermatologia Estética</option>
-                                <option>Psicologia Cognitiva</option>
-                                <option>Nutrição Esportiva</option>
-                                <option>Fisioterapia Pélvica</option>
+                                <option disabled selected>Selecione...</option>
                             </select>
                         </div>
                         <div class="tw-space-y-1.5">
                             <label
-                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Status
-                                do Produto</label>
-                            <div
-                                class="tw-flex tw-gap-2 tw-p-1 tw-bg-slate-100 tw-rounded-[8px] tw-h-[38px] tw-items-center">
-                                <button
-                                    class="tw-flex-1 tw-h-full tw-text-xs tw-font-bold tw-rounded-[6px] tw-bg-white tw-shadow-sm tw-text-primary tw-border-none tw-cursor-pointer">Ativo</button>
-                                <button
-                                    class="tw-flex-1 tw-h-full tw-text-xs tw-font-bold tw-rounded-[6px] tw-text-slate-500 hover:tw-text-slate-700 tw-bg-transparent tw-border-none tw-cursor-pointer">Inativo</button>
+                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome
+                                do Produto <span class="tw-text-error">*</span></label>
+                            <input id="novo-produto-nome"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
+                                placeholder="ex: Consulta Cardiológica" type="text" />
+                        </div>
+                    </div>
+
+                    <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-4 tw-gap-4 tw-mb-4">
+                        <div class="tw-space-y-1.5">
+                            <label
+                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Duração
+                                (min)</label>
+                            <div class="tw-relative">
+                                <input id="novo-produto-duracao"
+                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none"
+                                    type="number" placeholder="45" />
                             </div>
+                        </div>
+                        <div class="tw-space-y-1.5">
+                            <label
+                                class="tw-block tw-text-[11px] tw-font-bold tw-text-primary tw-uppercase tw-ml-1">Valor
+                                Real</label>
+                            <div class="tw-relative">
+                                <span
+                                    class="tw-absolute tw-left-3 tw-top-1/2 tw--translate-y-1/2 tw-text-[10px] tw-text-slate-400 italic">R$</span>
+                                <input id="novo-produto-valor-real"
+                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-8 tw-pr-2 tw-text-sm tw-font-bold"
+                                    placeholder="0,00" type="text" />
+                            </div>
+                        </div>
+                        <div class="tw-space-y-1.5">
+                            <label
+                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Valor
+                                Promo</label>
+                            <div class="tw-relative">
+                                <span
+                                    class="tw-absolute tw-left-3 tw-top-1/2 tw--translate-y-1/2 tw-text-[10px] tw-text-slate-400 italic">R$</span>
+                                <input id="novo-produto-valor-promo"
+                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-8 tw-pr-2 tw-text-sm"
+                                    placeholder="0,00" type="text" />
+                            </div>
+                        </div>
+                        <div class="tw-space-y-1.5">
+                            <label
+                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Status</label>
+                            <select id="novo-produto-status"
+                                class="tw-w-full tw-bg-slate-50 tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-2 tw-text-xs tw-font-bold tw-outline-none tw-cursor-pointer">
+                                <option value="active" selected>Ativo</option>
+                                <option value="inactive">Inativo</option>
+                            </select>
                         </div>
                     </div>
 
@@ -1118,54 +1157,15 @@
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Forma
                                 de Atendimento <span class="tw-text-error">*</span></label>
-                            <select
+                            <select id="novo-produto-tipo"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer">
-                                <option>Presencial</option>
-                                <option>On-Line</option>
-                                <option>Presencial ou On-Line</option>
+                                <option value="Presencial">Presencial</option>
+                                <option value="On-Line">On-Line</option>
+                                <option value="Ambos">Presencial ou On-Line</option>
                             </select>
-                        </div>
-                        <div class="tw-space-y-1.5">
-                            <label
-                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Duração
-                                (minutos) <span class="tw-text-error">*</span></label>
-                            <div class="tw-relative">
-                                <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                                    placeholder="ex: 45" type="number" />
-                                <span
-                                    class="tw-absolute tw-right-4 tw-top-1/2 tw--translate-y-1/2 tw-text-xs tw-text-slate-400 tw-font-medium">min</span>
-                            </div>
                         </div>
                     </div>
 
-                    <div
-                        class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-bg-indigo-50/50 tw-p-4 tw-rounded-[8px] tw-border tw-border-indigo-100/50 tw-mb-4">
-                        <div class="tw-space-y-1.5">
-                            <label
-                                class="tw-block tw-text-[11px] tw-font-bold tw-text-primary tw-uppercase tw-ml-1">Valor
-                                Real <span class="tw-text-error">*</span></label>
-                            <div class="tw-relative">
-                                <span
-                                    class="tw-absolute tw-left-4 tw-top-1/2 tw--translate-y-1/2 tw-text-sm tw-text-slate-400">R$</span>
-                                <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-indigo-100 focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-font-bold tw-text-slate-900 tw-outline-none tw-transition-all"
-                                    placeholder="0,00" type="text" />
-                            </div>
-                        </div>
-                        <div class="tw-space-y-1.5">
-                            <label
-                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Valor
-                                Promocional</label>
-                            <div class="tw-relative">
-                                <span
-                                    class="tw-absolute tw-left-4 tw-top-1/2 tw--translate-y-1/2 tw-text-sm tw-text-slate-400">R$</span>
-                                <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-font-bold tw-text-slate-900 tw-outline-none tw-transition-all"
-                                    placeholder="0,00" type="text" />
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="tw-space-y-4 tw-mb-4">
                         <div class="tw-space-y-1.5">
@@ -1219,9 +1219,6 @@
                             class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
                             style="background:#e0e0e0; color:#333;"
                             onclick="fecharModal('modal-novo-produto')">Cancelar</button>
-                        <button
-                            class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border tw-border-[#ddd] tw-cursor-pointer tw-transition-all hover:tw-bg-slate-50 tw-bg-white tw-text-slate-600">Salvar
-                            como Rascunho</button>
                         <button
                             class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all hover:tw-brightness-110"
                             style="background:#34a853; color:white;">Salvar Produto</button>
@@ -1325,29 +1322,70 @@
                 </div>
 
                 <div class="tw-p-6 tw-overflow-y-auto tw-custom-scrollbar tw-flex-1">
+
                     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-mb-4">
                         <div class="tw-space-y-1.5">
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Sub-especialidade
                                 Relacionada <span class="tw-text-error">*</span></label>
-                            <select
+                            <select id="editar-produto-sub-id"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer">
-                                <option selected>Cardiologia Clínica</option>
-                                <option>Dermatologia Estética</option>
-                                <option>Neurologia Pediátrica</option>
+                                <option value="" disabled>Selecione...</option>
                             </select>
                         </div>
                         <div class="tw-space-y-1.5">
                             <label
-                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Status
-                                do Produto</label>
-                            <div
-                                class="tw-flex tw-gap-2 tw-p-1 tw-bg-slate-100 tw-rounded-[8px] tw-h-[38px] tw-items-center">
-                                <button
-                                    class="tw-flex-1 tw-h-full tw-text-xs tw-font-bold tw-rounded-[6px] tw-bg-white tw-shadow-sm tw-text-primary tw-border-none tw-cursor-pointer">Ativo</button>
-                                <button
-                                    class="tw-flex-1 tw-h-full tw-text-xs tw-font-bold tw-rounded-[6px] tw-text-slate-500 hover:tw-text-slate-700 tw-bg-transparent tw-border-none tw-cursor-pointer">Inativo</button>
+                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome
+                                do Produto <span class="tw-text-error">*</span></label>
+                            <input id="editar-produto-nome"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
+                                placeholder="ex: Consulta Cardiológica" type="text" />
+                        </div>
+                    </div>
+
+                    <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-4 tw-gap-4 tw-mb-4">
+                        <div class="tw-space-y-1.5">
+                            <label
+                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Duração
+                                (min)</label>
+                            <div class="tw-relative">
+                                <input id="editar-produto-duracao"
+                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none"
+                                    type="number" placeholder="45" />
                             </div>
+                        </div>
+                        <div class="tw-space-y-1.5">
+                            <label
+                                class="tw-block tw-text-[11px] tw-font-bold tw-text-primary tw-uppercase tw-ml-1">Valor
+                                Real</label>
+                            <div class="tw-relative">
+                                <span
+                                    class="tw-absolute tw-left-3 tw-top-1/2 tw--translate-y-1/2 tw-text-[10px] tw-text-slate-400 italic">R$</span>
+                                <input id="editar-produto-valor-real"
+                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-8 tw-pr-2 tw-text-sm tw-font-bold"
+                                    placeholder="0,00" type="text" />
+                            </div>
+                        </div>
+                        <div class="tw-space-y-1.5">
+                            <label
+                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Valor
+                                Promo</label>
+                            <div class="tw-relative">
+                                <span
+                                    class="tw-absolute tw-left-3 tw-top-1/2 tw--translate-y-1/2 tw-text-[10px] tw-text-slate-400 italic">R$</span>
+                                <input id="editar-produto-valor-promo"
+                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-8 tw-pr-2 tw-text-sm"
+                                    placeholder="0,00" type="text" />
+                            </div>
+                        </div>
+                        <div class="tw-space-y-1.5">
+                            <label
+                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Status</label>
+                            <select id="editar-produto-status"
+                                class="tw-w-full tw-bg-slate-50 tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-2 tw-text-xs tw-font-bold tw-outline-none tw-cursor-pointer">
+                                <option value="active">Ativo</option>
+                                <option value="inactive">Inativo</option>
+                            </select>
                         </div>
                     </div>
 
@@ -1356,54 +1394,15 @@
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Forma
                                 de Atendimento <span class="tw-text-error">*</span></label>
-                            <select
+                            <select id="editar-produto-tipo"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer">
-                                <option selected>Presencial</option>
-                                <option>On-Line</option>
-                                <option>Presencial ou On-Line</option>
+                                <option value="Presencial">Presencial</option>
+                                <option value="On-Line">On-Line</option>
+                                <option value="Ambos">Presencial ou On-Line</option>
                             </select>
-                        </div>
-                        <div class="tw-space-y-1.5">
-                            <label
-                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Duração
-                                (minutos) <span class="tw-text-error">*</span></label>
-                            <div class="tw-relative">
-                                <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                                    value="45" type="number" />
-                                <span
-                                    class="tw-absolute tw-right-4 tw-top-1/2 tw--translate-y-1/2 tw-text-xs tw-text-slate-400 tw-font-medium">min</span>
-                            </div>
                         </div>
                     </div>
 
-                    <div
-                        class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-bg-indigo-50/50 tw-p-4 tw-rounded-[8px] tw-border tw-border-indigo-100/50 tw-mb-4">
-                        <div class="tw-space-y-1.5">
-                            <label
-                                class="tw-block tw-text-[11px] tw-font-bold tw-text-primary tw-uppercase tw-ml-1">Valor
-                                Real <span class="tw-text-error">*</span></label>
-                            <div class="tw-relative">
-                                <span
-                                    class="tw-absolute tw-left-4 tw-top-1/2 tw--translate-y-1/2 tw-text-sm tw-text-slate-400">R$</span>
-                                <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-indigo-100 focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-font-bold tw-text-slate-900 tw-outline-none tw-transition-all"
-                                    value="350,00" type="text" />
-                            </div>
-                        </div>
-                        <div class="tw-space-y-1.5">
-                            <label
-                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Valor
-                                Promocional</label>
-                            <div class="tw-relative">
-                                <span
-                                    class="tw-absolute tw-left-4 tw-top-1/2 tw--translate-y-1/2 tw-text-sm tw-text-slate-400">R$</span>
-                                <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-font-bold tw-text-slate-900 tw-outline-none tw-transition-all"
-                                    value="299,90" type="text" />
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="tw-space-y-4 tw-mb-4">
                         <div class="tw-space-y-1.5">
@@ -1455,9 +1454,6 @@
                             class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
                             style="background:#e0e0e0; color:#333;"
                             onclick="fecharModal('modal-editar-produto')">Cancelar</button>
-                        <button
-                            class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border tw-border-[#ddd] tw-cursor-pointer tw-transition-all hover:tw-bg-slate-50 tw-bg-white tw-text-slate-600">Salvar
-                            como Rascunho</button>
                         <button
                             class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all hover:tw-brightness-110"
                             style="background:#34a853; color:white;">Salvar Alterações</button>
