@@ -1584,7 +1584,13 @@ async function carregarEstruturaHierarquica() {
             return;
         }
 
-        html += `
+        let html = '';
+        especialidades.forEach(esp => {
+            const subs = subMap[esp.id] || [];
+            const espContainerId = `subs-esp-${esp.id}`;
+            const espIconId = `icon-esp-${esp.id}`;
+
+            html += `
             <section class="tw-space-y-6 tw-mb-12 tw-fade-in-smooth">
                 <!-- CARD ESPECIALIDADE -->
                 <div class="tw-bg-white tw-p-6 tw-rounded-xl tw-flex tw-items-center tw-justify-between tw-shadow-sm tw-border-l-4 tw-border-primary tw-group hover:tw-shadow-md tw-transition-shadow" style="border-left-color: #3F76CB;">
@@ -1616,10 +1622,10 @@ async function carregarEstruturaHierarquica() {
                 <!-- CONTAINER SUBS -->
                 <div class="tw-ml-12 tw-space-y-8 diagnostic-thread tw-hidden" id="${espContainerId}">
                     ${subs.length > 0 ? subs.map(sub => {
-            const subProds = prodMap[sub.codigo_sub_especialidade] || prodMap[sub.id] || prodMap[sub.nome] || [];
-            const subContainerId = `prod-sub-${sub.id}`;
+                const subProds = prodMap[sub.codigo_sub_especialidade] || prodMap[sub.id] || prodMap[sub.nome] || [];
+                const subContainerId = `prod-sub-${sub.id}`;
 
-            return `
+                return `
                 <div class="tw-space-y-4">
                     <!-- HEADER SUB-ESPECIALIDADE -->
                     <div class="tw-flex tw-items-center tw-justify-between">
@@ -1674,24 +1680,24 @@ async function carregarEstruturaHierarquica() {
                     </div>
                 </div>
                 `;
-        }).join('') : `
+            }).join('') : `
                 <div class="tw-p-4 tw-text-center tw-text-slate-400 tw-text-xs tw-italic tw-bg-slate-50/50 tw-rounded-lg">Nenhuma sub-especialidade vinculada.</div>
             `}
                 </div>
             </section>`;
-    });
+        });
 
-    container.innerHTML = html;
+        container.innerHTML = html;
 
-    // Auto-sincronização de altura
-    if (iframe.contentWindow && typeof iframe.contentWindow.sendHeight === 'function') {
-        setTimeout(() => iframe.contentWindow.sendHeight(), 100);
+        // Auto-sincronização de altura
+        if (iframe.contentWindow && typeof iframe.contentWindow.sendHeight === 'function') {
+            setTimeout(() => iframe.contentWindow.sendHeight(), 100);
+        }
+
+    } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
+        console.error("❌ [HIERARQUIA] Erro na renderização SaaS:", e);
     }
-
-} catch (e) {
-    if (e.message === "SESSION_EXPIRED") return;
-    console.error("❌ [HIERARQUIA] Erro na renderização SaaS:", e);
-}
 }
 
 /**
