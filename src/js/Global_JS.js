@@ -1537,7 +1537,11 @@ async function carregar() {
  * Implementa o design Tailwind aprovado com suporte a CRUD completo.
  */
 async function carregarEstruturaHierarquica() {
-    console.log("📂 [HIERARQUIA] Iniciando carga dinâmica total...");
+    // [RESILIÊNCIA] Garante que dados da empresa e roles estejam carregados
+    if (!userCodigoEmpresa) userCodigoEmpresa = localStorage.getItem('appAgendaUserCodigoEmpresa') || "";
+    if (!tipoUsuarioAtual) tipoUsuarioAtual = localStorage.getItem('appAgendaUserTipo') || "Especialista";
+
+    console.log("📂 [HIERARQUIA] Iniciando carga dinâmica total...", { empresa: userCodigoEmpresa, role: tipoUsuarioAtual });
     const iframe = document.querySelector('iframe[src*="tela_cadastro_mockup"]');
     if (!iframe) return;
 
@@ -2151,6 +2155,12 @@ async function prepararNovoSubEspecialidade(espId, espNome) {
     }
 
     if (selPai) { selPai.value = espId; }
+
+    // [SINCRONIA] Carrega as subs cadastradas para o container lateral
+    if (typeof carregarSubEspecialidades === 'function') {
+        await carregarSubEspecialidades(espId);
+    }
+
     abrirModal('modal-nova-subespecialidade');
 }
 
@@ -2340,7 +2350,10 @@ async function carregarProdutosNoModal(subId) {
         });
 
         if (res.sucesso && res.data) {
-            if (res.data.length === 0) {
+            // Garante que res.data seja um array para evitar erros de loop
+            const lista = Array.isArray(res.data) ? res.data : [];
+
+            if (lista.length === 0) {
                 container.innerHTML = `
                     <div class="tw-p-10 tw-text-center tw-bg-slate-50 tw-rounded-xl tw-border tw-border-dashed tw-border-slate-200">
                         <span class="material-symbols-outlined tw-text-slate-300 tw-mb-2" style="font-size: 40px;">inventory_2</span>
@@ -2351,7 +2364,7 @@ async function carregarProdutosNoModal(subId) {
             }
 
             let html = '';
-            res.data.forEach(p => {
+            lista.forEach(p => {
                 const valorReal = parseFloat(p.valor_real || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                 const valorPromo = p.valor_promo ? parseFloat(p.valor_promo).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : null;
                 const statusClass = p.status === 'active' ? 'tw-bg-green-50 tw-text-green-700' : 'tw-bg-slate-100 tw-text-slate-500';
@@ -2402,6 +2415,10 @@ async function carregarProdutosNoModal(subId) {
 
 function prepararNovoProduto(subId, subNome, espId, espNome) {
     console.log("🛠️ [PRODUTO] Preparando novo produto para:", subNome);
+
+    // [CONTEXTO] Exibe a Especialidade Pai para melhor orientação visual
+    const labelContexto = document.getElementById('novo-produto-contexto-especialidade');
+    if (labelContexto) labelContexto.textContent = "Especialidade: " + (espNome || "N/D");
 
     // Alimenta contextos nos inputs do modal
     const inputSubNomeDisp = document.getElementById('novo-produto-sub-nome-display'); // Pode ser um label na v4
@@ -2465,7 +2482,8 @@ async function prepararEdicaoProduto(id) {
             // Define o nome da sub-especialidade no campo Read-Only
             const inputSubNome = document.getElementById('editar-produto-sub-nome');
             if (inputSubNome) {
-                inputSubNome.value = p.subespecialidade_nome || "N/A";
+                // Tenta mapear o nome da sub-especialidade em diferentes chaves (conforme análise Sync)
+                inputSubNome.value = p.nome_sub_especialidade || p.subespecialidade_nome || p.sub_especialidade || "N/A";
             }
 
             abrirModal('modal-editar-produto');
