@@ -42,5 +42,10 @@ Você agora opera sob o "Regime Utilitário Legado". O seu objetivo NÃO é inov
 - **Escopo:** Botões dentro de iFrames devem disparar funções no pai usando `window.parent.NOME_DA_FUNCAO()`.
 - **Prevenção:** Sempre use `event.stopPropagation()` em botões de ação para não disparar o toggle de acordeão do card pai.
 
+## 8. PROTOCOLO DE SESSÃO (TOKEN VENCIDO)
+- É estritamente proibido que a aplicação falhe silenciosamente ('Silent Fail') ao detectar expiração de Token JWT.
+- Toda interceptação de erro 401/403 ou 'jwt expired' DEVE exibir um feedback visual claro ao usuário (ex: alert) ANTES de executar o redirecionamento ou limpeza (ex: fazerLogout()).
+- Em chamadas paralelas (Promise.all), uma flag global (ex: isExpiredAlerted) deve ser usada para garantir que o alerta seja disparado apenas uma vez.
+
 **MENSAGEM DE CONFIRMAÇÃO OBRIGATÓRIA:**
 Em sua próxima resposta, você deve iniciar dizendo: "Protocolo Override aceito. Diretrizes radicais de design desativadas. Modo de Clonagem Estrita ativado."

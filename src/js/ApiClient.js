@@ -4,13 +4,27 @@ const SUPABASE_URL = "https://xugyekefbinusnrmzcrj.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1Z3lla2VmYmludXNucm16Y3JqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMjE3NzEsImV4cCI6MjA4OTY5Nzc3MX0.dac0acC0OkKbJ48BM4c-PKZf8N0JOb3Xh7f47lkPd-Y";
 
 class ApiClient {
+    static isExpiredAlerted = false;
+
     static handleSessionExpired() {
+        if (this.isExpiredAlerted) return; // Evita spam de alertas em requisições paralelas
+        this.isExpiredAlerted = true;
+
         console.error("⛔ [SESSÃO] Expiração ou Token Inválido detectado. Limpando sessão...");
         localStorage.removeItem('saas_token_jwt');
 
-        if (typeof fazerLogout === 'function') {
+        alert("Sua sessão expirou por inatividade ou segurança. Por favor, faça login novamente.");
+
+        // Tenta acionar a função da janela pai (se estiver num Iframe)
+        if (window.parent && typeof window.parent.fazerLogout === 'function') {
+            window.parent.fazerLogout();
+        }
+        // Tenta acionar na janela atual
+        else if (typeof fazerLogout === 'function') {
             fazerLogout();
-        } else {
+        }
+        // Fallback radical
+        else {
             window.location.reload();
         }
     }
