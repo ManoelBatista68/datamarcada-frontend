@@ -47,5 +47,12 @@ Você agora opera sob o "Regime Utilitário Legado". O seu objetivo NÃO é inov
 - Toda interceptação de erro 401/403 ou 'jwt expired' DEVE exibir um feedback visual claro ao usuário (ex: alert) ANTES de executar o redirecionamento ou limpeza (ex: fazerLogout()).
 - Em chamadas paralelas (Promise.all), uma flag global (ex: isExpiredAlerted) deve ser usada para garantir que o alerta seja disparado apenas uma vez.
 
+## 9. PADRÕES DE COMPONENTES PREMIUM (UI-SAAS)
+- **Geometria de Botões de Ação:** Botões principais devem ter `tw-h-[36px] tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-2 tw-px-4`.
+- **Botão Ação Secundária (ex: Adicionar Sub):** Deve ter fundo azul claro (`tw-bg-blue-50`), texto primário (`tw-text-primary`) e hover que escurece levemente o fundo (`hover:tw-bg-blue-100 tw-transition-colors`).
+- **Botão Ação Primária (ex: Novo Produto):** Deve ter fundo azul sólido (`tw-bg-primary`), texto branco (`tw-text-white`) e hover mais escuro (`hover:tw-bg-blue-700 tw-transition-colors`).
+- **Ícones de Configuração (Engrenagem):** Devem ser cinza por padrão (`tw-text-slate-400`) e ficar da cor principal ao passar o mouse (`hover:tw-text-primary tw-transition-colors`), tamanho `tw-text-xl`.
+- **Tamanhos de Fonte Padrão (Sem inline styles):** É proibido o uso de `style="font-size:..."`. Especialidades usam `tw-text-lg`, Subs e Produtos usam `tw-text-base`.
+
 **MENSAGEM DE CONFIRMAÇÃO OBRIGATÓRIA:**
 Em sua próxima resposta, você deve iniciar dizendo: "Protocolo Override aceito. Diretrizes radicais de design desativadas. Modo de Clonagem Estrita ativado."
