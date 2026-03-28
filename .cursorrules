@@ -50,7 +50,10 @@ Você agora opera sob o "Regime Utilitário Legado". O seu objetivo NÃO é inov
 ## 9. PADRÕES DE COMPONENTES PREMIUM (UI-SAAS)
 - **Geometria de Botões de Ação:** Botões principais devem ter `tw-h-[36px] tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-2 tw-px-4`.
 - **Botão Ação Secundária (ex: Adicionar Sub):** Deve ter fundo azul claro (`tw-bg-blue-50`), texto primário (`tw-text-primary`) e hover que escurece levemente o fundo (`hover:tw-bg-blue-100 tw-transition-colors`).
-- **Botão Ação Primária (ex: Novo Produto):** Deve ter fundo azul sólido (`tw-bg-primary`), texto branco (`tw-text-white`) e hover mais escuro (`hover:tw-bg-blue-700 tw-transition-colors`).
+- **Botão Ação Primária (ex: Novo Produto)**: Deve ter fundo azul sólido (tw-bg-primary), texto branco (tw-text-white) e elevação suave ao hover.
+- **Campos de Exibição Vinculada (Read-Only)**: Quando um modal precisa exibir um dado pai já vinculado (ex: mostrar a Sub-especialidade ao editar um Produto), NÃO utilize elementos `<select>`. Utilize um `<input type="text" readonly>` com a classe `tw-bg-slate-100` para indicar claramente que o campo é apenas para visualização.
+- **Padrão de Empty State (Produtos)**: Sempre que uma lista de produtos retornar vazia na interface, a mensagem padrão a ser exibida deve ser estritamente: "Nenhum Produto ainda cadastrado".
+- **Botão Ação Primária (ex: Novo Produto)**: Deve ter fundo azul sólido (`tw-bg-primary`), texto branco (`tw-text-white`) e hover mais escuro (`hover:tw-bg-blue-700 tw-transition-colors`).
 - **Ícones de Configuração (Engrenagem):** Devem ser cinza por padrão (`tw-text-slate-400`) e ficar da cor principal ao passar o mouse (`hover:tw-text-primary tw-transition-colors`), tamanho `tw-text-xl`.
 - **Tamanhos de Fonte Padrão (Sem inline styles):** É proibido o uso de `style="font-size:..."`. Especialidades usam `tw-text-lg`, Subs e Produtos usam `tw-text-base`.
 

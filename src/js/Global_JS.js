@@ -2141,11 +2141,17 @@ function prepararEdicaoSubEspecialidade(id, nome, espId) {
     if (typeof abrirModal === 'function') abrirModal('modal-editar-subespecialidade');
 }
 
-function prepararNovoSubEspecialidade(espId, espNome) {
-    const selectPai = document.getElementById('sub-especialidade-pai') || document.getElementById('select-pai-especialidade');
-    if (selectPai && espId) selectPai.value = espId;
+async function prepararNovoSubEspecialidade(espId, espNome) {
+    console.log("🛠️ [SUB] Preparando nova sub para:", espNome);
+    const selPai = document.getElementById('sub-especialidade-pai');
 
-    if (typeof abrirModal === 'function') abrirModal('modal-nova-subespecialidade');
+    // Se o select estiver vazio (apenas placeholder), recarrega as especialidades
+    if (selPai && selPai.options.length <= 1) {
+        await carregarEspecialidades();
+    }
+
+    if (selPai) { selPai.value = espId; }
+    abrirModal('modal-nova-subespecialidade');
 }
 
 function prepararExclusaoSubEspecialidade(id, nome) {
@@ -2338,7 +2344,7 @@ async function carregarProdutosNoModal(subId) {
                 container.innerHTML = `
                     <div class="tw-p-10 tw-text-center tw-bg-slate-50 tw-rounded-xl tw-border tw-border-dashed tw-border-slate-200">
                         <span class="material-symbols-outlined tw-text-slate-300 tw-mb-2" style="font-size: 40px;">inventory_2</span>
-                        <div class="tw-text-slate-400 tw-text-sm tw-italic">Nenhum produto cadastrado para esta sub-especialidade.</div>
+                        <div class="tw-text-slate-400 tw-text-sm tw-italic">Nenhum Produto ainda cadastrado</div>
                     </div>
                 `;
                 return;
@@ -2453,7 +2459,13 @@ async function prepararEdicaoProduto(id) {
 
             for (let idField in fields) {
                 const el = document.getElementById(idField);
-                if (el) el.value = fields[idField];
+                if (el) el.value = fields[idField] || "";
+            }
+
+            // Define o nome da sub-especialidade no campo Read-Only
+            const inputSubNome = document.getElementById('editar-produto-sub-nome');
+            if (inputSubNome) {
+                inputSubNome.value = p.subespecialidade_nome || "N/A";
             }
 
             abrirModal('modal-editar-produto');
@@ -2476,4 +2488,122 @@ function prepararExclusaoProduto(id, nome) {
     if (displayNome) displayNome.textContent = nome;
 
     abrirModal('modal-excluir-produto');
+}
+
+/**
+ * CRUD de Produtos: Salvar, Editar e Excluir
+ */
+async function salvarNovoProduto() {
+    console.log("💾 [PRODUTO] Salvando novo produto...");
+
+    const dados = {
+        subespecialidade: document.getElementById('novo-produto-sub-id').value,
+        nome_produto: document.getElementById('novo-produto-nome').value,
+        duracao_trabalho: document.getElementById('novo-produto-duracao').value,
+        valor_real: document.getElementById('novo-produto-valor-real').value,
+        valor_promo: document.getElementById('novo-produto-valor-promo').value,
+        status: document.getElementById('novo-produto-status').value,
+        forma_atendimento: document.getElementById('novo-produto-tipo').value,
+        info_do_produto: document.getElementById('novo-produto-info').value,
+        orientacao_cliente: document.getElementById('novo-produto-orientacao').value,
+        local_atendimento: document.getElementById('novo-produto-local').value,
+        codigoempresa: userCodigoEmpresa
+    };
+
+    if (!dados.nome_produto || !dados.subespecialidade) {
+        return mostrarMensagem("Atenção", "Preencha o Nome do Produto e a Sub-especialidade.");
+    }
+
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'criar_produto',
+            ...dados
+        });
+
+        if (res.sucesso) {
+            fecharModal('modal-novo-produto');
+            mostrarMensagem("Sucesso", "Produto cadastrado com sucesso!");
+            carregarProdutosNoModal(dados.subespecialidade);
+            carregarEstruturaHierarquica();
+        } else {
+            mostrarMensagem("Erro", "Falha: " + res.erro);
+        }
+    } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
+        console.error("Erro ao salvar produto:", e);
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+    }
+}
+
+async function salvarEdicaoProduto() {
+    console.log("💾 [PRODUTO] Salvando alterações do produto...");
+
+    const id = document.getElementById('editar-produto-id').value;
+    const dados = {
+        nome_produto: document.getElementById('editar-produto-nome').value,
+        duracao_trabalho: document.getElementById('editar-produto-duracao').value,
+        valor_real: document.getElementById('editar-produto-valor-real').value,
+        valor_promo: document.getElementById('editar-produto-valor-promo').value,
+        status: document.getElementById('editar-produto-status').value,
+        forma_atendimento: document.getElementById('editar-produto-tipo').value,
+        info_do_produto: document.getElementById('editar-produto-info').value,
+        orientacao_cliente: document.getElementById('editar-produto-orientacao').value,
+        local_atendimento: document.getElementById('editar-produto-local').value,
+        codigoempresa: userCodigoEmpresa
+    };
+
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'atualizar_produto',
+            codigoProduto: id,
+            ...dados
+        });
+
+        if (res.sucesso) {
+            fecharModal('modal-editar-produto');
+            mostrarMensagem("Sucesso", "Produto atualizado com sucesso!");
+            // Tenta recarregar a lista se houver um ID de sub ativo (poderia ser armazenado globalmente)
+            carregarEstruturaHierarquica();
+        } else {
+            mostrarMensagem("Erro", "Falha: " + res.erro);
+        }
+    } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
+        console.error("Erro ao atualizar produto:", e);
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+    }
+}
+
+async function confirmarExclusaoProduto() {
+    const id = document.getElementById('excluir-produto-id').value;
+    if (!id) return;
+
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'excluir_produto',
+            codigoProduto: id,
+            codigoempresa: userCodigoEmpresa
+        });
+
+        if (res.sucesso) {
+            fecharModal('modal-excluir-produto');
+            mostrarMensagem("Sucesso", "Produto excluído!");
+            carregarEstruturaHierarquica();
+        } else {
+            mostrarMensagem("Erro", "Falha: " + res.erro);
+        }
+    } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
+        console.error("Erro ao excluir produto:", e);
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+    }
 }

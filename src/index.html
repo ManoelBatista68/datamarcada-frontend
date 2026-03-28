@@ -1081,7 +1081,8 @@
                         class="material-icons tw-absolute tw-top-6 tw-right-6 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
                         onclick="fecharModal('modal-novo-produto')">close</span>
                     <div class="tw-text-xl tw-font-bold tw-text-primary tw-mb-1">Novo Produto</div>
-                    <p class="tw-text-[12px] tw-text-slate-500 tw-m-0">Configure um novo serviço clínico para sua
+                    <p id="novo-produto-sub-nome-display" class="tw-text-[12px] tw-text-slate-500 tw-m-0">Configure um
+                        novo serviço clínico para sua
                         unidade.</p>
                 </div>
 
@@ -1171,7 +1172,7 @@
                         <div class="tw-space-y-1.5">
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Informações</label>
-                            <textarea
+                            <textarea id="novo-produto-info"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-px-4 tw-py-2 tw-text-sm tw-outline-none tw-transition-all tw-resize-y tw-min-h-[80px]"
                                 placeholder="Descreva os detalhes técnicos do produto..."></textarea>
                         </div>
@@ -1179,13 +1180,13 @@
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Orientações
                                 ao Cliente</label>
-                            <textarea
+                            <textarea id="novo-produto-orientacao"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-px-4 tw-py-2 tw-text-sm tw-outline-none tw-transition-all tw-resize-y tw-min-h-[80px]"
                                 placeholder="Instruções para o paciente..."></textarea>
                         </div>
                     </div>
 
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-mb-6">
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-1 tw-gap-6 tw-mb-6">
                         <div class="tw-space-y-1.5">
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Local
@@ -1194,22 +1195,9 @@
                                 <span
                                     class="material-symbols-outlined tw-absolute tw-left-4 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400"
                                     style="font-size: 18px;">location_on</span>
-                                <input
+                                <input id="novo-produto-local"
                                     class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-outline-none tw-transition-all"
                                     placeholder="Sala, Bloco ou Unidade" type="text" />
-                            </div>
-                        </div>
-                        <div class="tw-space-y-1.5">
-                            <label
-                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Código
-                                Empresa (ID SaaS)</label>
-                            <div class="tw-relative">
-                                <span
-                                    class="material-symbols-outlined tw-absolute tw-left-4 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400"
-                                    style="font-size: 18px;">fingerprint</span>
-                                <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-font-mono tw-outline-none tw-transition-all"
-                                    placeholder="MP-9988-X" type="text" />
                             </div>
                         </div>
                     </div>
@@ -1221,7 +1209,8 @@
                             onclick="fecharModal('modal-novo-produto')">Cancelar</button>
                         <button
                             class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all hover:tw-brightness-110"
-                            style="background:#34a853; color:white;">Salvar Produto</button>
+                            style="background:#34a853; color:white;" onclick="salvarNovoProduto()">Salvar
+                            Produto</button>
                     </div>
 
                     <hr class="tw-border-t tw-border-[#eee] tw-my-6" />
@@ -1273,10 +1262,9 @@
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Sub-especialidade
                                 Relacionada <span class="tw-text-error">*</span></label>
-                            <select id="editar-produto-sub-id"
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer">
-                                <option value="" disabled>Selecione...</option>
-                            </select>
+                            <input id="editar-produto-sub-nome" readonly
+                                class="tw-w-full tw-bg-slate-100 tw-border tw-border-[#ddd] tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
+                                type="text" />
                         </div>
                         <div class="tw-space-y-1.5">
                             <label
@@ -1353,19 +1341,19 @@
                         <div class="tw-space-y-1.5">
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Informações</label>
-                            <textarea
+                            <textarea id="editar-produto-info"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-px-4 tw-py-2 tw-text-sm tw-outline-none tw-transition-all tw-resize-y tw-min-h-[80px]">Procedimento cardiológico avançado com utilização de tecnologia Doppler de última geração.</textarea>
                         </div>
                         <div class="tw-space-y-1.5">
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Orientações
                                 ao Cliente</label>
-                            <textarea
+                            <textarea id="editar-produto-orientacao"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-px-4 tw-py-2 tw-text-sm tw-outline-none tw-transition-all tw-resize-y tw-min-h-[80px]">Jejum de 4 horas. Trazer exames anteriores. Chegar com 15 minutos de antecedência.</textarea>
                         </div>
                     </div>
 
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-mb-6">
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-1 tw-gap-6 tw-mb-6">
                         <div class="tw-space-y-1.5">
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Local
@@ -1374,22 +1362,9 @@
                                 <span
                                     class="material-symbols-outlined tw-absolute tw-left-4 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400"
                                     style="font-size: 18px;">location_on</span>
-                                <input
+                                <input id="editar-produto-local"
                                     class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-outline-none tw-transition-all"
-                                    value="Ala Norte - Sala 402" type="text" />
-                            </div>
-                        </div>
-                        <div class="tw-space-y-1.5">
-                            <label
-                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Código
-                                Empresa (ID SaaS)</label>
-                            <div class="tw-relative">
-                                <span
-                                    class="material-symbols-outlined tw-absolute tw-left-4 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400"
-                                    style="font-size: 18px;">fingerprint</span>
-                                <input
-                                    class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-pl-10 tw-pr-4 tw-text-sm tw-font-mono tw-outline-none tw-transition-all"
-                                    value="MED-INV-0992" type="text" />
+                                    type="text" />
                             </div>
                         </div>
                     </div>
@@ -1401,7 +1376,8 @@
                             onclick="fecharModal('modal-editar-produto')">Cancelar</button>
                         <button
                             class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-transition-all hover:tw-brightness-110"
-                            style="background:#34a853; color:white;">Salvar Alterações</button>
+                            style="background:#34a853; color:white;" onclick="salvarEdicaoProduto()">Salvar
+                            Alterações</button>
                     </div>
                 </div>
             </div>
@@ -1420,6 +1396,7 @@
                     <span class="material-symbols-outlined tw-text-error tw-text-4xl">warning</span>
                 </div>
                 <div class="tw-text-xl tw-font-bold tw-text-error tw-mb-2">Excluir Produto?</div>
+                <input type="hidden" id="excluir-produto-id" />
                 <p class="tw-text-sm tw-text-slate-600 tw-mb-6">Você está prestes a remover <span
                         class="tw-font-bold tw-text-slate-900">Ecocardiograma com Doppler</span>. Esta ação é
                     definitiva.</p>
@@ -1442,7 +1419,8 @@
                         onclick="fecharModal('modal-excluir-produto')">Cancelar</button>
                     <button
                         class="tw-h-[38px] tw-flex-1 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                        style="background:#d93025; color:white;">Excluir Produto</button>
+                        style="background:#d93025; color:white;" onclick="confirmarExclusaoProduto()">Excluir
+                        Produto</button>
                 </div>
             </div>
         </div>
