@@ -1567,8 +1567,9 @@ async function carregarEstruturaHierarquica() {
 
         const prodMap = {};
         produtos.forEach(p => {
-            if (!prodMap[p.cod_sub_especialidade]) prodMap[p.cod_sub_especialidade] = [];
-            prodMap[p.cod_sub_especialidade].push(p);
+            const key = p.cod_sub_especialidade || p.sub_especialidade_id || p.sub_especialidade;
+            if (!prodMap[key]) prodMap[key] = [];
+            prodMap[key].push(p);
         });
 
         const doc = iframe.contentDocument || iframe.contentWindow.document;
@@ -1592,7 +1593,7 @@ async function carregarEstruturaHierarquica() {
             html += `
             <section class="tw-space-y-6 tw-mb-12 tw-fade-in-smooth">
                 <!-- CARD ESPECIALIDADE -->
-                <div class="tw-bg-surface-container-lowest tw-p-6 tw-rounded-xl tw-flex tw-items-center tw-justify-between tw-shadow-sm tw-border-l-4 tw-border-primary tw-group hover:tw-shadow-md tw-transition-shadow" style="border-left-color: #3F76CB;">
+                <div class="tw-bg-white tw-p-6 tw-rounded-xl tw-flex tw-items-center tw-justify-between tw-shadow-sm tw-border-l-4 tw-border-primary tw-group hover:tw-shadow-md tw-transition-shadow" style="border-left-color: #3F76CB;">
                     <div class="tw-flex tw-items-center tw-gap-5">
                         <div class="tw-w-12 tw-h-12 tw-rounded-full tw-bg-primary-fixed tw-flex tw-items-center tw-justify-center tw-text-primary group-hover:tw-scale-110 tw-transition-transform">
                             <span class="material-symbols-outlined tw-text-2xl">stethoscope</span>
@@ -1621,7 +1622,7 @@ async function carregarEstruturaHierarquica() {
                 <!-- CONTAINER SUBS -->
                 <div class="tw-ml-12 tw-space-y-8 diagnostic-thread tw-hidden" id="${espContainerId}">
                     ${subs.length > 0 ? subs.map(sub => {
-                const subProds = prodMap[sub.id] || [];
+                const subProds = prodMap[sub.codigo_sub_especialidade] || prodMap[sub.id] || prodMap[sub.nome] || [];
                 const subContainerId = `prod-sub-${sub.id}`;
 
                 return `
