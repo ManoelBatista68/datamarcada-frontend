@@ -1240,66 +1240,11 @@
                             </div>
                         </div>
 
-                        <div class="tw-overflow-hidden tw-rounded-[8px] tw-border tw-border-[#eee]">
-                            <table class="tw-w-full tw-text-left tw-border-collapse">
-                                <thead class="tw-bg-slate-50 tw-border-b tw-border-[#eee]">
-                                    <tr>
-                                        <th
-                                            class="tw-px-4 tw-py-2 tw-text-[10px] tw-font-bold tw-text-slate-500 tw-uppercase">
-                                            Produto</th>
-                                        <th
-                                            class="tw-px-4 tw-py-2 tw-text-[10px] tw-font-bold tw-text-slate-500 tw-uppercase">
-                                            Sub-especialidade</th>
-                                        <th
-                                            class="tw-px-4 tw-py-2 tw-text-[10px] tw-font-bold tw-text-slate-500 tw-uppercase">
-                                            Valor</th>
-                                        <th
-                                            class="tw-px-4 tw-py-2 tw-text-[10px] tw-font-bold tw-text-slate-500 tw-uppercase tw-text-center">
-                                            Status</th>
-                                        <th
-                                            class="tw-px-4 tw-py-2 tw-text-[10px] tw-font-bold tw-text-slate-500 tw-uppercase tw-text-right">
-                                            Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="tw-divide-y tw-divide-[#eee]">
-                                    <tr class="hover:tw-bg-slate-50 tw-transition-colors">
-                                        <td class="tw-px-4 tw-py-3">
-                                            <div class="tw-flex tw-flex-col">
-                                                <span class="tw-text-sm tw-font-bold tw-text-slate-900">Ecocardiograma
-                                                    Fetal</span>
-                                                <span
-                                                    class="tw-text-[10px] tw-text-slate-500 tw-font-mono">#ECF-402</span>
-                                            </div>
-                                        </td>
-                                        <td class="tw-px-4 tw-py-3 tw-text-xs tw-text-slate-600">Cardiologia Fetal</td>
-                                        <td class="tw-px-4 tw-py-3">
-                                            <div class="tw-flex tw-flex-col">
-                                                <span class="tw-text-xs tw-font-bold tw-text-slate-900">R$ 420,00</span>
-                                                <span class="tw-text-[10px] tw-text-primary tw-font-bold">R$ 380,00
-                                                    (Promo)</span>
-                                            </div>
-                                        </td>
-                                        <td class="tw-px-4 tw-py-3 tw-text-center">
-                                            <span
-                                                class="tw-px-2 tw-py-0.5 tw-bg-green-50 tw-text-green-700 tw-text-[9px] tw-font-bold tw-rounded-full">ATIVO</span>
-                                        </td>
-                                        <td class="tw-px-4 tw-py-3 tw-text-right">
-                                            <button
-                                                class="tw-p-1 tw-text-slate-400 hover:tw-text-primary tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors"
-                                                onclick="fecharModal('modal-novo-produto'); abrirModal('modal-editar-produto')">
-                                                <span class="material-symbols-outlined"
-                                                    style="font-size: 18px;">edit</span>
-                                            </button>
-                                            <button
-                                                class="tw-p-1 tw-text-slate-400 hover:tw-text-error tw-bg-transparent tw-border-none tw-cursor-pointer tw-transition-colors"
-                                                onclick="fecharModal('modal-novo-produto'); abrirModal('modal-excluir-produto')">
-                                                <span class="material-symbols-outlined"
-                                                    style="font-size: 18px;">delete</span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div id="lista-produtos-dinamica" class="tw-space-y-4">
+                            <!-- Injeção dinâmica via carregarProdutosNoModal() -->
+                            <div class="tw-p-8 tw-text-center tw-text-slate-400 tw-italic">
+                                Selecione uma sub-especialidade para carregar os produtos.
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -26,5 +26,21 @@ Você agora opera sob o "Regime Utilitário Legado". O seu objetivo NÃO é inov
 - iFrames não podem ter scroll duplo. O `body` do iFrame deve ter `overflow: hidden !important; height: auto !important;`.
 - A comunicação de altura usa `postMessage` com Debounce (150ms) e Threshold (15px).
 
+## 5. CONTRASTE DE FUNDO (OBRIGATÓRIO)
+- **Regra de Destaque:** Cards de Sub-especialidade e Produtos NUNCA devem ter a mesma cor do fundo da tela.
+- **Padrão:** Devem usar `tw-bg-white`, `tw-shadow-md` e borda lateral esquerda colorida (`tw-border-l-4 tw-border-primary`) para garantir legibilidade.
+
+## 6. FÓRMULA DE CLONAGEM: PADRÃO DE CARD PRINCIPAL
+- **Estrutura:** Toda renderização de lista deve seguir o padrão `.card > .card-header`.
+- **Hierarquia:** 
+  - Nível 1 (Especialidade): `.status-confirmado`
+  - Nível 2 (Sub-especialidade): `.status-disponivel` ou `.status-indefinido` (com `tw-ml-4`)
+  - Nível 3 (Produto): `.status-atendido` (com `tw-ml-8`)
+- **Ações:** Ícones de edição devem usar `border_color` (lápis) com `tw-text-primary`. Ícones de lixeira devem usar `delete` com `tw-text-error` e tamanho `tw-text-[24px]`.
+
+## 7. PROTOCOLO DE INTERAÇÃO (IFRAME)
+- **Escopo:** Botões dentro de iFrames devem disparar funções no pai usando `window.parent.NOME_DA_FUNCAO()`.
+- **Prevenção:** Sempre use `event.stopPropagation()` em botões de ação para não disparar o toggle de acordeão do card pai.
+
 **MENSAGEM DE CONFIRMAÇÃO OBRIGATÓRIA:**
 Em sua próxima resposta, você deve iniciar dizendo: "Protocolo Override aceito. Diretrizes radicais de design desativadas. Modo de Clonagem Estrita ativado."

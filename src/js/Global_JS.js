@@ -1532,31 +1532,43 @@ async function carregar() {
  * Busca Especialidades e Sub-especialidades em paralelo e renderiza a hierarquia no Iframe de Cadastros.
  * Este método utiliza a estratégia de "Iframe Bridge" para injetar dados reais no design Tailwind do mockup.
  */
+/**
+ * Busca Especialidades, Sub-especialidades e Produtos em paralelo e renderiza a hierarquia no Iframe.
+ * Implementa o design Tailwind aprovado com suporte a CRUD completo.
+ */
 async function carregarEstruturaHierarquica() {
-    console.log("📂 [HIERARQUIA] Iniciando carga dinâmica...");
+    console.log("📂 [HIERARQUIA] Iniciando carga dinâmica total...");
     const iframe = document.querySelector('iframe[src*="tela_cadastro_mockup"]');
     if (!iframe) return;
 
     try {
-        // Busca paralela para máxima performance
-        const [resEsp, resSub] = await Promise.all([
+        // Busca tripla para montagem da árvore completa
+        const [resEsp, resSub, resProd] = await Promise.all([
             ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'listar_especialidades_geral', codigoempresa: userCodigoEmpresa }),
-            ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'listar_sub_especialidades', codigoempresa: userCodigoEmpresa })
+            ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'listar_sub_especialidades', codigoempresa: userCodigoEmpresa }),
+            ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'listar_produtos', codigoempresa: userCodigoEmpresa })
         ]);
 
-        if (!resEsp.sucesso || !resSub.sucesso) {
-            console.error("❌ [HIERARQUIA] Falha na busca de dados:", resEsp.erro || resSub.erro);
+        if (!resEsp.sucesso || !resSub.sucesso || !resProd.sucesso) {
+            console.error("❌ [HIERARQUIA] Falha na busca de dados:", resEsp.erro || resSub.erro || resProd.erro);
             return;
         }
 
         const especialidades = resEsp.dados || [];
         const subEspecialidades = resSub.dados || [];
+        const produtos = resProd.dados || [];
 
-        // Agrupar sub-especialidades por pai (Especialidade)
+        // Agrupamento multinível (Especialidade -> Sub -> Produto)
         const subMap = {};
         subEspecialidades.forEach(s => {
             if (!subMap[s.especialidade_id]) subMap[s.especialidade_id] = [];
             subMap[s.especialidade_id].push(s);
+        });
+
+        const prodMap = {};
+        produtos.forEach(p => {
+            if (!prodMap[p.cod_sub_especialidade]) prodMap[p.cod_sub_especialidade] = [];
+            prodMap[p.cod_sub_especialidade].push(p);
         });
 
         const doc = iframe.contentDocument || iframe.contentWindow.document;
@@ -1578,110 +1590,110 @@ async function carregarEstruturaHierarquica() {
             const espIconId = `icon-esp-${esp.id}`;
 
             html += `
-            <div class="tw-bg-white tw-rounded-[8px] tw-overflow-hidden tw-border tw-border-[#eee] tw-shadow-sm tw-fade-in-smooth">
-                <div class="tw-p-6 tw-flex tw-flex-col sm:tw-flex-row tw-items-start sm:tw-items-center tw-justify-between tw-border-l-4 tw-border-primary tw-bg-white tw-gap-4">
-                    <div class="tw-flex tw-items-center tw-gap-4">
-                        <div class="tw-w-12 tw-h-12 tw-rounded-[8px] tw-bg-[#eff6ff] tw-flex tw-items-center tw-justify-center tw-text-primary tw-shrink-0 tw-border tw-border-[#ddd]">
-                            <span class="material-symbols-outlined">medical_services</span>
+            <section class="tw-space-y-6 tw-mb-12 tw-fade-in-smooth">
+                <!-- CARD ESPECIALIDADE -->
+                <div class="tw-bg-surface-container-lowest tw-p-6 tw-rounded-xl tw-flex tw-items-center tw-justify-between tw-shadow-sm tw-border-l-4 tw-border-primary tw-group hover:tw-shadow-md tw-transition-shadow" style="border-left-color: #3F76CB;">
+                    <div class="tw-flex tw-items-center tw-gap-5">
+                        <div class="tw-w-12 tw-h-12 tw-rounded-full tw-bg-primary-fixed tw-flex tw-items-center tw-justify-center tw-text-primary group-hover:tw-scale-110 tw-transition-transform">
+                            <span class="material-symbols-outlined tw-text-2xl">stethoscope</span>
                         </div>
                         <div>
-                            <h4 class="tw-font-bold tw-text-on-surface tw-text-lg tw-leading-tight">${escapeHtml(esp.nome)}</h4>
+                            <h3 class="tw-font-bold tw-text-on-surface tw-flex tw-items-center tw-text-2xl" style="font-size: 25px;">
+                                ${escapeHtml(esp.nome)} 
+                                <span class="material-symbols-outlined tw-text-3xl tw-text-primary tw-ml-3 tw-cursor-pointer hover:tw-opacity-80 tw-transition-all" title="Editar Especialidade"
+                                    onclick="window.parent.prepararEdicaoEspecialidade('${esp.id}', '${escapeHtml(esp.nome)}')">settings</span>
+                            </h3>
                         </div>
                     </div>
-                    <div class="tw-flex tw-gap-2 tw-w-full sm:tw-w-auto tw-justify-end">
-                        <button onclick="window.parent.prepararNovoSubEspecialidade('${esp.id}', '${escapeHtml(esp.nome)}')"
-                            class="tw-bg-[#eff6ff] tw-text-primary tw-h-[38px] tw-px-4 tw-rounded-[8px] tw-text-xs tw-font-bold tw-flex tw-items-center tw-justify-center tw-gap-2 tw-transition-colors hover:tw-bg-[#e0f2fe] tw-border-none tw-cursor-pointer">
-                            <span class="material-symbols-outlined tw-text-sm">add</span>
-                            Adicionar Sub
+                    <div class="tw-flex tw-items-center tw-gap-3">
+                        <button onclick="window.parent.prepararNovoSubEspecialidade('${esp.id}', '${escapeHtml(esp.nome)}')" 
+                            class="tw-flex tw-items-center tw-gap-2 tw-text-sm tw-font-bold tw-text-primary hover:tw-bg-primary-fixed/30 tw-px-6 tw-py-3 tw-rounded-lg tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer" style="font-size: 20px; line-height: 1;">
+                            <span class="material-symbols-outlined" style="font-size: 24px;">add_circle</span> Adicionar Sub
                         </button>
-                        <button onclick="window.parent.toggleHierarquia('${espContainerId}', '${espIconId}')"
-                            class="tw-h-[38px] tw-w-[38px] tw-flex tw-items-center tw-justify-center hover:tw-bg-slate-100 tw-rounded-[8px] tw-text-slate-400 tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
-                            <span id="${espIconId}" class="material-symbols-outlined">visibility</span>
+                        <div class="tw-h-8 tw-w-[1px] tw-bg-outline-variant/30"></div>
+                        <button onclick="window.parent.toggleHierarquia('${espContainerId}', '${espIconId}')" 
+                            class="tw-ml-4 tw-p-2 tw-rounded-lg tw-text-outline hover:tw-text-primary hover:tw-bg-primary-fixed/30 tw-transition-all tw-flex tw-items-center tw-justify-center tw-w-12 tw-h-12 tw-border-none tw-bg-transparent tw-cursor-pointer" title="Expandir/Recolher">
+                            <span id="${espIconId}" class="material-symbols-outlined" style="font-size: 40px;">visibility</span>
                         </button>
                     </div>
                 </div>
-                
-                <div id="${espContainerId}" class="tw-hidden">
-                    <div class="tw-pl-6 md:tw-pl-12 tw-pr-6 tw-py-4 tw-space-y-4 tw-bg-slate-50/30">
-                        ${subs.length > 0 ? subs.map(sub => {
+
+                <!-- CONTAINER SUBS -->
+                <div class="tw-ml-12 tw-space-y-8 diagnostic-thread tw-hidden" id="${espContainerId}">
+                    ${subs.length > 0 ? subs.map(sub => {
+                const subProds = prodMap[sub.id] || [];
                 const subContainerId = `prod-sub-${sub.id}`;
-                const subIconId = `icon-sub-${sub.id}`;
 
                 return `
-                            <div class="tw-bg-white tw-rounded-[8px] tw-border tw-border-slate-200 tw-shadow-sm tw-overflow-hidden">
-                                <div class="tw-flex tw-items-center tw-justify-between tw-p-4 tw-bg-slate-50/50">
-                                    <div class="tw-flex tw-items-center tw-gap-3">
-                                        <span class="material-symbols-outlined tw-text-primary/40 tw-text-lg">subdirectory_arrow_right</span>
-                                        <div>
-                                            <h5 class="tw-font-bold tw-text-on-surface tw-text-sm">${escapeHtml(sub.nome)}</h5>
-                                        </div>
-                                    </div>
-                                    <div class="tw-flex tw-gap-2">
-                                        <button onclick="window.parent.abrirModal('modal-novo-produto')"
-                                            class="tw-bg-[#eff6ff] tw-text-primary tw-h-[32px] tw-px-3 tw-rounded-[6px] tw-text-[10px] tw-font-bold tw-transition-colors hover:tw-bg-primary hover:tw-text-white tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-gap-1">
-                                            <span class="material-symbols-outlined tw-text-sm">add</span> Novo Produto
-                                        </button>
-                                        <button onclick="window.parent.toggleHierarquia('${subContainerId}', '${subIconId}')"
-                                            class="tw-h-[32px] tw-w-[32px] tw-flex tw-items-center tw-justify-center hover:tw-bg-slate-200 tw-rounded-full tw-text-slate-400 tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
-                                            <span id="${subIconId}" class="material-symbols-outlined">visibility</span>
-                                        </button>
-                                    </div>
+                <div class="tw-space-y-4">
+                    <!-- HEADER SUB-ESPECIALIDADE -->
+                    <div class="tw-flex tw-items-center tw-justify-between">
+                        <div class="tw-flex tw-items-center tw-gap-2">
+                            <span class="material-symbols-outlined tw-text-outline">subdirectory_arrow_right</span>
+                            <h4 class="tw-font-bold tw-text-on-surface-variant" style="font-size: 23px;">
+                                ${escapeHtml(sub.nome)} 
+                                <span class="material-symbols-outlined tw-text-lg tw-text-outline hover:tw-text-primary tw-ml-2 tw-cursor-pointer" title="Editar Sub"
+                                    onclick="window.parent.prepararEdicaoSubEspecialidade('${sub.id}', '${escapeHtml(sub.nome)}', '${esp.id}')">settings</span>
+                            </h4>
+                        </div>
+                        <button onclick="window.parent.prepararNovoProduto('${sub.id}', '${escapeHtml(sub.nome)}', '${esp.id}', '${escapeHtml(esp.nome)}')" 
+                            class="tw-text-secondary tw-font-bold tw-uppercase tw-tracking-wider hover:tw-bg-secondary/5 tw-px-3 tw-py-1.5 tw-rounded tw-transition-colors tw-text-base tw-border-none tw-bg-transparent tw-cursor-pointer">+ Novo Produto</button>
+                    </div>
+
+                    <!-- GRID PRODUTOS -->
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 xl:tw-grid-cols-3 tw-gap-6">
+                        ${subProds.length > 0 ? subProds.map(prod => `
+                        <div class="tw-bg-white tw-p-5 tw-rounded-xl tw-shadow-sm tw-border tw-border-outline-variant/10 hover:tw-border-secondary/30 hover:tw-shadow-lg tw-transition-all tw-group">
+                            <div class="tw-flex tw-justify-between tw-items-start tw-mb-4">
+                                <div class="tw-p-2 tw-rounded-lg tw-bg-surface-container-low tw-text-primary">
+                                    <span class="material-symbols-outlined">${prod.forma_atendimento === 'On-Line' ? 'videocam' : 'ecg'}</span>
                                 </div>
-                                
-                                <div id="${subContainerId}" class="tw-hidden">
-                                    <div class="tw-p-4 tw-bg-white">
-                                        <div class="tw-grid tw-grid-cols-1 xl:tw-grid-cols-2 tw-gap-4">
-                                            <!-- MOCKUP DE PRODUTO -->
-                                            <div class="tw-bg-white tw-p-4 tw-rounded-[8px] tw-border tw-border-slate-100 hover:tw-border-primary/20 tw-transition-colors tw-shadow-sm">
-                                                <div class="tw-flex tw-justify-between tw-items-start tw-mb-3">
-                                                    <div>
-                                                        <span class="tw-text-[9px] tw-font-bold tw-text-emerald-700 tw-bg-emerald-50 tw-px-2 tw-py-0.5 tw-rounded tw-uppercase">Exame Presencial</span>
-                                                        <h6 class="tw-font-bold tw-text-on-surface tw-mt-1 tw-text-sm">Ecocardiograma com Doppler</h6>
-                                                    </div>
-                                                    <div class="tw-text-right">
-                                                        <p class="tw-text-[10px] tw-text-outline tw-line-through">R$ 450,00</p>
-                                                        <p class="tw-text-base tw-font-extrabold tw-text-primary tw-leading-none">R$ 380,00</p>
-                                                    </div>
-                                                </div>
-                                                <p class="tw-text-[11px] tw-text-on-surface-variant tw-mb-3 tw-line-clamp-2">Exame de imagem não invasivo que utiliza ondas sonoras para criar imagens em movimento do coração.</p>
-                                                <div class="tw-flex tw-items-center tw-justify-between tw-pt-3 tw-border-t tw-border-slate-50">
-                                                    <div class="tw-flex tw-items-center tw-gap-2 tw-text-[9px] tw-font-medium tw-text-on-surface-variant">
-                                                        <span class="material-symbols-outlined tw-text-xs">location_on</span>
-                                                        Pavilhão A, Sala 402
-                                                    </div>
-                                                    <div class="tw-flex tw-gap-1">
-                                                        <button class="tw-h-[28px] tw-w-[28px] tw-flex tw-items-center tw-justify-center hover:tw-bg-slate-100 tw-text-slate-400 tw-rounded-md tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-not-allowed">
-                                                            <span class="material-symbols-outlined tw-text-xs">settings</span>
-                                                        </button>
-                                                        <button class="tw-h-[28px] tw-w-[28px] tw-flex tw-items-center tw-justify-center hover:tw-bg-red-50 tw-text-error/40 tw-rounded-md tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-not-allowed">
-                                                            <span class="material-symbols-outlined tw-text-xs">delete</span>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="tw-flex tw-gap-1 tw-opacity-0 group-hover:tw-opacity-100 tw-transition-opacity">
+                                    <button onclick="window.parent.prepararEdicaoProduto('${prod.id}')" 
+                                        class="tw-p-1.5 hover:tw-bg-slate-100 tw-rounded tw-text-outline hover:tw-text-primary tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
+                                        <span class="material-symbols-outlined tw-text-lg">settings</span>
+                                    </button>
+                                    <button onclick="window.parent.prepararExclusaoProduto('${prod.id}', '${escapeHtml(prod.nome_produto)}')" 
+                                        class="tw-p-1.5 hover:tw-bg-error-container tw-rounded tw-text-outline hover:tw-text-error tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
+                                        <span class="material-symbols-outlined tw-text-lg">delete</span>
+                                    </button>
                                 </div>
                             </div>
-                            `;
-            }).join('') : `
-                        <div class="tw-p-4 tw-text-center tw-text-slate-400 tw-text-xs tw-italic">Nenhuma sub-especialidade vinculada.</div>
+                            <h5 class="tw-font-bold tw-text-on-surface tw-mb-1 tw-text-2xl" style="font-size: 21px;">${escapeHtml(prod.nome_produto)}</h5>
+                            <div class="tw-flex tw-items-center tw-justify-between tw-mt-4 tw-pt-4 tw-border-t tw-border-outline-variant/10">
+                                <div>
+                                    <span class="tw-text-xs tw-text-outline tw-font-medium tw-block tw-uppercase">Preço</span>
+                                    <span class="tw-text-primary tw-font-extrabold">R$ ${prod.valor_prom || prod.valor_real}</span>
+                                </div>
+                                <div class="tw-text-right">
+                                    <span class="tw-text-xs tw-text-outline tw-font-medium tw-block tw-uppercase">Tipo</span>
+                                    <span class="tw-text-on-surface tw-text-sm tw-font-semibold">${escapeHtml(prod.forma_atendimento)}</span>
+                                </div>
+                            </div>
+                        </div>
+                        `).join('') : `
+                        <div class="tw-col-span-full tw-p-4 tw-text-center tw-text-slate-400 tw-text-xs tw-italic tw-border tw-border-dashed tw-border-slate-100 tw-rounded-lg">Nenhum produto cadastrado neste nível.</div>
                         `}
                     </div>
                 </div>
-            </div>`;
+                `;
+            }).join('') : `
+                <div class="tw-p-4 tw-text-center tw-text-slate-400 tw-text-xs tw-italic tw-bg-slate-50/50 tw-rounded-lg">Nenhuma sub-especialidade vinculada.</div>
+            `}
+                </div>
+            </section>`;
         });
 
         container.innerHTML = html;
 
-        // Sincronizar altura do iframe após injeção
+        // Auto-sincronização de altura
         if (iframe.contentWindow && typeof iframe.contentWindow.sendHeight === 'function') {
-            iframe.contentWindow.sendHeight();
+            setTimeout(() => iframe.contentWindow.sendHeight(), 100);
         }
 
     } catch (e) {
         if (e.message === "SESSION_EXPIRED") return;
-        console.error("❌ [HIERARQUIA] Erro fatal na renderização:", e);
+        console.error("❌ [HIERARQUIA] Erro na renderização SaaS:", e);
     }
 }
 
@@ -2294,4 +2306,171 @@ async function confirmarExclusaoEspecialidade() {
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
     }
+}
+
+/**
+ * Funções de Preparação para CRUD de Produtos (SaaS)
+ */
+async function carregarProdutosNoModal(subId) {
+    console.log("📂 [PRODUTO] Carregando lista dinâmica para SubId:", subId);
+    const container = document.getElementById('lista-produtos-dinamica');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="tw-p-8 tw-text-center">
+            <div class="tw-inline-block tw-animate-spin tw-rounded-full tw-h-8 tw-w-8 tw-border-4 tw-border-primary/20 tw-border-t-primary tw-mb-4"></div>
+            <div class="tw-text-slate-500 tw-text-sm">Buscando produtos vinculados...</div>
+        </div>
+    `;
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'listar_produtos',
+            subespecialidade: subId,
+            codigoempresa: userCodigoEmpresa
+        });
+
+        if (res.sucesso && res.data) {
+            if (res.data.length === 0) {
+                container.innerHTML = `
+                    <div class="tw-p-10 tw-text-center tw-bg-slate-50 tw-rounded-xl tw-border tw-border-dashed tw-border-slate-200">
+                        <span class="material-symbols-outlined tw-text-slate-300 tw-mb-2" style="font-size: 40px;">inventory_2</span>
+                        <div class="tw-text-slate-400 tw-text-sm tw-italic">Nenhum produto cadastrado para esta sub-especialidade.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            res.data.forEach(p => {
+                const valorReal = parseFloat(p.valor_real || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const valorPromo = p.valor_promo ? parseFloat(p.valor_promo).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : null;
+                const statusClass = p.status === 'active' ? 'tw-bg-green-50 tw-text-green-700' : 'tw-bg-slate-100 tw-text-slate-500';
+                const statusTexto = p.status === 'active' ? 'ATIVO' : 'INATIVO';
+
+                html += `
+                <div class="tw-bg-white tw-border tw-border-slate-100 tw-rounded-xl tw-p-4 tw-flex tw-items-center tw-justify-between hover:tw-border-primary/30 tw-transition-all tw-group">
+                    <div class="tw-flex tw-items-center tw-gap-4">
+                        <div class="tw-w-10 tw-h-10 tw-rounded-lg tw-bg-slate-50 tw-flex tw-items-center tw-justify-center tw-text-primary group-hover:tw-bg-primary/10">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">medical_services</span>
+                        </div>
+                        <div>
+                            <div class="tw-text-sm tw-font-bold tw-text-slate-900">${p.nome_produto}</div>
+                            <div class="tw-text-[10px] tw-text-slate-400 tw-font-mono tw-mt-0.5">ID: ${p.id}</div>
+                        </div>
+                    </div>
+
+                    <div class="tw-flex tw-items-center tw-gap-6">
+                        <div class="tw-text-right">
+                            <div class="tw-text-xs tw-font-bold tw-text-slate-900">${valorReal}</div>
+                            ${valorPromo ? `<div class="tw-text-[10px] tw-text-primary tw-font-bold">${valorPromo} (Promo)</div>` : ''}
+                        </div>
+                        
+                        <div class="tw-hidden md:tw-block">
+                             <span class="tw-px-2 tw-py-0.5 ${statusClass} tw-text-[9px] tw-font-bold tw-rounded-full">${statusTexto}</span>
+                        </div>
+
+                        <div class="tw-flex tw-items-center tw-gap-1">
+                            <button onclick="fecharModal('modal-novo-produto'); prepararEdicaoProduto('${p.id}')" class="tw-p-2 tw-text-slate-400 hover:tw-text-primary hover:tw-bg-primary/5 tw-rounded-lg tw-transition-all">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
+                            </button>
+                            <button onclick="fecharModal('modal-novo-produto'); prepararExclusaoProduto('${p.id}', '${p.nome_produto}')" class="tw-p-2 tw-text-slate-400 hover:tw-text-error hover:tw-bg-error/5 tw-rounded-lg tw-transition-all">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = '<div class="tw-p-8 tw-text-center tw-text-error tw-text-sm">Erro ao carregar produtos.</div>';
+        }
+    } catch (e) {
+        console.error("Erro no fetch de produtos:", e);
+        container.innerHTML = '<div class="tw-p-8 tw-text-center tw-text-error tw-text-sm">Erro de conexão.</div>';
+    }
+}
+
+function prepararNovoProduto(subId, subNome, espId, espNome) {
+    console.log("🛠️ [PRODUTO] Preparando novo produto para:", subNome);
+
+    // Alimenta contextos nos inputs do modal
+    const inputSubNomeDisp = document.getElementById('novo-produto-sub-nome-display'); // Pode ser um label na v4
+    const inputSubId = document.getElementById('novo-produto-sub-id');
+
+    if (inputSubId) {
+        // Se for um select (como no mockup), seleciona a opção correta
+        if (inputSubId.tagName === 'SELECT') {
+            // Verifica se a opção existe, se não cria uma temporária ou espera carregar
+            let opt = inputSubId.querySelector(`option[value="${subId}"]`);
+            if (!opt) {
+                opt = document.createElement('option');
+                opt.value = subId;
+                opt.textContent = subNome;
+                inputSubId.appendChild(opt);
+            }
+            inputSubId.value = subId;
+        } else {
+            inputSubId.value = subId;
+        }
+    }
+
+    // Carrega a lista lateral de produtos para este subId
+    carregarProdutosNoModal(subId);
+
+    abrirModal('modal-novo-produto');
+}
+
+async function prepararEdicaoProduto(id) {
+    console.log("🛠️ [PRODUTO] Preparando edição do ID:", id);
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'buscar_produto',
+            codigoProduto: id,
+            codigoempresa: userCodigoEmpresa
+        });
+
+        if (res.sucesso && res.completa) {
+            const p = res.completa;
+            // Preenchimento dos campos do modal de edição
+            const fields = {
+                'editar-produto-id': p.id,
+                'editar-produto-nome': p.nome_produto,
+                'editar-produto-duracao': p.duracao_trabalho,
+                'editar-produto-valor-real': p.valor_real,
+                'editar-produto-valor-promo': p.valor_promo,
+                'editar-produto-status': p.status,
+                'editar-produto-tipo': p.forma_atendimento,
+                'editar-produto-info': p.info_do_produto,
+                'editar-produto-orientacao': p.orientacao_cliente,
+                'editar-produto-local': p.local_atendimento
+            };
+
+            for (let idField in fields) {
+                const el = document.getElementById(idField);
+                if (el) el.value = fields[idField];
+            }
+
+            abrirModal('modal-editar-produto');
+        } else {
+            mostrarMensagem("Erro", "Produto não encontrado para edição.");
+        }
+    } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
+        console.error("Erro ao buscar produto:", e);
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+    }
+}
+
+function prepararExclusaoProduto(id, nome) {
+    const hiddenId = document.getElementById('excluir-produto-id');
+    const displayNome = document.getElementById('excluir-produto-nome-display');
+
+    if (hiddenId) hiddenId.value = id;
+    if (displayNome) displayNome.textContent = nome;
+
+    abrirModal('modal-excluir-produto');
 }
