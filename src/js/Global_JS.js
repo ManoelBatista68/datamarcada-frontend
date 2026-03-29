@@ -1537,7 +1537,12 @@ async function carregar() {
  * Implementa o design Tailwind aprovado com suporte a CRUD completo.
  */
 async function carregarEstruturaHierarquica() {
-    // [RESILIÊNCIA] Garante que dados da empresa e roles estejam carregados
+    // [RESILIÊNCIA] Garante que dados da empresa e roles estejam carregados (Polling Mestre)
+    if (!localStorage.getItem('appAgendaUserCodigoEmpresa')) {
+        console.warn("⏳ [RACE CONDITION] Token não encontrado no Iframe. Aguardando sincronização do Parent (500ms)...");
+        setTimeout(carregarEstruturaHierarquica, 500);
+        return;
+    }
     if (!userCodigoEmpresa) userCodigoEmpresa = localStorage.getItem('appAgendaUserCodigoEmpresa') || "";
     if (!tipoUsuarioAtual) tipoUsuarioAtual = localStorage.getItem('appAgendaUserTipo') || "Especialista";
 
@@ -2154,7 +2159,12 @@ async function prepararNovoSubEspecialidade(espId, espNome) {
         await carregarEspecialidades();
     }
 
-    if (selPai) { selPai.value = espId; }
+    if (selPai) {
+        selPai.value = espId;
+        // [SINCRONIA] Força repintura e atualização dos listeners do onChange
+        await Promise.resolve();
+        selPai.dispatchEvent(new Event('change'));
+    }
 
     // [SINCRONIA] Carrega as subs cadastradas para o container lateral
     if (typeof carregarSubEspecialidades === 'function') {
@@ -2349,9 +2359,9 @@ async function carregarProdutosNoModal(subId) {
             codigoempresa: userCodigoEmpresa
         });
 
-        if (res.sucesso && res.data) {
-            // Garante que res.data seja um array para evitar erros de loop
-            const lista = Array.isArray(res.data) ? res.data : [];
+        if (res.sucesso && res.dados) {
+            // Garante que res.dados seja um array para evitar erros de loop
+            const lista = Array.isArray(res.dados) ? res.dados : [];
 
             if (lista.length === 0) {
                 container.innerHTML = `
@@ -2418,7 +2428,7 @@ function prepararNovoProduto(subId, subNome, espId, espNome) {
 
     // [CONTEXTO] Exibe a Especialidade Pai para melhor orientação visual
     const labelContexto = document.getElementById('novo-produto-contexto-especialidade');
-    if (labelContexto) labelContexto.textContent = "Especialidade: " + (espNome || "N/D");
+    if (labelContexto) labelContexto.innerHTML = "<span class='tw-bg-primary/10 tw-text-primary tw-px-2 tw-py-1 tw-rounded tw-inline-flex tw-items-center tw-gap-1'><span class='material-symbols-outlined tw-text-[14px]'>category</span> Especialidade: " + (espNome || "N/D") + "</span>";
 
     // Alimenta contextos nos inputs do modal
     const inputSubNomeDisp = document.getElementById('novo-produto-sub-nome-display'); // Pode ser um label na v4
@@ -2486,6 +2496,12 @@ async function prepararEdicaoProduto(id) {
                 inputSubNome.value = p.nome_sub_especialidade || p.subespecialidade_nome || p.sub_especialidade || "N/A";
             }
 
+            // [SINCRONIA] Garante que o ID da sub-especialidade seja mapeado corretamente para o POST invisível
+            const inputSubId = document.getElementById('editar-produto-sub-id');
+            if (inputSubId) {
+                inputSubId.value = p.sub_especialidade || p.id_sub_especialidade || "";
+            }
+
             abrirModal('modal-editar-produto');
         } else {
             mostrarMensagem("Erro", "Produto não encontrado para edição.");
@@ -2514,23 +2530,26 @@ function prepararExclusaoProduto(id, nome) {
 async function salvarNovoProduto() {
     console.log("💾 [PRODUTO] Salvando novo produto...");
 
+    const subId = document.getElementById('novo-produto-sub-id') ? document.getElementById('novo-produto-sub-id').value : "";
+    const nome = document.getElementById('novo-produto-nome') ? document.getElementById('novo-produto-nome').value : "";
+
+    if (!nome || !subId) {
+        return mostrarMensagem("Atenção", "Preencha o Nome do Produto e certifique-se que haja uma Sub-especialidade selecionada.");
+    }
+
     const dados = {
-        subespecialidade: document.getElementById('novo-produto-sub-id').value,
-        nome_produto: document.getElementById('novo-produto-nome').value,
-        duracao_trabalho: document.getElementById('novo-produto-duracao').value,
-        valor_real: document.getElementById('novo-produto-valor-real').value,
-        valor_promo: document.getElementById('novo-produto-valor-promo').value,
-        status: document.getElementById('novo-produto-status').value,
-        forma_atendimento: document.getElementById('novo-produto-tipo').value,
-        info_do_produto: document.getElementById('novo-produto-info').value,
-        orientacao_cliente: document.getElementById('novo-produto-orientacao').value,
-        local_atendimento: document.getElementById('novo-produto-local').value,
+        subespecialidade: subId,
+        nome_produto: nome,
+        duracao_trabalho: document.getElementById('novo-produto-duracao') ? document.getElementById('novo-produto-duracao').value : "",
+        valor_real: document.getElementById('novo-produto-valor-real') ? document.getElementById('novo-produto-valor-real').value : "",
+        valor_promo: document.getElementById('novo-produto-valor-promo') ? document.getElementById('novo-produto-valor-promo').value : "",
+        status: document.getElementById('novo-produto-status') ? document.getElementById('novo-produto-status').value : "active",
+        forma_atendimento: document.getElementById('novo-produto-tipo') ? document.getElementById('novo-produto-tipo').value : "presencial",
+        info_do_produto: document.getElementById('novo-produto-info') ? document.getElementById('novo-produto-info').value : "",
+        orientacao_cliente: document.getElementById('novo-produto-orientacao') ? document.getElementById('novo-produto-orientacao').value : "",
+        local_atendimento: document.getElementById('novo-produto-local') ? document.getElementById('novo-produto-local').value : "",
         codigoempresa: userCodigoEmpresa
     };
-
-    if (!dados.nome_produto || !dados.subespecialidade) {
-        return mostrarMensagem("Atenção", "Preencha o Nome do Produto e a Sub-especialidade.");
-    }
 
     if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
 
@@ -2561,15 +2580,16 @@ async function salvarEdicaoProduto() {
 
     const id = document.getElementById('editar-produto-id').value;
     const dados = {
-        nome_produto: document.getElementById('editar-produto-nome').value,
-        duracao_trabalho: document.getElementById('editar-produto-duracao').value,
-        valor_real: document.getElementById('editar-produto-valor-real').value,
-        valor_promo: document.getElementById('editar-produto-valor-promo').value,
-        status: document.getElementById('editar-produto-status').value,
-        forma_atendimento: document.getElementById('editar-produto-tipo').value,
-        info_do_produto: document.getElementById('editar-produto-info').value,
-        orientacao_cliente: document.getElementById('editar-produto-orientacao').value,
-        local_atendimento: document.getElementById('editar-produto-local').value,
+        subespecialidade: document.getElementById('editar-produto-sub-id') ? document.getElementById('editar-produto-sub-id').value : "",
+        nome_produto: document.getElementById('editar-produto-nome') ? document.getElementById('editar-produto-nome').value : "",
+        duracao_trabalho: document.getElementById('editar-produto-duracao') ? document.getElementById('editar-produto-duracao').value : "",
+        valor_real: document.getElementById('editar-produto-valor-real') ? document.getElementById('editar-produto-valor-real').value : "",
+        valor_promo: document.getElementById('editar-produto-valor-promo') ? document.getElementById('editar-produto-valor-promo').value : "",
+        status: document.getElementById('editar-produto-status') ? document.getElementById('editar-produto-status').value : "active",
+        forma_atendimento: document.getElementById('editar-produto-tipo') ? document.getElementById('editar-produto-tipo').value : "presencial",
+        info_do_produto: document.getElementById('editar-produto-info') ? document.getElementById('editar-produto-info').value : "",
+        orientacao_cliente: document.getElementById('editar-produto-orientacao') ? document.getElementById('editar-produto-orientacao').value : "",
+        local_atendimento: document.getElementById('editar-produto-local') ? document.getElementById('editar-produto-local').value : "",
         codigoempresa: userCodigoEmpresa
     };
 
