@@ -2409,12 +2409,12 @@ async function carregarProdutosNoModal(subId) {
                              <span class="tw-px-2 tw-py-0.5 ${statusClass} tw-text-[9px] tw-font-bold tw-rounded-full">${statusTexto}</span>
                         </div>
 
-                        <div class="tw-flex tw-items-center tw-gap-1">
-                            <button onclick="fecharModal('modal-novo-produto'); prepararEdicaoProduto('${p.id}')" class="tw-p-2 tw-text-slate-400 hover:tw-text-primary hover:tw-bg-primary/5 tw-rounded-lg tw-transition-all">
-                                <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
+                        <div class="tw-flex tw-items-center tw-gap-4">
+                            <button onclick="fecharModal('modal-novo-produto'); prepararEdicaoProduto('${p.id}')" class="tw-bg-transparent tw-border-none tw-cursor-pointer hover:tw-opacity-80 tw-transition-all tw-p-0">
+                                <span class="material-symbols-outlined tw-text-primary" style="font-size: 18px;">border_color</span>
                             </button>
-                            <button onclick="fecharModal('modal-novo-produto'); prepararExclusaoProduto('${p.id}', '${paramNomeProduto}')" class="tw-p-2 tw-text-slate-400 hover:tw-text-error hover:tw-bg-error/5 tw-rounded-lg tw-transition-all">
-                                <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+                            <button onclick="fecharModal('modal-novo-produto'); prepararExclusaoProduto('${p.id}', '${paramNomeProduto}')" class="tw-bg-transparent tw-border-none tw-cursor-pointer hover:tw-opacity-80 tw-transition-all tw-p-0">
+                                <span class="material-symbols-outlined tw-text-error tw-text-[24px]">delete</span>
                             </button>
                         </div>
                     </div>
