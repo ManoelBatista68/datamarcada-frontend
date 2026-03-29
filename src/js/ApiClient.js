@@ -11,21 +11,20 @@ class ApiClient {
         this.isExpiredAlerted = true;
 
         console.error("⛔ [SESSÃO] Expiração ou Token Inválido detectado. Limpando sessão...");
-        localStorage.removeItem('saas_token_jwt');
+
+        // Full Swipe e Higiene Severa (Expurgo radical de tokens, IDs de cache e variáveis globais)
+        localStorage.clear();
+        if (typeof window !== 'undefined') {
+            delete window._currentNovoProdutoSubId;
+        }
 
         alert("Sua sessão expirou por inatividade ou segurança. Por favor, faça login novamente.");
 
-        // Tenta acionar a função da janela pai (se estiver num Iframe)
-        if (window.parent && typeof window.parent.fazerLogout === 'function') {
-            window.parent.fazerLogout();
-        }
-        // Tenta acionar na janela atual
-        else if (typeof fazerLogout === 'function') {
-            fazerLogout();
-        }
-        // Fallback radical
-        else {
-            window.location.reload();
+        // Salto Forçado Extra-Iframe (Evita o loop infernal dentro de janelas filhas ou recarregamento cego)
+        if (window.top) {
+            window.top.location.href = 'index.html';
+        } else {
+            window.location.href = 'index.html';
         }
     }
 
@@ -92,7 +91,18 @@ class ApiClient {
                 throw new Error(errorData.error_description || errorData.message || 'Erro HTTP ' + response.status);
             }
 
-            return await response.json();
+            const result = await response.json();
+
+            // Interceptação Global de Erro em Edge Functions retornando 200 OK com payload falso auth
+            if (result && result.sucesso === false && result.erro) {
+                const errMsg = result.erro.toLowerCase();
+                if (!isPublicRoute && (errMsg.includes("jwt") || errMsg.includes("token") || errMsg.includes("expired") || errMsg.includes("sessão") || errMsg.includes("autenticação"))) {
+                    this.handleSessionExpired();
+                    throw new Error("SESSION_EXPIRED");
+                }
+            }
+
+            return result;
         } catch (error) {
             if (error.message === "SESSION_EXPIRED") throw error;
             console.error(`[API ERROR] Falha na rota ${endpoint}:`, error);

@@ -68,3 +68,6 @@ Em sua próxima resposta, você deve iniciar dizendo: "Protocolo Override aceito
 É ESTRITAMENTE PROIBIDO deduzir, alucinar ou inferir nomes de colunas, tipagens (ex: UUID vs String) ou chaves estrangeiras (Foreign Keys) do banco de dados baseando-se apenas em payloads do frontend ou lógica de variáveis.
 Antes de escrever, refatorar ou sugerir qualquer query SQL, instrução no cliente Supabase (ex: .select(), .insert(), .eq()) ou alterar Edge Functions, o Agent DEVE OBRIGATORIAMENTE utilizar o servidor MCP do Supabase para inspecionar a estrutura física e real da tabela alvo.
 O código gerado e o plano proposto devem refletir 100% a realidade do dicionário de dados atual.
+
+## 12. Padrão de Sessão Expirada (Token Vencido)
+Sempre que uma requisição ao backend (Edge Functions/Supabase) retornar erro de autenticação, token inválido ou expirado, o frontend deve interceptar esse erro globalmente, forçar o logout (limpando cache e state) e exibir a tela de login (`index.html`) ao usuário, evitando preenchimentos silenciosos de tela e falhas fantasma.
