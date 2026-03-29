@@ -47,7 +47,16 @@
         <div class="login-box">
             <img src="https://hrwaytpbpbspgswlnesj.supabase.co/storage/v1/object/public/Cliente%201/Clinica/DataMarcada4.png"
                 class="login-logo">
-            <div class="login-title">Acesse sua Agenda</div>
+            <div class="login-title" id="login-title-text">Acesse sua Agenda</div>
+
+            <!-- FOUC Rehydration Spinner (Oculto nativamente) -->
+            <div id="login-rehydration-spinner" style="display: none; text-align: center; padding: 20px;">
+                <div
+                    class="tw-animate-spin tw-inline-block tw-w-8 tw-h-8 tw-border-4 tw-border-primary tw-border-t-transparent tw-rounded-full">
+                </div>
+                <p class="tw-mt-4 tw-text-sm tw-font-bold tw-text-slate-500">Restaurando sessão...</p>
+            </div>
+
             <form id="form-login" onsubmit="event.preventDefault(); fazerLogin();" style="width: 100%;">
                 <div class="login-input-group">
                     <input type="email" id="login-email" class="login-input" placeholder="Seu e-mail"
@@ -61,6 +70,20 @@
                 <button type="submit" id="btn-entrar" class="btn-login">ENTRAR</button>
             </form>
             <span class="forgot-link" onclick="abrirModalRecuperar()">Esqueci minha senha</span>
+
+            <!-- Bloqueio Rígido Síncrono (Anti-FOUC) -->
+            <script>
+                if (localStorage.getItem('saas_token_jwt')) {
+                    var _f = document.getElementById('form-login');
+                    var _t = document.getElementById('login-title-text');
+                    var _s = document.getElementById('login-rehydration-spinner');
+                    var _l = document.querySelector('.forgot-link');
+                    if (_f) _f.style.display = 'none';
+                    if (_t) _t.style.display = 'none';
+                    if (_l) _l.style.display = 'none';
+                    if (_s) _s.style.display = 'block';
+                }
+            </script>
         </div>
     </div>
 

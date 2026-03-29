@@ -228,7 +228,14 @@ function fazerLogout() {
     if (appContent) appContent.style.display = 'none';
 
     const loginScreen = document.getElementById('login-screen');
-    if (loginScreen) loginScreen.style.display = 'flex';
+    if (loginScreen) {
+        loginScreen.style.display = 'flex';
+        // Fallback: Desfaz a cegueira do Spinner Anti-FOUC se este for um LogOut tradicional (sem full reload)
+        if (document.getElementById('form-login')) document.getElementById('form-login').style.display = 'block';
+        if (document.getElementById('login-title-text')) document.getElementById('login-title-text').style.display = 'block';
+        if (document.querySelector('.forgot-link')) document.querySelector('.forgot-link').style.display = 'inline-block';
+        if (document.getElementById('login-rehydration-spinner')) document.getElementById('login-rehydration-spinner').style.display = 'none';
+    }
 
     if (document.getElementById('login-senha')) document.getElementById('login-senha').value = '';
     if (document.getElementById('btn-entrar')) document.getElementById('btn-entrar').disabled = false;
