@@ -2437,10 +2437,10 @@ function prepararNovoProduto(subId, subNome, espId, espNome) {
 
     // [CONTEXTO ESTATICO] Injeta crachás visuais superiores (Substitui Select de formulario)
     const labelContexto = document.getElementById('novo-produto-contexto-especialidade');
-    if (labelContexto) labelContexto.innerHTML = "<span class='material-symbols-outlined tw-text-[14px] tw-mr-1'>category</span> Especialidade: " + (espNome || "N/D");
+    if (labelContexto) labelContexto.innerHTML = "<span class='tw-px-3 tw-py-1 tw-bg-blue-50 tw-text-primary tw-rounded-full tw-text-xs tw-font-bold'>Especialidade: " + (espNome || "N/D") + "</span>";
 
     const labelContextoSub = document.getElementById('novo-produto-contexto-sub-especialidade');
-    if (labelContextoSub) labelContextoSub.innerHTML = "<span class='material-symbols-outlined tw-text-[14px] tw-mr-1'>subdirectory_arrow_right</span> Sub Especialidade: " + (subNome || "N/D");
+    if (labelContextoSub) labelContextoSub.innerHTML = "<span class='tw-px-3 tw-py-1 tw-bg-purple-50 tw-text-purple-700 tw-rounded-full tw-text-xs tw-font-bold'>Sub Especialidade: " + (subNome || "N/D") + "</span>";
 
     // Carrega a lista lateral de produtos para este subId
     carregarProdutosNoModal(subId);
