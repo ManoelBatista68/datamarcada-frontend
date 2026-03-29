@@ -2432,38 +2432,15 @@ async function carregarProdutosNoModal(subId) {
 function prepararNovoProduto(subId, subNome, espId, espNome) {
     console.log("🛠️ [PRODUTO] Preparando novo produto para:", subNome);
 
-    // [CONTEXTO] Exibe a Especialidade Pai para melhor orientação visual
+    // Salva UUID do payload invisível na memória 
+    window._currentNovoProdutoSubId = subId;
+
+    // [CONTEXTO ESTATICO] Injeta crachás visuais superiores (Substitui Select de formulario)
     const labelContexto = document.getElementById('novo-produto-contexto-especialidade');
-    if (labelContexto) labelContexto.innerHTML = "<span class='tw-bg-primary/10 tw-text-primary tw-px-2 tw-py-1 tw-rounded tw-inline-flex tw-items-center tw-gap-1'><span class='material-symbols-outlined tw-text-[14px]'>category</span> Especialidade: " + (espNome || "N/D") + "</span>";
+    if (labelContexto) labelContexto.innerHTML = "<span class='material-symbols-outlined tw-text-[14px] tw-mr-1'>category</span> Especialidade: " + (espNome || "N/D");
 
-    // Alimenta contextos nos inputs do modal
-    const inputSubId = document.getElementById('novo-produto-sub-id');
-
-    if (inputSubId) {
-        // [REATIVIDADE] Preenche todas as sub-especialidades irmãs desta Especialidade
-        inputSubId.innerHTML = '<option disabled value="">Selecione...</option>';
-        if (window.stateGerenciamento && window.stateGerenciamento.subEspecialidades) {
-            // Filtra as sub-especialidades pelo msm código de especialidade pai
-            const subsDaEspecialidade = window.stateGerenciamento.subEspecialidades.filter(s => s.cod_especialidade === espId);
-
-            subsDaEspecialidade.forEach(sub => {
-                const opt = document.createElement('option');
-                opt.value = sub.id; // UUID
-                opt.textContent = sub.nome_sub_especialidade || sub.sub_especialidade || 'S/N';
-                if (sub.id === subId) opt.selected = true;
-                inputSubId.appendChild(opt);
-            });
-        }
-
-        // Fallback caso não encontre (proteção)
-        if (inputSubId.options.length <= 1) {
-            let opt = document.createElement('option');
-            opt.value = subId;
-            opt.textContent = subNome;
-            opt.selected = true;
-            inputSubId.appendChild(opt);
-        }
-    }
+    const labelContextoSub = document.getElementById('novo-produto-contexto-sub-especialidade');
+    if (labelContextoSub) labelContextoSub.innerHTML = "<span class='material-symbols-outlined tw-text-[14px] tw-mr-1'>subdirectory_arrow_right</span> Sub Especialidade: " + (subNome || "N/D");
 
     // Carrega a lista lateral de produtos para este subId
     carregarProdutosNoModal(subId);
@@ -2544,12 +2521,11 @@ function prepararExclusaoProduto(id, nome) {
 async function salvarNovoProduto() {
     console.log("💾 [PRODUTO] Salvando novo produto...");
 
-    const subId = document.getElementById('novo-produto-sub-id') ? document.getElementById('novo-produto-sub-id').value : "";
+    const subId = window._currentNovoProdutoSubId || "";
     const nome = document.getElementById('novo-produto-nome') ? document.getElementById('novo-produto-nome').value : "";
 
     // Validação UX (Padrão 12 do .cursorrules)
     const inputsRequeridos = [
-        { id: 'novo-produto-sub-id', val: subId, valid: (v) => v && v !== "Selecione..." },
         { id: 'novo-produto-nome', val: nome, valid: (v) => v.trim() !== "" }
     ];
 
