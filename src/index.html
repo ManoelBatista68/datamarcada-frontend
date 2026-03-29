@@ -744,7 +744,10 @@
         }
         function fecharModal(id) {
             const modal = document.getElementById(id);
-            if (modal) modal.style.display = 'none';
+            if (modal) {
+                modal.style.display = 'none';
+                if (id === 'modal-novo-produto') delete window._currentNovoProdutoSubId;
+            }
         }
 
         // REDIMENSIONAMENTO DINÂMICO (Hotfix Anti-Loop)
@@ -1096,7 +1099,7 @@
                     <!-- Grid Central Unificado de 12 Colunas Ajustado (Span 8 e Span 4) -->
                     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-12 tw-gap-4 tw-mb-4 tw-items-end">
                         <div class="tw-space-y-1.5 md:tw-col-span-8">
-                            <label
+                            <label for="novo-produto-nome"
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome
                                 do Produto <span class="tw-text-error">*</span></label>
                             <input id="novo-produto-nome"
@@ -1104,7 +1107,7 @@
                                 placeholder="ex: Consulta Cardiológica" type="text" />
                         </div>
                         <div class="tw-space-y-1.5 md:tw-col-span-4">
-                            <label
+                            <label for="novo-produto-tipo"
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Atendimento
                                 <span class="tw-text-error">*</span></label>
                             <select id="novo-produto-tipo"

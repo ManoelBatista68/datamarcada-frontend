@@ -2432,7 +2432,8 @@ async function carregarProdutosNoModal(subId) {
 function prepararNovoProduto(subId, subNome, espId, espNome) {
     console.log("🛠️ [PRODUTO] Preparando novo produto para:", subNome);
 
-    // Salva UUID do payload invisível na memória 
+    // Salva UUID do payload invisível na memória (Higienizando anterior)
+    delete window._currentNovoProdutoSubId;
     window._currentNovoProdutoSubId = subId;
 
     // [CONTEXTO ESTATICO] Injeta crachás visuais superiores (Substitui Select de formulario)
