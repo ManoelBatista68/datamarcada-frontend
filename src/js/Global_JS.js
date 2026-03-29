@@ -2429,9 +2429,17 @@ async function carregarProdutosNoModal(subId) {
         container.innerHTML = '<div class="tw-p-8 tw-text-center tw-text-error tw-text-sm">Erro de conexão.</div>';
     }
 }
+let _contextoModalProduto = {};
 
 function prepararNovoProduto(subId, subNome, espId, espNome) {
     console.log("🛠️ [PRODUTO] Preparando novo produto para:", subNome);
+
+    _contextoModalProduto = {
+        cod_especialidade: espId || "",
+        especialidade: espNome || "",
+        cod_sub_especialidade: subId || "",
+        sub_especialidade: subNome || ""
+    };
 
     // [CONTEXTO] Exibe a Especialidade Pai para melhor orientação visual
     const labelContexto = document.getElementById('novo-produto-contexto-especialidade');
@@ -2545,7 +2553,10 @@ async function salvarNovoProduto() {
     }
 
     const dados = {
-        subespecialidade: subId,
+        cod_especialidade: _contextoModalProduto.cod_especialidade || "",
+        especialidade: _contextoModalProduto.especialidade || "",
+        cod_sub_especialidade: _contextoModalProduto.cod_sub_especialidade || subId,
+        sub_especialidade: _contextoModalProduto.sub_especialidade || "",
         nome_produto: nome,
         duracao_trabalho: document.getElementById('novo-produto-duracao') ? document.getElementById('novo-produto-duracao').value : "",
         valor_real: document.getElementById('novo-produto-valor-real') ? document.getElementById('novo-produto-valor-real').value : "",
