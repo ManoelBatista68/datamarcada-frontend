@@ -57,5 +57,9 @@ Você agora opera sob o "Regime Utilitário Legado". O seu objetivo NÃO é inov
 - **Ícones de Configuração (Engrenagem):** Devem ser cinza por padrão (`tw-text-slate-400`) e ficar da cor principal ao passar o mouse (`hover:tw-text-primary tw-transition-colors`), tamanho `tw-text-xl`.
 - **Tamanhos de Fonte Padrão (Sem inline styles):** É proibido o uso de `style="font-size:..."`. Especialidades usam `tw-text-lg`, Subs e Produtos usam `tw-text-base`.
 
+## 10. SEGURANÇA E TRATAMENTO DE ERROS
+- **Padrão de Injeção Segura no DOM:** Sempre que variáveis textuais forem injetadas dinamicamente via JS em atributos HTML (especialmente handlers como onclick), é OBRIGATÓRIO o uso de `escapeHtml()` e o tratamento de aspas (ex: `.replace(/'/g, "\\'")`) para evitar quebra de renderização e injeção de código.
+- **Padrão Anti-Silêncio (Error Handling):** É TERMINANTEMENTE PROIBIDO deixar blocos catch silenciosos em requisições de API/Supabase. Todo erro capturado deve obrigatoriamente acionar o feedback visual mestre da aplicação (ex: `mostrarMensagem("Erro", ...)`) para que o usuário nunca fique sem resposta em tela.
+
 **MENSAGEM DE CONFIRMAÇÃO OBRIGATÓRIA:**
 Em sua próxima resposta, você deve iniciar dizendo: "Protocolo Override aceito. Diretrizes radicais de design desativadas. Modo de Clonagem Estrita ativado."

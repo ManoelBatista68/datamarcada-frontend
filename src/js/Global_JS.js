@@ -2375,8 +2375,15 @@ async function carregarProdutosNoModal(subId) {
 
             let html = '';
             lista.forEach(p => {
-                const valorReal = parseFloat(p.valor_real || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                const valorPromo = p.valor_promo ? parseFloat(p.valor_promo).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : null;
+                const domNomeProduto = typeof escapeHtml === 'function' ? escapeHtml(p.nome_produto || "") : (p.nome_produto || "");
+                const paramNomeProduto = domNomeProduto.replace(/'/g, "\\'");
+
+                const valorRealNum = parseFloat(p.valor_real || 0);
+                const valorReal = isNaN(valorRealNum) ? "R$ 0,00" : valorRealNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+                const valorPromoNum = p.valor_promo ? parseFloat(p.valor_promo) : null;
+                const valorPromo = (valorPromoNum !== null && !isNaN(valorPromoNum)) ? valorPromoNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : null;
+
                 const statusClass = p.status === 'active' ? 'tw-bg-green-50 tw-text-green-700' : 'tw-bg-slate-100 tw-text-slate-500';
                 const statusTexto = p.status === 'active' ? 'ATIVO' : 'INATIVO';
 
@@ -2387,7 +2394,7 @@ async function carregarProdutosNoModal(subId) {
                             <span class="material-symbols-outlined" style="font-size: 20px;">medical_services</span>
                         </div>
                         <div>
-                            <div class="tw-text-sm tw-font-bold tw-text-slate-900">${p.nome_produto}</div>
+                            <div class="tw-text-sm tw-font-bold tw-text-slate-900">${domNomeProduto}</div>
                             <div class="tw-text-[10px] tw-text-slate-400 tw-font-mono tw-mt-0.5">ID: ${p.id}</div>
                         </div>
                     </div>
@@ -2406,7 +2413,7 @@ async function carregarProdutosNoModal(subId) {
                             <button onclick="fecharModal('modal-novo-produto'); prepararEdicaoProduto('${p.id}')" class="tw-p-2 tw-text-slate-400 hover:tw-text-primary hover:tw-bg-primary/5 tw-rounded-lg tw-transition-all">
                                 <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
                             </button>
-                            <button onclick="fecharModal('modal-novo-produto'); prepararExclusaoProduto('${p.id}', '${p.nome_produto}')" class="tw-p-2 tw-text-slate-400 hover:tw-text-error hover:tw-bg-error/5 tw-rounded-lg tw-transition-all">
+                            <button onclick="fecharModal('modal-novo-produto'); prepararExclusaoProduto('${p.id}', '${paramNomeProduto}')" class="tw-p-2 tw-text-slate-400 hover:tw-text-error hover:tw-bg-error/5 tw-rounded-lg tw-transition-all">
                                 <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
                             </button>
                         </div>
@@ -2570,6 +2577,7 @@ async function salvarNovoProduto() {
     } catch (e) {
         if (e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao salvar produto:", e);
+        mostrarMensagem("Erro Crítico", "A requisição falhou no sistema: " + e.message);
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
     }
@@ -2613,6 +2621,7 @@ async function salvarEdicaoProduto() {
     } catch (e) {
         if (e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao atualizar produto:", e);
+        mostrarMensagem("Erro Crítico", "A requisição falhou no sistema: " + e.message);
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
     }
@@ -2641,6 +2650,7 @@ async function confirmarExclusaoProduto() {
     } catch (e) {
         if (e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao excluir produto:", e);
+        mostrarMensagem("Erro Crítico", "A requisição falhou no sistema: " + e.message);
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
     }
