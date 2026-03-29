@@ -2429,40 +2429,39 @@ async function carregarProdutosNoModal(subId) {
         container.innerHTML = '<div class="tw-p-8 tw-text-center tw-text-error tw-text-sm">Erro de conexão.</div>';
     }
 }
-let _contextoModalProduto = {};
-
 function prepararNovoProduto(subId, subNome, espId, espNome) {
     console.log("🛠️ [PRODUTO] Preparando novo produto para:", subNome);
-
-    _contextoModalProduto = {
-        cod_especialidade: espId || "",
-        especialidade: espNome || "",
-        cod_sub_especialidade: subId || "",
-        sub_especialidade: subNome || ""
-    };
 
     // [CONTEXTO] Exibe a Especialidade Pai para melhor orientação visual
     const labelContexto = document.getElementById('novo-produto-contexto-especialidade');
     if (labelContexto) labelContexto.innerHTML = "<span class='tw-bg-primary/10 tw-text-primary tw-px-2 tw-py-1 tw-rounded tw-inline-flex tw-items-center tw-gap-1'><span class='material-symbols-outlined tw-text-[14px]'>category</span> Especialidade: " + (espNome || "N/D") + "</span>";
 
     // Alimenta contextos nos inputs do modal
-    const inputSubNomeDisp = document.getElementById('novo-produto-sub-nome-display'); // Pode ser um label na v4
     const inputSubId = document.getElementById('novo-produto-sub-id');
 
     if (inputSubId) {
-        // Se for um select (como no mockup), seleciona a opção correta
-        if (inputSubId.tagName === 'SELECT') {
-            // Verifica se a opção existe, se não cria uma temporária ou espera carregar
-            let opt = inputSubId.querySelector(`option[value="${subId}"]`);
-            if (!opt) {
-                opt = document.createElement('option');
-                opt.value = subId;
-                opt.textContent = subNome;
+        // [REATIVIDADE] Preenche todas as sub-especialidades irmãs desta Especialidade
+        inputSubId.innerHTML = '<option disabled value="">Selecione...</option>';
+        if (window.stateGerenciamento && window.stateGerenciamento.subEspecialidades) {
+            // Filtra as sub-especialidades pelo msm código de especialidade pai
+            const subsDaEspecialidade = window.stateGerenciamento.subEspecialidades.filter(s => s.cod_especialidade === espId);
+
+            subsDaEspecialidade.forEach(sub => {
+                const opt = document.createElement('option');
+                opt.value = sub.id; // UUID
+                opt.textContent = sub.nome_sub_especialidade || sub.sub_especialidade || 'S/N';
+                if (sub.id === subId) opt.selected = true;
                 inputSubId.appendChild(opt);
-            }
-            inputSubId.value = subId;
-        } else {
-            inputSubId.value = subId;
+            });
+        }
+
+        // Fallback caso não encontre (proteção)
+        if (inputSubId.options.length <= 1) {
+            let opt = document.createElement('option');
+            opt.value = subId;
+            opt.textContent = subNome;
+            opt.selected = true;
+            inputSubId.appendChild(opt);
         }
     }
 
@@ -2548,15 +2547,32 @@ async function salvarNovoProduto() {
     const subId = document.getElementById('novo-produto-sub-id') ? document.getElementById('novo-produto-sub-id').value : "";
     const nome = document.getElementById('novo-produto-nome') ? document.getElementById('novo-produto-nome').value : "";
 
-    if (!nome || !subId) {
-        return mostrarMensagem("Atenção", "Preencha o Nome do Produto e certifique-se que haja uma Sub-especialidade selecionada.");
+    // Validação UX (Padrão 12 do .cursorrules)
+    const inputsRequeridos = [
+        { id: 'novo-produto-sub-id', val: subId, valid: (v) => v && v !== "Selecione..." },
+        { id: 'novo-produto-nome', val: nome, valid: (v) => v.trim() !== "" }
+    ];
+
+    // Limpa bordas de erro
+    for (let campo of inputsRequeridos) {
+        const el = document.getElementById(campo.id);
+        if (el) el.classList.remove('tw-border-error', 'tw-ring-error/20');
+    }
+
+    // Checa campo a campo
+    for (let campo of inputsRequeridos) {
+        if (!campo.valid(campo.val)) {
+            const el = document.getElementById(campo.id);
+            if (el) {
+                el.classList.add('tw-border-error', 'tw-ring-error/20');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return; // Bloqueia propagação silenciosamente guiando o UX
+        }
     }
 
     const dados = {
-        cod_especialidade: _contextoModalProduto.cod_especialidade || "",
-        especialidade: _contextoModalProduto.especialidade || "",
-        cod_sub_especialidade: _contextoModalProduto.cod_sub_especialidade || subId,
-        sub_especialidade: _contextoModalProduto.sub_especialidade || "",
+        id_sub_especialidade: subId,
         nome_produto: nome,
         duracao_trabalho: document.getElementById('novo-produto-duracao') ? document.getElementById('novo-produto-duracao').value : "",
         valor_real: document.getElementById('novo-produto-valor-real') ? document.getElementById('novo-produto-valor-real').value : "",

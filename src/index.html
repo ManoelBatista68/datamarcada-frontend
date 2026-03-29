@@ -1087,25 +1087,39 @@
                 </div>
 
                 <div class="tw-p-6 tw-overflow-y-auto tw-custom-scrollbar tw-flex-1">
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-mb-4">
-                        <div class="tw-space-y-1.5">
-                            <div id="novo-produto-contexto-especialidade"
-                                class="tw-text-[11px] tw-font-bold tw-text-primary tw-uppercase tw-mb-1"></div>
+                    <!-- Contexto Especialidade Fora do Grid para manter alinhamento das labels (Ponto 5) -->
+                    <div id="novo-produto-contexto-especialidade"
+                        class="tw-text-[11px] tw-font-bold tw-text-primary tw-uppercase tw-mb-3"></div>
+
+                    <!-- Grid Central Unificado de 12 Colunas (Pontos 5, 6 e 7) -->
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-12 tw-gap-4 tw-mb-4 tw-items-end">
+                        <div class="tw-space-y-1.5 md:tw-col-span-3">
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Sub-especialidade
-                                Relacionada <span class="tw-text-error">*</span></label>
+                                <span class="tw-text-error">*</span></label>
                             <select id="novo-produto-sub-id"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer">
                                 <option disabled selected>Selecione...</option>
                             </select>
                         </div>
-                        <div class="tw-space-y-1.5">
+                        <div class="tw-space-y-1.5 md:tw-col-span-6">
                             <label
                                 class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome
                                 do Produto <span class="tw-text-error">*</span></label>
                             <input id="novo-produto-nome"
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
                                 placeholder="ex: Consulta Cardiológica" type="text" />
+                        </div>
+                        <div class="tw-space-y-1.5 md:tw-col-span-3">
+                            <label
+                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Atendimento
+                                <span class="tw-text-error">*</span></label>
+                            <select id="novo-produto-tipo"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer">
+                                <option value="Presencial">Presencial</option>
+                                <option value="On-Line">On-Line</option>
+                                <option value="Ambos">Presencial ou On-Line</option>
+                            </select>
                         </div>
                     </div>
 
@@ -1155,19 +1169,6 @@
                         </div>
                     </div>
 
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-mb-4">
-                        <div class="tw-space-y-1.5">
-                            <label
-                                class="tw-block tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Forma
-                                de Atendimento <span class="tw-text-error">*</span></label>
-                            <select id="novo-produto-tipo"
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer">
-                                <option value="Presencial">Presencial</option>
-                                <option value="On-Line">On-Line</option>
-                                <option value="Ambos">Presencial ou On-Line</option>
-                            </select>
-                        </div>
-                    </div>
 
 
                     <div class="tw-space-y-4 tw-mb-4">
