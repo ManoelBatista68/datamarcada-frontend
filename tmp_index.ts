@@ -1731,7 +1731,7 @@ serve(async (req) => {
         }
 
 
-        // ROTA 31 - SALVAR ESPECIALISTA (CRIAR/ATUALIZAR + LÓGICA EPXX)
+        // ROTA 31 - SALVAR ESPECIALISTA (CRIAR/ATUALIZAR + LÓGICA EPXX) — connection.queryObject para bypass RLS
         case 'salvar_especialista': {
           try {
             const { id, nome, email, celular, sub_especialidades, codigoempresa,
@@ -1739,61 +1739,62 @@ serve(async (req) => {
 
             if (!nome || !codigoempresa) throw new Error("Nome e codigoempresa são obrigatórios.");
 
-            const dadosBasicos: any = {
-              nome,
-              email: email || null,
-              celular: celular || null,
-              sub_especialidades: Array.isArray(sub_especialidades) ? sub_especialidades : [],
-              admin: Boolean(admin),
-              silenciar_notificacao: Boolean(silenciar_notificacao),
-              info_geral: info_geral || null,
-              updated_at: new Date().toISOString()
-            };
+            const subEspArray = Array.isArray(sub_especialidades) ? sub_especialidades : [];
+            const adminBool = Boolean(admin);
+            const silenciarBool = Boolean(silenciar_notificacao);
+            const infGeral = info_geral || null;
+            const now = new Date().toISOString();
 
             if (id) {
-              // Edição
-              const { error: updErr } = await supabase
-                .from('especialistas')
-                .update(dadosBasicos)
-                .eq('id', id)
-                .eq('codigoempresa', codigoempresa);
-
-              if (updErr) throw updErr;
+              // UPDATE — bypasses RLS via connection.queryObject
+              const ativoBool = typeof ativo !== 'undefined' ? Boolean(ativo) : true;
+              await connection.queryObject<any>({
+                text: `UPDATE especialistas
+                       SET nome = $1, email = $2, celular = $3,
+                           sub_especialidades = $4,
+                           admin = $5, silenciar_notificacao = $6,
+                           ativo = $7, info_geral = $8,
+                           updated_at = $9
+                       WHERE id = $10 AND codigoempresa = $11`,
+                args: [nome, email || null, celular || null,
+                  JSON.stringify(subEspArray),
+                  adminBool, silenciarBool,
+                  ativoBool, infGeral,
+                  now, id, codigoempresa]
+              });
               return responderJSON({ sucesso: true, mensagem: "Especialista atualizado com sucesso." });
+
             } else {
-              // Criação - Lógica EPXX
-              const { data: ultimos } = await supabase
-                .from('especialistas')
-                .select('codigo_especialista')
-                .eq('codigoempresa', codigoempresa)
-                .like('codigo_especialista', 'EP%')
-                .order('codigo_especialista', { ascending: false })
-                .limit(1);
+              // INSERT — gera código EPXX sequencial, bypasses RLS
+              const codRes = await connection.queryObject<{ codigo_especialista: string }>({
+                text: `SELECT codigo_especialista FROM especialistas
+                       WHERE codigoempresa = $1 AND codigo_especialista LIKE 'EP%'
+                       ORDER BY codigo_especialista DESC LIMIT 1`,
+                args: [codigoempresa]
+              });
 
               let nextNum = 1;
-              if (ultimos && ultimos.length > 0) {
-                const lastCode = ultimos[0].codigo_especialista;
-                const match = lastCode.match(/\d+/);
+              if (codRes.rows.length > 0) {
+                const match = codRes.rows[0].codigo_especialista.match(/\d+/);
                 if (match) nextNum = parseInt(match[0]) + 1;
               }
               const novoCodigo = `EP${String(nextNum).padStart(2, '0')}`;
+              const ativoBool = typeof ativo !== 'undefined' ? Boolean(ativo) : true;
 
-              const novoEspecialista = {
-                ...dadosBasicos,
-                codigo_especialista: novoCodigo,
-                codigoempresa,
-                ativo: typeof ativo !== 'undefined' ? Boolean(ativo) : true,
-                created_at: new Date().toISOString()
-              };
+              const insRes = await connection.queryObject<any>({
+                text: `INSERT INTO especialistas
+                         (nome, email, celular, sub_especialidades, codigoempresa,
+                          codigo_especialista, admin, silenciar_notificacao, ativo,
+                          info_geral, created_at, updated_at)
+                       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                       RETURNING *`,
+                args: [nome, email || null, celular || null,
+                  JSON.stringify(subEspArray), codigoempresa,
+                  novoCodigo, adminBool, silenciarBool, ativoBool,
+                  infGeral, now, now]
+              });
 
-              const { data: resIns, error: insErr } = await supabase
-                .from('especialistas')
-                .insert([novoEspecialista])
-                .select()
-                .single();
-
-              if (insErr) throw insErr;
-              return responderJSON({ sucesso: true, mensagem: "Especialista criado com sucesso.", dados: resIns });
+              return responderJSON({ sucesso: true, mensagem: "Especialista criado com sucesso.", dados: insRes.rows[0] ?? {} });
             }
           } catch (e: any) {
             console.error("🔥 [ERRO SALVAR ESPECIALISTA]:", e.message);
@@ -1801,19 +1802,18 @@ serve(async (req) => {
           }
         }
 
-        // ROTA 32 - EXCLUIR ESPECIALISTA (SOFT DELETE - REGRA 17)
+        // ROTA 32 - EXCLUIR ESPECIALISTA (SOFT DELETE - REGRA 17) — connection.queryObject para bypass RLS
         case 'excluir_especialista': {
           try {
             const { id, codigoempresa } = payload;
             if (!id || !codigoempresa) throw new Error("ID e codigoempresa são obrigatórios.");
 
-            const { error: softDelErr } = await supabase
-              .from('especialistas')
-              .update({ ativo: false, updated_at: new Date().toISOString() })
-              .eq('id', id)
-              .eq('codigoempresa', codigoempresa);
+            await connection.queryObject<any>({
+              text: `UPDATE especialistas SET ativo = false, updated_at = $1
+                     WHERE id = $2 AND codigoempresa = $3`,
+              args: [new Date().toISOString(), id, codigoempresa]
+            });
 
-            if (softDelErr) throw softDelErr;
             return responderJSON({ sucesso: true, mensagem: "Especialista removido (soft-delete) com sucesso." });
           } catch (e: any) {
             console.error("🔥 [ERRO EXCLUIR ESPECIALISTA]:", e.message);
