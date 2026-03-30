@@ -7,7 +7,8 @@ class ApiClient {
     static isExpiredAlerted = false;
 
     static handleSessionExpired() {
-        if (this.isExpiredAlerted || (typeof document !== 'undefined' && document.getElementById('modal-sessao-expirada'))) return; // Evita spam e stacking
+        const topDoc = (typeof window !== 'undefined' && window.top) ? window.top.document : (typeof document !== 'undefined' ? document : null);
+        if (this.isExpiredAlerted || (topDoc && topDoc.getElementById('modal-sessao-expirada'))) return; // Evita spam e stacking
         this.isExpiredAlerted = true;
 
         console.error("⛔ [SESSÃO] Expiração ou Token Inválido detectado. Limpando sessão...");
@@ -18,9 +19,9 @@ class ApiClient {
             delete window._currentNovoProdutoSubId;
         }
 
-        if (typeof document !== 'undefined') {
+        if (topDoc) {
             // Injeção Dinâmica do Modal SaaS Premium (Anti-Alert)
-            const m = document.createElement('div');
+            const m = topDoc.createElement('div');
             m.id = 'modal-sessao-expirada';
             m.className = 'tw-fixed tw-inset-0 tw-z-[9999] tw-bg-slate-900/60 tw-backdrop-blur-sm tw-flex tw-items-center tw-justify-center tw-p-4';
             m.innerHTML = `
@@ -35,10 +36,10 @@ class ApiClient {
                     </button>
                 </div>
             `;
-            document.body.appendChild(m);
+            topDoc.body.appendChild(m);
 
             // Vinculando Ejeção Radical de Iframe ao Clique do Usuário
-            document.getElementById('btn-reconnect-session').onclick = () => {
+            topDoc.getElementById('btn-reconnect-session').onclick = () => {
                 if (window.top) window.top.location.href = 'index.html';
                 else window.location.href = 'index.html';
             };

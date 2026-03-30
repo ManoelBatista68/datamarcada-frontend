@@ -192,6 +192,7 @@ async function fazerLogin() {
         await iniciarApp();
 
     } catch (err) {
+        if (err && err.message === "SESSION_EXPIRED") return;
         console.error(err);
         alert("Falha de Autenticação: Email ou senha incorretos.");
     } finally {
@@ -209,6 +210,7 @@ function fazerLogout() {
             m.style.setProperty('display', 'none', 'important');
         });
     } catch (err) {
+        if (err && err.message === "SESSION_EXPIRED") return;
         console.warn("⚠️ [UI] Falha na limpeza de modais durante o logout:", err);
     }
 
@@ -1132,6 +1134,7 @@ function salvarBloco() {
                 mostrarMensagem("Erro", "Falha: " + res.erro);
             }
         } catch (err) {
+        if (err && err.message === "SESSION_EXPIRED") return;
             mostrarMensagem("Erro", "Erro: " + err);
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
         }
@@ -1145,6 +1148,7 @@ function acaoMarcarAtendido(idUnico, element) {
             await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'marcarAtendido', idUnico, codigoempresa: userCodigoEmpresa });
             await carregar();
         } catch (e) {
+        if (e && e.message === "SESSION_EXPIRED") return;
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
             mostrarMensagem("Erro", "Falha ao marcar: " + e);
         }
@@ -1158,6 +1162,7 @@ function acaoMarcarCancelado(idUnico, element) {
             await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'marcarCancelado', idUnico, codigoempresa: userCodigoEmpresa });
             await carregar();
         } catch (e) {
+        if (e && e.message === "SESSION_EXPIRED") return;
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
             mostrarMensagem("Erro", "Falha ao cancelar: " + e);
         }
@@ -1196,6 +1201,7 @@ function salvar(idUnico) {
             else if (res.sucesso) { mostrarMensagem("Sucesso", "Agendamento salvo!"); await carregar(); }
             else { if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none'; mostrarMensagem("Erro", "Falha ao salvar: " + res.erro); }
         } catch (err) {
+        if (err && err.message === "SESSION_EXPIRED") return;
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
             mostrarMensagem("Erro", "Falha ao salvar: " + err);
         }
@@ -1209,6 +1215,7 @@ function excluir(idUnico) {
             await ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'excluirLinha', idUnico, codigoempresa: userCodigoEmpresa });
             await carregar();
         } catch (err) {
+        if (err && err.message === "SESSION_EXPIRED") return;
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
             mostrarMensagem("Erro", "Erro ao excluir: " + err);
         }
@@ -1326,7 +1333,8 @@ function renderizar(dados, containerAlvo) {
             }
             html += '</div>';
         });
-    } catch (err) { console.error("Erro render", err); }
+    } catch (err) {
+        if (err && err.message === "SESSION_EXPIRED") return; console.error("Erro render", err); }
     containerAlvo.innerHTML = html;
 }
 
@@ -1396,7 +1404,8 @@ function aplicarFiltrosPrincipal() {
         if (document.getElementById('qtd-cards-pc')) document.getElementById('qtd-cards-pc').textContent = qtdAtual;
         if (document.getElementById('qtd-cards-mobile')) document.getElementById('qtd-cards-mobile').textContent = qtdAtual;
 
-    } catch (e) { }
+    } catch (e) {
+        if (e && e.message === "SESSION_EXPIRED") return; }
 }
 
 function aplicarFiltroPeriodo() {
@@ -1530,6 +1539,7 @@ async function carregar() {
         if (typeof verificarInputsPreenchidos === 'function') verificarInputsPreenchidos();
 
     } catch (err) {
+        if (err && err.message === "SESSION_EXPIRED") return;
         alert("Falha: " + err.message);
         if (loaderEl) loaderEl.style.display = 'none';
     }
@@ -1645,7 +1655,7 @@ async function carregarEstruturaHierarquica() {
                 return `
                 <div class="tw-space-y-4">
                     <!-- HEADER SUB-ESPECIALIDADE -->
-                    <div class="tw-bg-white tw-flex tw-items-center tw-justify-between tw-p-5 tw-rounded-xl tw-shadow-sm tw-border tw-border-outline-variant/10">
+                    <div class="tw-bg-white tw-flex tw-items-center tw-justify-between tw-p-5 tw-rounded-xl tw-shadow-sm tw-border tw-border-outline-variant/10 tw-border-l-4 tw-border-primary">
                         <div class="tw-flex tw-items-center tw-gap-2">
                             <span class="material-symbols-outlined tw-text-outline">subdirectory_arrow_right</span>
                             <h4 class="tw-font-bold tw-text-on-surface-variant tw-text-base">
@@ -1662,13 +1672,13 @@ async function carregarEstruturaHierarquica() {
                             <div class="tw-h-8 tw-w-[1px] tw-bg-outline-variant/30"></div>
                             <button type="button" onclick="window.parent.toggleHierarquia('${subContainerId}', '${subIconId}')" 
                                 class="tw-p-2 tw-rounded-lg tw-text-outline hover:tw-text-primary hover:tw-bg-primary-fixed/30 tw-transition-all tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-border-none tw-bg-transparent tw-cursor-pointer" title="Expandir/Recolher">
-                                <span id="${subIconId}" class="material-symbols-outlined tw-text-2xl">visibility</span>
+                                <span id="${subIconId}" class="material-symbols-outlined tw-text-2xl">visibility_off</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- GRID PRODUTOS -->
-                    <div id="${subContainerId}" class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 xl:tw-grid-cols-3 tw-gap-6 tw-transition-all">
+                    <div id="${subContainerId}" class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 xl:tw-grid-cols-3 tw-gap-6 tw-transition-all tw-hidden">
                         ${subProds.length > 0 ? subProds.map(prod => `
                         <div class="tw-bg-white tw-p-5 tw-rounded-xl tw-shadow-sm tw-border tw-border-outline-variant/10 hover:tw-border-secondary/30 hover:tw-shadow-lg tw-transition-all tw-group">
                             <div class="tw-flex tw-justify-between tw-items-start tw-mb-4">
@@ -1719,7 +1729,7 @@ async function carregarEstruturaHierarquica() {
         }
 
     } catch (e) {
-        if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("❌ [HIERARQUIA] Erro na renderização SaaS:", e);
     }
 }
@@ -1782,8 +1792,10 @@ function alternarTela(tela) {
     }
 }
 
-function processarClientesUnicos() { try { const map = new Map(); dadosGlobais.forEach(function (i) { if (isClient()) { if (i.nome_esp) map.set(i.nome_esp, { nome: i.nome_esp, cel: "" }); } else { if (i.cli) map.set(i.cli, { nome: i.cli, cel: i.cel_cli }); } }); listaClientesUnicos = Array.from(map.values()); } catch (e) { } }
-function processarEspecialidadesUnicas() { try { const setSpec = new Set(); dadosGlobais.forEach(function (i) { if (i.especialidade && typeof i.especialidade === 'string' && i.especialidade.trim() !== "") { setSpec.add(i.especialidade.trim()); } }); listaEspecialidadesUnicas = Array.from(setSpec).sort(); } catch (e) { } }
+function processarClientesUnicos() { try { const map = new Map(); dadosGlobais.forEach(function (i) { if (isClient()) { if (i.nome_esp) map.set(i.nome_esp, { nome: i.nome_esp, cel: "" }); } else { if (i.cli) map.set(i.cli, { nome: i.cli, cel: i.cel_cli }); } }); listaClientesUnicos = Array.from(map.values()); } catch (e) {
+        if (e && e.message === "SESSION_EXPIRED") return; } }
+function processarEspecialidadesUnicas() { try { const setSpec = new Set(); dadosGlobais.forEach(function (i) { if (i.especialidade && typeof i.especialidade === 'string' && i.especialidade.trim() !== "") { setSpec.add(i.especialidade.trim()); } }); listaEspecialidadesUnicas = Array.from(setSpec).sort(); } catch (e) {
+        if (e && e.message === "SESSION_EXPIRED") return; } }
 function acionarFiltroManual() { desativarSinos(); aplicarFiltrosPrincipalDebounce(); }
 function filtrarSugestoes(t) { desativarSinos(); aplicarFiltrosPrincipalDebounce(); const isMobile = window.innerWidth <= 768; const boxId = isMobile ? 'lista-sugestoes-mobile' : 'lista-sugestoes'; const b = document.getElementById(boxId); if (!b) return; b.innerHTML = ''; if (!t || t.length < 2) { b.style.display = 'none'; clienteSelecionadoCelular = null; let lblPc = document.getElementById('lbl-relatorio-pc'); if (lblPc) lblPc.style.display = 'none'; let lblMob = document.getElementById('lbl-relatorio-mobile'); if (lblMob) lblMob.style.display = 'none'; return; } const m = listaClientesUnicos.filter(function (c) { return c.nome.toLowerCase().includes(t.toLowerCase()); }).slice(0, 10); if (m.length > 0) { m.forEach(function (c) { const d = document.createElement('div'); d.className = 'suggestion-item'; d.innerHTML = '<span>' + escapeHtml(c.nome) + '</span>'; d.onclick = function () { selecionarCliente(c.nome); }; b.appendChild(d); }); b.style.display = 'block'; } else { b.style.display = 'none'; } }
 function filtrarSugestoesEspecialidade(t) { desativarSinos(); aplicarFiltrosPrincipalDebounce(); const isMobile = window.innerWidth <= 768; const boxId = isMobile ? 'lista-sugestoes-especialidade-mobile' : 'lista-sugestoes-especialidade'; const b = document.getElementById(boxId); if (!b) return; b.innerHTML = ''; if (!t || t.length < 1) { b.style.display = 'none'; return; } const m = listaEspecialidadesUnicas.filter(function (s) { return String(s).toLowerCase().includes(t.toLowerCase()); }).slice(0, 10); if (m.length > 0) { m.forEach(function (s) { const d = document.createElement('div'); d.className = 'suggestion-item'; d.innerHTML = '<span>' + escapeHtml(s) + '</span>'; d.onclick = function () { selecionarEspecialidade(s); }; b.appendChild(d); }); b.style.display = 'block'; } else { b.style.display = 'none'; } }
@@ -1792,7 +1804,8 @@ function selecionarEspecialidade(n) { const pc = document.getElementById('filtro
 function limparFiltroCliente() { if (document.getElementById('filtro-cliente')) document.getElementById('filtro-cliente').value = ""; const mob = document.getElementById('filtro-cliente-mobile'); if (mob) mob.value = ""; if (document.getElementById('lista-sugestoes')) document.getElementById('lista-sugestoes').style.display = 'none'; const mobBox = document.getElementById('lista-sugestoes-mobile'); if (mobBox) mobBox.style.display = 'none'; clienteSelecionadoCelular = null; let lblPc = document.getElementById('lbl-relatorio-pc'); if (lblPc) lblPc.style.display = 'none'; let lblMob = document.getElementById('lbl-relatorio-mobile'); if (lblMob) lblMob.style.display = 'none'; acionarFiltroManual(); }
 function limparFiltroEspecialidade() { if (document.getElementById('filtro-especialidade')) document.getElementById('filtro-especialidade').value = ""; const mob = document.getElementById('filtro-especialidade-mobile'); if (mob) mob.value = ""; if (document.getElementById('lista-sugestoes-especialidade')) document.getElementById('lista-sugestoes-especialidade').style.display = 'none'; const mobBox = document.getElementById('lista-sugestoes-especialidade-mobile'); if (mobBox) mobBox.style.display = 'none'; acionarFiltroManual(); }
 function sincronizarFiltros(origem) { if (origem === 'mobile') { if (document.getElementById('filtro-data') && document.getElementById('filtro-data-mobile')) document.getElementById('filtro-data').value = document.getElementById('filtro-data-mobile').value; if (document.getElementById('filtro-status') && document.getElementById('filtro-status-mobile')) document.getElementById('filtro-status').value = document.getElementById('filtro-status-mobile').value; } else { const mobDt = document.getElementById('filtro-data-mobile'); if (mobDt && document.getElementById('filtro-data')) mobDt.value = document.getElementById('filtro-data').value; const mobSt = document.getElementById('filtro-status-mobile'); if (mobSt && document.getElementById('filtro-status')) mobSt.value = document.getElementById('filtro-status').value; } acionarFiltroManual(); if (origem === 'mobile') fecharMenuSeMobile('menu-principal'); }
-function atualizarPlaceholderData() { try { const input = document.getElementById('filtro-data-mobile'); const ph = document.getElementById('date-placeholder-mobile'); if (input && ph) { if (input.value) { ph.style.display = 'none'; input.classList.add('has-value'); } else { ph.style.display = 'block'; input.classList.remove('has-value'); } } } catch (e) { console.log("Aviso: Elementos de data mobile não encontrados.", e); } }
+function atualizarPlaceholderData() { try { const input = document.getElementById('filtro-data-mobile'); const ph = document.getElementById('date-placeholder-mobile'); if (input && ph) { if (input.value) { ph.style.display = 'none'; input.classList.add('has-value'); } else { ph.style.display = 'block'; input.classList.remove('has-value'); } } } catch (e) {
+        if (e && e.message === "SESSION_EXPIRED") return; console.log("Aviso: Elementos de data mobile não encontrados.", e); } }
 function toggleMobileMenu(id) { const el = document.getElementById(id); if (el) { el.classList.toggle('show-menu'); window.scrollTo({ top: 0, behavior: 'smooth' }); } }
 function fecharMenuSeMobile(id) { if (window.innerWidth <= 768) { const el = document.getElementById(id); if (el) el.classList.remove('show-menu'); } }
 function toggleTheme() { document.body.classList.toggle('dark-mode'); const icon = document.getElementById('icon-theme'); if (icon) icon.textContent = document.body.classList.contains('dark-mode') ? 'brightness_7' : 'brightness_6'; }
@@ -1806,7 +1819,8 @@ function verificarInputsPreenchidos() {
         const dateMob = document.getElementById('filtro-data-mobile'); const dateContainer = document.querySelector('.date-container');
         if (dateMob && dateContainer) { if (dateMob.value) dateContainer.classList.add('input-filled'); else dateContainer.classList.remove('input-filled'); }
         setStyle('filtro-periodo-select'); setStyle('filtro-status-periodo');
-    } catch (e) { }
+    } catch (e) {
+        if (e && e.message === "SESSION_EXPIRED") return; }
 }
 
 function atualizarEstiloSinos() {
@@ -1933,6 +1947,7 @@ async function carregarEspecialidades() {
             carregarSubEspecialidades(null);
         }
     } catch (e) {
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao carregar especialidades:", e);
     }
 }
@@ -1993,7 +2008,7 @@ async function salvarEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
-        if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
         mostrarMensagem("Erro", "Falha ao salvar especialidade.");
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
@@ -2012,7 +2027,7 @@ async function excluirEspecialidade(id) {
                 await carregarEstruturaHierarquica();
             }
         } catch (e) {
-            if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
             mostrarMensagem("Erro", "Falha ao excluir especialidade.");
         }
     });
@@ -2036,6 +2051,7 @@ async function carregarSubEspecialidades(espId) {
             renderizarSubEspecialidades(res.dados);
         }
     } catch (e) {
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao carregar sub-especialidades:", e);
     }
 }
@@ -2107,7 +2123,7 @@ async function salvarSubEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
-        if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
         mostrarMensagem("Erro", "Falha ao salvar sub-especialidade.");
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
@@ -2127,7 +2143,7 @@ async function excluirSubEspecialidade(id) {
                 await carregarEstruturaHierarquica();
             }
         } catch (e) {
-            if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
             mostrarMensagem("Erro", "Falha ao excluir sub-especialidade.");
         }
     });
@@ -2223,7 +2239,7 @@ async function atualizarSubEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
-        if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao atualizar sub-especialidade:", e);
         mostrarMensagem("Erro", "Falha ao atualizar.");
     } finally {
@@ -2253,7 +2269,7 @@ async function confirmarExclusaoSubEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
-        if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao excluir sub-especialidade:", e);
         mostrarMensagem("Erro", "Falha ao excluir.");
     } finally {
@@ -2315,7 +2331,7 @@ async function atualizarEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
-        if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao atualizar especialidade:", e);
         mostrarMensagem("Erro", "Falha ao atualizar.");
     } finally {
@@ -2344,7 +2360,7 @@ async function confirmarExclusaoEspecialidade() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
-        if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao excluir especialidade:", e);
         mostrarMensagem("Erro", "Falha ao excluir.");
     } finally {
@@ -2440,6 +2456,7 @@ async function carregarProdutosNoModal(subId) {
             container.innerHTML = '<div class="tw-p-8 tw-text-center tw-text-error tw-text-sm">Erro ao carregar produtos.</div>';
         }
     } catch (e) {
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("Erro no fetch de produtos:", e);
         container.innerHTML = '<div class="tw-p-8 tw-text-center tw-text-error tw-text-sm">Erro de conexão.</div>';
     }
@@ -2517,7 +2534,7 @@ async function prepararEdicaoProduto(id) {
             mostrarMensagem("Erro", "Produto não encontrado para edição.");
         }
     } catch (e) {
-        if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao buscar produto:", e);
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
@@ -2597,7 +2614,7 @@ async function salvarNovoProduto() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
-        if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao salvar produto:", e);
         mostrarMensagem("Erro Crítico", "A requisição falhou no sistema: " + e.message);
     } finally {
@@ -2641,7 +2658,7 @@ async function salvarEdicaoProduto() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
-        if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao atualizar produto:", e);
         mostrarMensagem("Erro Crítico", "A requisição falhou no sistema: " + e.message);
     } finally {
@@ -2670,7 +2687,7 @@ async function confirmarExclusaoProduto() {
             mostrarMensagem("Erro", "Falha: " + res.erro);
         }
     } catch (e) {
-        if (e.message === "SESSION_EXPIRED") return;
+        if (e && e.message === "SESSION_EXPIRED") return;
         console.error("Erro ao excluir produto:", e);
         mostrarMensagem("Erro Crítico", "A requisição falhou no sistema: " + e.message);
     } finally {
