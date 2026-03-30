@@ -2720,7 +2720,9 @@ async function carregarEspecialistas() {
         }
 
         tbody.innerHTML = especialistas.map(esp => {
-            const subs = Array.isArray(esp.sub_especialidades) ? esp.sub_especialidades : [];
+            const subs = Array.isArray(esp.sub_especialidades) ? esp.sub_especialidades :
+                (typeof esp.sub_especialidades === 'string' ? esp.sub_especialidades.split(',').map(s => s.trim()).filter(Boolean) : []);
+
             return `
             <tr class="hover:tw-bg-[#eff6ff]/50 tw-transition-colors">
                 <td class="tw-px-6 tw-py-4">
@@ -2777,7 +2779,6 @@ async function abrirModalNovoEspecialista() {
     window.top.document.getElementById('novo-especialista-nome').value = '';
     window.top.document.getElementById('novo-especialista-email').value = '';
     window.top.document.getElementById('novo-especialista-celular').value = '';
-    window.top.document.getElementById('novo-especialista-codigo').value = '';
 
     // Limpa tags de especialidades
     const tagContainer = window.top.document.getElementById('novo-especialista-tags');
@@ -2794,7 +2795,6 @@ async function salvarNovoEspecialista() {
     const nome = window.top.document.getElementById('novo-especialista-nome').value.trim();
     const email = window.top.document.getElementById('novo-especialista-email').value.trim();
     const celular = window.top.document.getElementById('novo-especialista-celular').value.trim();
-    const codigo = window.top.document.getElementById('novo-especialista-codigo').value.trim();
 
     if (!nome) return mostrarMensagem("Aviso", "O nome do especialista é obrigatório.");
 
@@ -2807,19 +2807,19 @@ async function salvarNovoEspecialista() {
             nome,
             email,
             celular,
-            codigo_especialista: codigo,
             sub_especialidades: window._tagsEspecialistaPendente || []
         });
 
         if (res.sucesso) {
             if (window.top.document.getElementById('modal-novo-especialista'))
                 window.top.document.getElementById('modal-novo-especialista').style.display = 'none';
+            mostrarMensagem("Sucesso", "Especialista criado! Código gerado: " + (res.novoCodigo || ""));
             await carregarEspecialistas();
         } else {
             mostrarMensagem("Erro", res.erro || "Falha ao salvar especialista.");
         }
     } catch (e) {
-        console.error(e);
+        if (e.message !== "SESSION_EXPIRED") console.error(e);
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
     }
@@ -2854,12 +2854,12 @@ async function prepararEdicaoEspecialista(id) {
         window.top.document.getElementById('editar-especialista-codigo').value = esp.codigo_especialista || '';
 
         // Renderiza tags
-        window._tagsEspecialistaEdicao = Array.isArray(esp.sub_especialidades) ? esp.sub_especialidades : [];
+        window._tagsEspecialistaEdicao = esp.sub_especialidades ? esp.sub_especialidades.split(',').map(s => s.trim()).filter(Boolean) : [];
         renderizarTagsEspecialista('editar');
 
         modal.style.display = 'flex';
     } catch (e) {
-        console.error(e);
+        if (e.message !== "SESSION_EXPIRED") console.error(e);
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
     }
@@ -2875,7 +2875,7 @@ async function salvarEdicaoEspecialista() {
     const celular = window.top.document.getElementById('editar-especialista-celular').value.trim();
     const codigo = window.top.document.getElementById('editar-especialista-codigo').value.trim();
 
-    if (!nome || !id) return mostrarMensagem("Aviso", "Nome e ID são obrigatórios.");
+    if (!nome || !id) return mostrarMensagem("Aviso", "Nome é obrigatório.");
 
     if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
 
@@ -2899,7 +2899,7 @@ async function salvarEdicaoEspecialista() {
             mostrarMensagem("Erro", res.erro || "Falha ao atualizar especialista.");
         }
     } catch (e) {
-        console.error(e);
+        if (e.message !== "SESSION_EXPIRED") console.error(e);
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
     }
@@ -2917,10 +2917,13 @@ async function prepararExclusaoEspecialista(id, nome) {
                 id: id,
                 codigoempresa: userCodigoEmpresa
             });
-            if (res.sucesso) await carregarEspecialistas();
-            else mostrarMensagem("Erro", res.erro || "Falha ao excluir.");
+            if (res.sucesso) {
+                await carregarEspecialistas();
+            } else {
+                mostrarMensagem("Erro", res.erro || "Falha ao excluir.");
+            }
         } catch (e) {
-            console.error(e);
+            if (e.message !== "SESSION_EXPIRED") console.error(e);
         } finally {
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
         }
@@ -2956,7 +2959,7 @@ function renderizarTagsEspecialista(tipo) {
     container.innerHTML = (list || []).map((t, idx) => `
         <span class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-[#eff6ff] tw-text-primary tw-px-2 tw-py-0.5 tw-rounded tw-text-xs tw-font-bold">
             ${escapeHtml(t)}
-            <button type="button" onclick="window.parent.removeTagEspecialista('${tipo}', ${idx})" 
+            <button type="button" onclick="removeTagEspecialista('${tipo}', ${idx})" 
                 class="material-symbols-outlined tw-text-xs tw-bg-transparent tw-border-none tw-p-0 tw-cursor-pointer">close</button>
         </span>
     `).join('');
