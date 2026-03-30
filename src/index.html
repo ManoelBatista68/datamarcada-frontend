@@ -1449,7 +1449,8 @@
     </div>
     <!-- Modal: Novo Especialista -->
     <div id="modal-novo-especialista"
-        class="tw-fixed tw-inset-0 tw-z-[999] tw-bg-slate-900/60 tw-backdrop-blur-sm tw-hidden tw-items-center tw-justify-center tw-p-4">
+        class="tw-fixed tw-inset-0 tw-bg-slate-900/60 tw-backdrop-blur-sm tw-items-center tw-justify-center tw-p-4"
+        style="display: none; z-index: 50100;">
         <div
             class="tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-max-w-2xl tw-w-full tw-overflow-hidden tw-animate-in tw-fade-in tw-zoom-in tw-duration-300">
             <div
@@ -1457,7 +1458,7 @@
                 <h3 class="tw-text-xl tw-font-bold tw-text-slate-800 tw-flex tw-items-center tw-gap-2">
                     <span class="material-symbols-outlined tw-text-primary">person_add</span> Novo Especialista
                 </h3>
-                <button onclick="document.getElementById('modal-novo-especialista').style.display='none'"
+                <button onclick="fecharModal('modal-novo-especialista')"
                     class="tw-p-2 tw-rounded-full hover:tw-bg-slate-200 tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
                     <span class="material-symbols-outlined">close</span>
                 </button>
@@ -1508,8 +1509,7 @@
                         <div id="novo-especialista-tags" class="tw-mt-3 tw-flex tw-flex-wrap tw-gap-2"></div>
                     </div>
                     <div class="tw-col-span-full tw-flex tw-justify-end tw-gap-3 tw-pt-6">
-                        <button type="button"
-                            onclick="document.getElementById('modal-novo-especialista').style.display='none'"
+                        <button type="button" onclick="fecharModal('modal-novo-especialista')"
                             class="tw-h-12 tw-px-8 tw-rounded-xl tw-font-bold tw-bg-slate-100 tw-text-slate-600 hover:tw-bg-slate-200 tw-transition-all tw-border-none tw-cursor-pointer">Cancelar</button>
                         <button type="submit"
                             class="tw-h-12 tw-px-10 tw-rounded-xl tw-font-bold tw-bg-[#34a853] tw-text-white tw-shadow-lg hover:tw-brightness-110 active:tw-scale-95 tw-transition-all tw-border-none tw-cursor-pointer">Salvar
@@ -1522,7 +1522,8 @@
 
     <!-- Modal: Editar Especialista -->
     <div id="modal-editar-especialista"
-        class="tw-fixed tw-inset-0 tw-z-[999] tw-bg-slate-900/60 tw-backdrop-blur-sm tw-hidden tw-items-center tw-justify-center tw-p-4">
+        class="tw-fixed tw-inset-0 tw-bg-slate-900/60 tw-backdrop-blur-sm tw-items-center tw-justify-center tw-p-4"
+        style="display: none; z-index: 50100;">
         <div
             class="tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-max-w-2xl tw-w-full tw-overflow-hidden tw-animate-in tw-fade-in tw-zoom-in tw-duration-300">
             <div
@@ -1530,7 +1531,7 @@
                 <h3 class="tw-text-xl tw-font-bold tw-text-slate-800 tw-flex tw-items-center tw-gap-2">
                     <span class="material-symbols-outlined tw-text-primary">person</span> Editar Especialista
                 </h3>
-                <button onclick="document.getElementById('modal-editar-especialista').style.display='none'"
+                <button onclick="fecharModal('modal-editar-especialista')"
                     class="tw-p-2 tw-rounded-full hover:tw-bg-slate-200 tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
                     <span class="material-symbols-outlined">close</span>
                 </button>
@@ -1582,8 +1583,7 @@
                         <div id="editar-especialista-tags" class="tw-mt-3 tw-flex tw-flex-wrap tw-gap-2"></div>
                     </div>
                     <div class="tw-col-span-full tw-flex tw-justify-end tw-gap-3 tw-pt-6">
-                        <button type="button"
-                            onclick="document.getElementById('modal-editar-especialista').style.display='none'"
+                        <button type="button" onclick="fecharModal('modal-editar-especialista')"
                             class="tw-h-12 tw-px-8 tw-rounded-xl tw-font-bold tw-bg-slate-100 tw-text-slate-600 hover:tw-bg-slate-200 tw-transition-all tw-border-none tw-cursor-pointer">Cancelar</button>
                         <button type="submit"
                             class="tw-h-12 tw-px-10 tw-rounded-xl tw-font-bold tw-bg-primary tw-text-white tw-shadow-lg hover:tw-brightness-110 active:tw-scale-95 tw-transition-all tw-border-none tw-cursor-pointer">Salvar

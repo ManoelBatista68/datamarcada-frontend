@@ -2699,7 +2699,7 @@ async function carregarEspecialistas() {
     if (!iframe) return;
 
     try {
-        const res = await ApiClient.post('/functions/v1/gerenciar-especialistas', {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
             acao: 'listar_especialistas',
             codigoempresa: userCodigoEmpresa
         });
@@ -2746,10 +2746,16 @@ async function carregarEspecialistas() {
                     </div>
                 </td>
                 <td class="tw-px-6 tw-py-4 tw-text-right">
-                    <button onclick="window.parent.prepararEdicaoEspecialista('${esp.id}')" 
-                        class="tw-text-primary hover:tw-underline tw-text-xs tw-font-bold tw-bg-transparent tw-border-none tw-cursor-pointer">Gerenciar</button>
-                    <button onclick="window.parent.prepararExclusaoEspecialista('${esp.id}', '${escapeHtml(esp.nome)}')" 
-                        class="tw-text-error hover:tw-underline tw-text-xs tw-font-bold tw-bg-transparent tw-border-none tw-cursor-pointer tw-ml-3">Excluir</button>
+                    <div class="tw-flex tw-justify-end tw-gap-2">
+                        <button onclick="window.parent.prepararEdicaoEspecialista('${esp.id}')" 
+                            class="tw-w-8 tw-h-8 tw-rounded-lg tw-bg-primary/10 tw-text-primary hover:tw-bg-primary hover:tw-text-white tw-transition-all tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center" title="Gerenciar Especialista">
+                            <span class="material-symbols-outlined tw-text-lg">settings</span>
+                        </button>
+                        <button onclick="window.parent.prepararExclusaoEspecialista('${esp.id}', '${escapeHtml(esp.nome)}')" 
+                            class="tw-w-8 tw-h-8 tw-rounded-lg tw-bg-error/10 tw-text-error hover:tw-bg-error hover:tw-text-white tw-transition-all tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center" title="Excluir Especialista">
+                            <span class="material-symbols-outlined tw-text-lg">delete</span>
+                        </button>
+                    </div>
                 </td>
             </tr>`;
         }).join('');
@@ -2795,7 +2801,7 @@ async function salvarNovoEspecialista() {
     if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
 
     try {
-        const res = await ApiClient.post('/functions/v1/gerenciar-especialistas', {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
             acao: 'salvar_especialista',
             codigoempresa: userCodigoEmpresa,
             nome,
@@ -2826,7 +2832,7 @@ async function prepararEdicaoEspecialista(id) {
     if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
 
     try {
-        const res = await ApiClient.post('/functions/v1/gerenciar-especialistas', {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
             acao: 'buscar_especialista',
             id: id,
             codigoempresa: userCodigoEmpresa
@@ -2874,7 +2880,7 @@ async function salvarEdicaoEspecialista() {
     if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
 
     try {
-        const res = await ApiClient.post('/functions/v1/gerenciar-especialistas', {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
             acao: 'salvar_especialista',
             id,
             codigoempresa: userCodigoEmpresa,
@@ -2906,7 +2912,7 @@ async function prepararExclusaoEspecialista(id, nome) {
     mostrarConfirmacao("Excluir Especialista", `Deseja remover "${nome}"? O registro será mantido historicamente mas não aparecerá em novos agendamentos.`, async function () {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
         try {
-            const res = await ApiClient.post('/functions/v1/gerenciar-especialistas', {
+            const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
                 acao: 'excluir_especialista',
                 id: id,
                 codigoempresa: userCodigoEmpresa

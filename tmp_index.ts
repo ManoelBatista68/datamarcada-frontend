@@ -159,33 +159,37 @@ serve(async (req) => {
           return responderJSON({ sucesso: true, mensagem: "Webhook Supabase/Deno online e operante!" });
 
         // ROTA 1 - BUSCAR ESPECIALISTA
-        case 'buscarEspecialista': {
-          const codEspecialista = String(payload.codEspecialista || "").trim();
-          const codigoempresa = String(payload.codigoempresa || "").trim();
+        case 'buscar_especialista': {
+          const id = payload.id;
+          const cod = payload.codigo_especialista || payload.codEspecialista;
+          const emp = String(payload.codigoempresa || "").trim();
 
-          if (!codEspecialista || !codigoempresa) {
-            return responderJSON({ sucesso: false, erro: "Parâmetros obrigatórios ausentes." }, 200);
-          }
-          const queryEsp = `SELECT * FROM especialistas WHERE codigo_especialista = $1 AND codigoempresa = $2 AND ativo = true LIMIT 1`;
-          const resEsp = await connection.queryObject({ text: queryEsp, args: [codEspecialista, codigoempresa] });
-          if (resEsp.rowCount > 0) {
-            return responderJSON({ sucesso: true, especialista: resEsp.rows[0] });
-          }
-          return responderJSON({ sucesso: false, erro: "Especialista inativo ou não encontrado." }, 200);
+          if (!emp) return responderJSON({ sucesso: false, erro: "codigoempresa obrigatório." }, 200);
+
+          let query = supabase.from('especialistas').select('*').eq('codigoempresa', emp).eq('ativo', true);
+          if (id) query = query.eq('id', id);
+          else if (cod) query = query.eq('codigo_especialista', cod);
+          else return responderJSON({ sucesso: false, erro: "ID ou Código obrigatórios." }, 200);
+
+          const { data, error } = await query.single();
+          if (error || !data) return responderJSON({ sucesso: false, erro: "Especialista não encontrado." }, 200);
+          return responderJSON({ sucesso: true, especialista: data });
         }
 
-        // ROTA 2 - LISTAR ESPECIALISTAS ATIVOS (NOVA ROTA)
+        // ROTA 2 - LISTAR ESPECIALISTAS ATIVOS
         case 'listar_especialistas': {
-          const codigoempresa = String(payload.codigoempresa || "").trim();
-          if (!codigoempresa) {
-            return responderJSON({ sucesso: false, erro: "codigoempresa ausente." }, 200);
-          }
-          const queryEspList = `SELECT * FROM especialistas WHERE codigoempresa = $1 AND ativo = true`;
-          const resEspList = await connection.queryObject({ text: queryEspList, args: [codigoempresa] });
-          return responderJSON({
-            sucesso: true,
-            especialistas: resEspList.rows
-          });
+          const emp = String(payload.codigoempresa || "").trim();
+          if (!emp) return responderJSON({ sucesso: false, erro: "codigoempresa ausente." }, 200);
+
+          const { data, error } = await supabase
+            .from('especialistas')
+            .select('*')
+            .eq('codigoempresa', emp)
+            .eq('ativo', true)
+            .order('nome', { ascending: true });
+
+          if (error) return responderJSON({ sucesso: false, erro: error.message }, 200);
+          return responderJSON({ sucesso: true, especialistas: data || [] });
         }
 
         // ROTA 3 - LISTAR DATAS DISPONÍVEIS
@@ -1726,31 +1730,65 @@ serve(async (req) => {
           return responderJSON({ sucesso: true, dados: data });
         }
 
-        
-        // ROTA 31 - SALVAR ESPECIALISTA (CRIAR/ATUALIZAR)
+
+        // ROTA 31 - SALVAR ESPECIALISTA (CRIAR/ATUALIZAR + LÓGICA EPXX)
         case 'salvar_especialista': {
           try {
-            const { id, nome, email, celular, sub_especialidades, codigo_especialista, codigoempresa } = payload;
+            const { id, nome, email, celular, sub_especialidades, codigoempresa } = payload;
             if (!nome || !codigoempresa) throw new Error("Nome e codigoempresa são obrigatórios.");
 
-            const dadosEspecialista: any = {
+            const dadosBasicos: any = {
               nome,
               email: email || null,
               celular: celular || null,
               sub_especialidades: Array.isArray(sub_especialidades) ? sub_especialidades : [],
-              codigo_especialista: codigo_especialista || `ESP_${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-              codigoempresa,
-              ativo: true
+              updated_at: new Date().toISOString()
             };
 
             if (id) {
-              const { error: updErr } = await supabase.from('especialistas').update(dadosEspecialista).eq('id', id).eq('codigoempresa', codigoempresa);
+              // Edição
+              const { error: updErr } = await supabase
+                .from('especialistas')
+                .update(dadosBasicos)
+                .eq('id', id)
+                .eq('codigoempresa', codigoempresa);
+
               if (updErr) throw updErr;
               return responderJSON({ sucesso: true, mensagem: "Especialista atualizado com sucesso." });
             } else {
-              const { data, error: insErr } = await supabase.from('especialistas').insert([dadosEspecialista]).select().single();
+              // Criação - Lógica EPXX
+              const { data: ultimos } = await supabase
+                .from('especialistas')
+                .select('codigo_especialista')
+                .eq('codigoempresa', codigoempresa)
+                .like('codigo_especialista', 'EP%')
+                .order('codigo_especialista', { ascending: false })
+                .limit(1);
+
+              let nextNum = 1;
+              if (ultimos && ultimos.length > 0) {
+                const lastCode = ultimos[0].codigo_especialista;
+                const match = lastCode.match(/\d+/);
+                if (match) nextNum = parseInt(match[0]) + 1;
+              }
+              const novoCodigo = `EP${String(nextNum).padStart(2, '0')}`;
+
+              const novoEspecialista = {
+                ...dadosBasicos,
+                codigo_especialista: novoCodigo,
+                codigoempresa,
+                ativo: true,
+                created_at: new Date().toISOString()
+              };
+
+              const { data: resIns, error: insErr } = await supabase
+                .from('especialistas')
+                .insert([novoEspecialista])
+                .select()
+                .single();
+
               if (insErr) throw insErr;
-              return responderJSON({ sucesso: true, mensagem: "Especialista criado com sucesso.", dados: data });
+              return responderJSON({ sucesso: true, mensagem: "Especialista criado com sucesso.", dados: resIns });
             }
           } catch (e: any) {
             console.error("🔥 [ERRO SALVAR ESPECIALISTA]:", e.message);
@@ -1766,7 +1804,7 @@ serve(async (req) => {
 
             const { error: softDelErr } = await supabase
               .from('especialistas')
-              .update({ ativo: false })
+              .update({ ativo: false, updated_at: new Date().toISOString() })
               .eq('id', id)
               .eq('codigoempresa', codigoempresa);
 
@@ -1777,7 +1815,7 @@ serve(async (req) => {
             return responderJSON({ sucesso: false, erro: e.message }, 200);
           }
         }
-default:
+        default:
           return responderJSON({ sucesso: false, erro: "Ação não reconhecida: " + acao }, 200);
       }
     } finally {
