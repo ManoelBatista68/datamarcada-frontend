@@ -149,6 +149,9 @@ async function iniciarApp() {
 }
 
 async function fazerLogin() {
+    // Reset do flag de sessão expirada para garantir login limpo
+    if (typeof ApiClient !== 'undefined') ApiClient.isExpiredAlerted = false;
+
     const email = document.getElementById('login-email').value;
     const senha = document.getElementById('login-senha').value;
 
@@ -235,6 +238,9 @@ function fazerLogout() {
 
     if (document.getElementById('login-senha')) document.getElementById('login-senha').value = '';
     if (document.getElementById('btn-entrar')) document.getElementById('btn-entrar').disabled = false;
+
+    // Reload completo: mata a instância do ApiClient em memória e o flag isExpiredAlerted
+    window.location.reload();
 }
 
 function salvarJanelaUI(val) {
