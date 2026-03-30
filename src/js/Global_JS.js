@@ -2620,7 +2620,7 @@ async function salvarEdicaoProduto() {
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
             acao: 'atualizar_produto',
-            codigoProduto: id,
+            id: id,
             ...dados
         });
 

@@ -80,3 +80,6 @@ Todo botão de ação primária (Salvar, Criar, Atualizar, Excluir) em modais de
 
 ## 14. Padrão de Estado Oculto em Modais (Hidden IDs)
 Sempre que um modal for utilizado para Edição ou Exclusão de registros do banco de dados, o HTML DO MODAL DEVE OBRIGATORIAMENTE conter tags `<input type="hidden" id="[entidade]-[acao]-id" />` para armazenar a chave primária (UUID/ID) de forma segura. A função JavaScript responsável pelo salvamento DEVE sempre validar a existência desse campo antes de extrair o seu `.value`, prevenindo crashes de "null reference".
+
+## 15. Padrão de Contrato de Payload (Sincronia Front/Back)
+É ESTRITAMENTE PROIBIDO deduzir ou alterar chaves de objetos JSON enviados do Frontend para o Backend. Antes de estruturar qualquer chamada de API (ex: `ApiClient.post`), o Agent DEVE OBRIGATORIAMENTE abrir o arquivo de backend respectivo (ex: `index.ts`) e espelhar EXATAMENTE o nome das propriedades esperadas pelo payload. Divergências de nomenclatura que geram falhas de validação (ex: enviar `codigoProduto` quando se espera `id`) são inaceitáveis.
