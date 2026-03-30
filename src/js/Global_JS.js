@@ -149,9 +149,6 @@ async function iniciarApp() {
 }
 
 async function fazerLogin() {
-    // Reset do flag de sessão expirada para garantir login limpo
-    if (typeof ApiClient !== 'undefined') ApiClient.isExpiredAlerted = false;
-
     const email = document.getElementById('login-email').value;
     const senha = document.getElementById('login-senha').value;
 
@@ -169,31 +166,38 @@ async function fazerLogin() {
             password: senha
         }, { skipAuth: true });
 
-        const token = res.access_token;
-        const user = res.user;
+        // 🛡️ BLINDAGEM: Caçando o token onde quer que ele esteja no JSON
+        const token = res.access_token || res.data?.access_token || res.session?.access_token || res.data?.session?.access_token;
+        const user = res.user || res.data?.user || res.session?.user || res.data?.session?.user;
+
+        // 🛑 TRAVA DE LIXO: Se o token for falso ou "undefined", aborta!
+        if (!token || token === "undefined" || token === "null") {
+            throw new Error("Token corrompido ou não encontrado na resposta da API.");
+        }
+
         const metadata = user.user_metadata || {};
         const codigoempresa = metadata.codigoempresa || metadata.codigoEmpresa || "";
         const tipoUsuario = metadata.tipoUsuario || "Especialista";
 
-        // Camada C: Verificação de Escrita e Persistência
+        // Salva os dados corretos no disco
         localStorage.setItem('appAgendaUserEmail', user.email);
         localStorage.setItem('appAgendaUserTipo', tipoUsuario);
         localStorage.setItem('appAgendaUserCodigoEmpresa', codigoempresa);
         localStorage.setItem('saas_token_jwt', token);
 
-        // Polling de confirmação de Storage (Garante sincronia absoluta)
+        // Aguarda a gravação no disco
         await new Promise((resolve) => {
             const check = () => localStorage.getItem('saas_token_jwt') ? resolve() : setTimeout(check, 10);
             check();
         });
 
-        console.log("✅ Token verificado. Forçando refresh para injetar nova sessão...");
-        // A MÁGICA ACONTECE AQUI: Forçamos o recarregamento da página para limpar a RAM do ApiClient
+        console.log("✅ Token perfeito salvo. Recarregando a página...");
+        // Recarrega a página para iniciar o sistema limpo
         window.location.reload();
 
     } catch (err) {
-        console.error(err);
-        alert("Falha de Autenticação: Email ou senha incorretos.");
+        console.error("Erro no login:", err);
+        alert("Falha de Autenticação. Verifique seu email e senha.");
         if (btnEntrar) {
             btnEntrar.disabled = false;
             btnEntrar.textContent = "ENTRAR";
