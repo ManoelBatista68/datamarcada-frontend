@@ -159,38 +159,42 @@ serve(async (req) => {
           return responderJSON({ sucesso: true, mensagem: "Webhook Supabase/Deno online e operante!" });
 
         // ROTA 1 - BUSCAR ESPECIALISTA
+
+        // ROTA 1 - BUSCAR ESPECIALISTA (raw SQL - bypass RLS)
         case 'buscar_especialista': {
-          const id = payload.id;
-          const cod = payload.codigo_especialista || payload.codEspecialista;
-          const emp = String(payload.codigoempresa || "").trim();
+    const id = payload.id;
+    const cod = payload.codigo_especialista || payload.codEspecialista;
+    const emp = String(payload.codigoempresa || "").trim();
 
-          if (!emp) return responderJSON({ sucesso: false, erro: "codigoempresa obrigatório." }, 200);
+    if (!emp) return responderJSON({ sucesso: false, erro: "codigoempresa obrigatorio." }, 200);
+    if (!id && !cod) return responderJSON({ sucesso: false, erro: "ID ou Codigo obrigatorios." }, 200);
 
-          let query = supabase.from('especialistas').select('*').eq('codigoempresa', emp).eq('ativo', true);
-          if (id) query = query.eq('id', id);
-          else if (cod) query = query.eq('codigo_especialista', cod);
-          else return responderJSON({ sucesso: false, erro: "ID ou Código obrigatórios." }, 200);
+    const filter = id ? "AND id = $2" : "AND codigo_especialista = $2";
+    const filterVal = id || cod;
 
-          const { data, error } = await query.single();
-          if (error || !data) return responderJSON({ sucesso: false, erro: "Especialista não encontrado." }, 200);
-          return responderJSON({ sucesso: true, especialista: data });
-        }
+    const res = await connection.queryObject<any>({
+        text: `SELECT * FROM especialistas WHERE codigoempresa = $1 AND ativo = true ${filter} LIMIT 1`,
+        args: [emp, filterVal]
+    });
 
-        // ROTA 2 - LISTAR ESPECIALISTAS ATIVOS
+    if (!res.rows || res.rows.length === 0)
+        return responderJSON({ sucesso: false, erro: "Especialista nao encontrado." }, 200);
+    return responderJSON({ sucesso: true, especialista: res.rows[0] });
+}
+
+        // ROTA 2 - LISTAR ESPECIALISTAS ATIVOS (raw SQL - bypass RLS)
         case 'listar_especialistas': {
-          const emp = String(payload.codigoempresa || "").trim();
-          if (!emp) return responderJSON({ sucesso: false, erro: "codigoempresa ausente." }, 200);
+    const emp = String(payload.codigoempresa || "").trim();
+    if (!emp) return responderJSON({ sucesso: false, erro: "codigoempresa ausente." }, 200);
 
-          const { data, error } = await supabase
-            .from('especialistas')
-            .select('*')
-            .eq('codigoempresa', emp)
-            .eq('ativo', true)
-            .order('nome', { ascending: true });
+    const res = await connection.queryObject<any>({
+        text: `SELECT * FROM especialistas WHERE codigoempresa = $1 AND ativo = true ORDER BY nome ASC`,
+        args: [emp]
+    });
 
-          if (error) return responderJSON({ sucesso: false, erro: error.message }, 200);
-          return responderJSON({ sucesso: true, especialistas: data || [] });
-        }
+    return responderJSON({ sucesso: true, especialistas: res.rows });
+}
+
 
         // ROTA 3 - LISTAR DATAS DISPONÍVEIS
         case 'listar_datas_disponiveis': {
