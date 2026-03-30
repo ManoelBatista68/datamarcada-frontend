@@ -2785,8 +2785,8 @@ async function abrirModalNovoEspecialista() {
     if (tagContainer) tagContainer.innerHTML = '';
     window._tagsEspecialistaPendente = [];
 
-    // Popula selects com sub-especialidades do banco (Regra 19)
-    await carregarOpcoesTagsSubEspecialidades();
+    // Carrega lista para o typeahead (Regra 19)
+    await carregarSubEspecialidadesParaTags();
 
     modal.style.display = 'flex';
 }
@@ -2862,8 +2862,8 @@ async function prepararEdicaoEspecialista(id) {
             : (esp.sub_especialidades ? esp.sub_especialidades.split(',').map(s => s.trim()).filter(Boolean) : []);
         renderizarTagsEspecialista('editar');
 
-        // Popula selects com sub-especialidades do banco (Regra 19)
-        await carregarOpcoesTagsSubEspecialidades();
+        // Carrega lista para o typeahead (Regra 19)
+        await carregarSubEspecialidadesParaTags();
 
         modal.style.display = 'flex';
     } catch (e) {
@@ -2939,43 +2939,108 @@ async function prepararExclusaoEspecialista(id, nome) {
 }
 
 /**
- * Carrega as sub-especialidades da API e popula os selects dos modais (Regra 19).
+ * Carrega e cacheia sub-especialidades do backend para o typeahead (Regra 19).
  */
-async function carregarOpcoesTagsSubEspecialidades() {
+async function carregarSubEspecialidadesParaTags() {
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
             acao: 'listar_sub_especialidades',
             codigoempresa: userCodigoEmpresa
         });
-
-        const topDoc = window.top.document;
-        const selectNovo = topDoc.getElementById('novo-especialista-input-tag');
-        const selectEditar = topDoc.getElementById('editar-especialista-input-tag');
-
-        if (!res.sucesso || !res.dados) {
-            [selectNovo, selectEditar].forEach(sel => {
-                if (sel) sel.innerHTML = '<option value="">Nenhuma sub-especialidade cadastrada</option>';
-            });
-            return;
-        }
-
-        const optionsHTML = '<option value="">Selecione uma sub-especialidade...</option>' +
-            res.dados.map(s => `<option value="${escapeHtml(s.nome)}">${escapeHtml(s.nome)}</option>`).join('');
-
-        [selectNovo, selectEditar].forEach(sel => {
-            if (sel) sel.innerHTML = optionsHTML;
-        });
+        window._listaGlobalSubEspecialidades = (res.sucesso && res.dados) ? res.dados : [];
     } catch (e) {
-        if (e.message !== 'SESSION_EXPIRED') console.error('❌ [TAGS SUB-ESP]:', e);
+        if (e.message !== 'SESSION_EXPIRED') console.error('❌ [TAGS SUB-ESP CACHE]:', e);
+        window._listaGlobalSubEspecialidades = [];
     }
 }
 
 /**
- * Gerencia a adição/remoção de tags de especialidades nos modais.
+ * Typeahead: filtra e exibe sugestões conforme o usuário digita.
+ */
+function filtrarSugestoesTag(tipo) {
+    const inputId = tipo === 'novo' ? 'novo-especialista-input-tag' : 'editar-especialista-input-tag';
+    const dropdownId = tipo === 'novo' ? 'novo-especialista-sugestoes-tags' : 'editar-especialista-sugestoes-tags';
+    const topDoc = window.top.document;
+    const input = topDoc.getElementById(inputId);
+    const dropdown = topDoc.getElementById(dropdownId);
+    if (!input || !dropdown) return;
+
+    const query = input.value.trim().toLowerCase();
+
+    if (!query) {
+        dropdown.style.display = 'none';
+        dropdown.innerHTML = '';
+        return;
+    }
+
+    const lista = window._listaGlobalSubEspecialidades || [];
+    const filtradas = lista.filter(s => s.nome && s.nome.toLowerCase().includes(query));
+
+    if (filtradas.length === 0) {
+        dropdown.innerHTML = '<div class="tw-px-4 tw-py-2 tw-text-sm tw-text-slate-400">Nenhum resultado encontrado</div>';
+    } else {
+        dropdown.innerHTML = filtradas.map(s => `
+            <div class="tw-px-4 tw-py-2 tw-text-sm tw-text-slate-700 tw-cursor-pointer hover:tw-bg-[#eff6ff] hover:tw-text-primary tw-transition-colors tw-border-b tw-border-[#f5f5f5] last:tw-border-0"
+                onmousedown="selecionarSugestaoTag('${tipo}', '${escapeHtml(s.nome).replace(/'/g, "\\'")}')">
+                ${escapeHtml(s.nome)}
+            </div>
+        `).join('');
+    }
+
+    dropdown.style.display = 'block';
+}
+
+/**
+ * Chamado ao clicar em uma sugestão — adiciona a tag direto sem precisar do botão +.
+ */
+function selecionarSugestaoTag(tipo, nome) {
+    if (!nome) return;
+
+    if (tipo === 'novo') {
+        if (!window._tagsEspecialistaPendente) window._tagsEspecialistaPendente = [];
+        if (!window._tagsEspecialistaPendente.includes(nome)) window._tagsEspecialistaPendente.push(nome);
+    } else {
+        if (!window._tagsEspecialistaEdicao) window._tagsEspecialistaEdicao = [];
+        if (!window._tagsEspecialistaEdicao.includes(nome)) window._tagsEspecialistaEdicao.push(nome);
+    }
+
+    const topDoc = window.top.document;
+    const inputId = tipo === 'novo' ? 'novo-especialista-input-tag' : 'editar-especialista-input-tag';
+    const dropdownId = tipo === 'novo' ? 'novo-especialista-sugestoes-tags' : 'editar-especialista-sugestoes-tags';
+    const input = topDoc.getElementById(inputId);
+    const dropdown = topDoc.getElementById(dropdownId);
+    if (input) input.value = '';
+    if (dropdown) { dropdown.style.display = 'none'; dropdown.innerHTML = ''; }
+
+    renderizarTagsEspecialista(tipo);
+}
+
+// Fecha dropdowns ao clicar fora (registrado no top-document uma vez)
+if (!window._especialistaClickOutsideRegistered) {
+    window._especialistaClickOutsideRegistered = true;
+    (window.top.document || document).addEventListener('click', (e) => {
+        const topDoc = window.top.document;
+        ['novo', 'editar'].forEach(tipo => {
+            const inputId = tipo === 'novo' ? 'novo-especialista-input-tag' : 'editar-especialista-input-tag';
+            const dropdownId = tipo === 'novo' ? 'novo-especialista-sugestoes-tags' : 'editar-especialista-sugestoes-tags';
+            const input = topDoc.getElementById(inputId);
+            const dropdown = topDoc.getElementById(dropdownId);
+            if (!dropdown) return;
+            if (input && (input.contains(e.target) || dropdown.contains(e.target))) return;
+            dropdown.style.display = 'none';
+        });
+    });
+}
+
+/**
+ * Gerencia a adição manual de tags via botão "+" (texto digitado no input).
  */
 function addTagEspecialista(tipo) {
     const inputId = tipo === 'novo' ? 'novo-especialista-input-tag' : 'editar-especialista-input-tag';
-    const el = window.top.document.getElementById(inputId);
+    const dropdownId = tipo === 'novo' ? 'novo-especialista-sugestoes-tags' : 'editar-especialista-sugestoes-tags';
+    const topDoc = window.top.document;
+    const el = topDoc.getElementById(inputId);
+    const dropdown = topDoc.getElementById(dropdownId);
     const val = el ? el.value.trim() : '';
     if (!val) return;
 
@@ -2987,8 +3052,8 @@ function addTagEspecialista(tipo) {
         if (!window._tagsEspecialistaEdicao.includes(val)) window._tagsEspecialistaEdicao.push(val);
     }
 
-    // Reset select to placeholder
     if (el) el.value = '';
+    if (dropdown) { dropdown.style.display = 'none'; dropdown.innerHTML = ''; }
     renderizarTagsEspecialista(tipo);
 }
 
