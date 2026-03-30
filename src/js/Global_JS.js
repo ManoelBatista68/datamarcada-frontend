@@ -184,12 +184,8 @@ async function fazerLogin() {
             check();
         });
 
-        userEmail = user.email;
-        tipoUsuarioAtual = tipoUsuario;
-        userCodigoEmpresa = codigoempresa;
-
-        console.log("✅ Token verificado. Iniciando transição segura...");
-        await iniciarApp();
+        // Força reload total para limpar o ApiClient em memória e carregar o novo token (fix: Ghost Token Loop 401)
+        window.location.reload();
 
     } catch (err) {
         console.error(err);
