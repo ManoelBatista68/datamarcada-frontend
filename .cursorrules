@@ -71,3 +71,9 @@ O código gerado e o plano proposto devem refletir 100% a realidade do dicionár
 
 ## 12. Padrão de Sessão Expirada (Token Vencido)
 Sempre que uma requisição ao backend (Edge Functions/Supabase) retornar erro de autenticação, token inválido ou expirado, o frontend deve interceptar esse erro globalmente, forçar o logout (limpando cache e state) e exibir a tela de login (`index.html`) ao usuário, evitando preenchimentos silenciosos de tela e falhas fantasma.
+
+## 13. Padrão de Botões de Ação em Modais
+Todo botão de ação primária (Salvar, Criar, Atualizar, Excluir) em modais deve obrigatoriamente:
+1. Ter o evento de clique explicitamente declarado (ex: `onclick="nomeDaFuncao()"`) ou atrelado rigidamente no JS.
+2. Conter o atributo `type="button"` caso esteja dentro de uma tag `<form>` ou em adjacências, para evitar submissões de página (loop fantasma de reload).
+3. Estar livre de classes CSS obstrutivas (como `pointer-events-none`) ou atributos `disabled` soltos sem controle de estado dinâmico claro.
