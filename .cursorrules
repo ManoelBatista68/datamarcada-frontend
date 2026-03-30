@@ -85,6 +85,6 @@ Sempre que um modal for utilizado para Edição ou Exclusão de registros do ban
 É ESTRITAMENTE PROIBIDO deduzir ou alterar chaves de objetos JSON enviados do Frontend para o Backend. Antes de estruturar qualquer chamada de API (ex: `ApiClient.post`), o Agent DEVE OBRIGATORIAMENTE abrir o arquivo de backend respectivo (ex: `index.ts`) e espelhar EXATAMENTE o nome das propriedades esperadas pelo payload. Divergências de nomenclatura que geram falhas de validação (ex: enviar `codigoProduto` quando se espera `id`) são inaceitáveis.
 
 ## 16. Tratamento de Sessão Expirada e UI de Hierarquia
-1. Ocultação Padrão: Todo elemento de Accordion/Sanfona (Grids filhas) DEVE carregar com a classe `tw-hidden` por padrão e com o ícone `visibility_off`.
-2. Injeção Top-Level: Modais Globais (como Sessão Expirada) injetados via JS DEVEM ser atrelados ao `window.top.document.body` para garantir a cobertura total da tela e herdar as classes Tailwind do contexto principal, fugindo do escopo de iframes.
-3. Silenciamento de Catch: É TERMINANTEMENTE PROIBIDO exibir `alert()` ou modais de erro genéricos em blocos `catch` se a mensagem de erro for `SESSION_EXPIRED`. O código deve apenas dar `return`, deixando a UI sob responsabilidade exclusiva do Interceptador Global.
+1. Ocultação Padrão: Todo elemento de Accordion/Sanfona (Grids filhas) DEVE carregar com a classe 'tw-hidden' por padrão e com o ícone 'visibility_off'.
+2. Injeção Top-Level: Modais Globais (como Sessão Expirada) injetados via JS DEVEM ser atrelados ao 'window.top.document.body' para garantir a cobertura total da tela e herdar as classes Tailwind do contexto principal, fugindo do escopo de iframes.
+3. Silenciamento de Catch: É TERMINANTEMENTE PROIBIDO exibir 'alert()' ou modais de erro genéricos em blocos 'catch' se a mensagem de erro for 'SESSION_EXPIRED'. O código deve apenas dar 'return', deixando a UI sob responsabilidade exclusiva do Interceptador Global.

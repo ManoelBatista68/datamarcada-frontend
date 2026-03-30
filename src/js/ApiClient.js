@@ -7,8 +7,7 @@ class ApiClient {
     static isExpiredAlerted = false;
 
     static handleSessionExpired() {
-        const topDoc = (typeof window !== 'undefined' && window.top) ? window.top.document : (typeof document !== 'undefined' ? document : null);
-        if (this.isExpiredAlerted || (topDoc && topDoc.getElementById('modal-sessao-expirada'))) return; // Evita spam e stacking
+        if (this.isExpiredAlerted || (typeof document !== 'undefined' && document.getElementById('modal-sessao-expirada'))) return; // Evita spam e stacking
         this.isExpiredAlerted = true;
 
         console.error("⛔ [SESSÃO] Expiração ou Token Inválido detectado. Limpando sessão...");
@@ -19,9 +18,9 @@ class ApiClient {
             delete window._currentNovoProdutoSubId;
         }
 
-        if (topDoc) {
+        if (typeof document !== 'undefined') {
             // Injeção Dinâmica do Modal SaaS Premium (Anti-Alert)
-            const m = topDoc.createElement('div');
+            const m = (window.top ? window.top.document : document).createElement('div');
             m.id = 'modal-sessao-expirada';
             m.className = 'tw-fixed tw-inset-0 tw-z-[9999] tw-bg-slate-900/60 tw-backdrop-blur-sm tw-flex tw-items-center tw-justify-center tw-p-4';
             m.innerHTML = `
@@ -36,13 +35,18 @@ class ApiClient {
                     </button>
                 </div>
             `;
-            topDoc.body.appendChild(m);
+
+            const targetBody = (window.top ? window.top.document.body : document.body);
+            targetBody.appendChild(m);
 
             // Vinculando Ejeção Radical de Iframe ao Clique do Usuário
-            topDoc.getElementById('btn-reconnect-session').onclick = () => {
-                if (window.top) window.top.location.href = 'index.html';
-                else window.location.href = 'index.html';
-            };
+            const btn = (window.top ? window.top.document : document).getElementById('btn-reconnect-session');
+            if (btn) {
+                btn.onclick = () => {
+                    if (window.top) window.top.location.href = 'index.html';
+                    else window.location.href = 'index.html';
+                };
+            }
         }
     }
 
