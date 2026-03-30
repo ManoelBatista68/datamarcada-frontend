@@ -2785,6 +2785,9 @@ async function abrirModalNovoEspecialista() {
     if (tagContainer) tagContainer.innerHTML = '';
     window._tagsEspecialistaPendente = [];
 
+    // Popula selects com sub-especialidades do banco (Regra 19)
+    await carregarOpcoesTagsSubEspecialidades();
+
     modal.style.display = 'flex';
 }
 
@@ -2854,8 +2857,13 @@ async function prepararEdicaoEspecialista(id) {
         window.top.document.getElementById('editar-especialista-codigo').value = esp.codigo_especialista || '';
 
         // Renderiza tags
-        window._tagsEspecialistaEdicao = esp.sub_especialidades ? esp.sub_especialidades.split(',').map(s => s.trim()).filter(Boolean) : [];
+        window._tagsEspecialistaEdicao = Array.isArray(esp.sub_especialidades)
+            ? esp.sub_especialidades
+            : (esp.sub_especialidades ? esp.sub_especialidades.split(',').map(s => s.trim()).filter(Boolean) : []);
         renderizarTagsEspecialista('editar');
+
+        // Popula selects com sub-especialidades do banco (Regra 19)
+        await carregarOpcoesTagsSubEspecialidades();
 
         modal.style.display = 'flex';
     } catch (e) {
@@ -2931,11 +2939,44 @@ async function prepararExclusaoEspecialista(id, nome) {
 }
 
 /**
+ * Carrega as sub-especialidades da API e popula os selects dos modais (Regra 19).
+ */
+async function carregarOpcoesTagsSubEspecialidades() {
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'listar_sub_especialidades',
+            codigoempresa: userCodigoEmpresa
+        });
+
+        const topDoc = window.top.document;
+        const selectNovo = topDoc.getElementById('novo-especialista-input-tag');
+        const selectEditar = topDoc.getElementById('editar-especialista-input-tag');
+
+        if (!res.sucesso || !res.dados) {
+            [selectNovo, selectEditar].forEach(sel => {
+                if (sel) sel.innerHTML = '<option value="">Nenhuma sub-especialidade cadastrada</option>';
+            });
+            return;
+        }
+
+        const optionsHTML = '<option value="">Selecione uma sub-especialidade...</option>' +
+            res.dados.map(s => `<option value="${escapeHtml(s.nome)}">${escapeHtml(s.nome)}</option>`).join('');
+
+        [selectNovo, selectEditar].forEach(sel => {
+            if (sel) sel.innerHTML = optionsHTML;
+        });
+    } catch (e) {
+        if (e.message !== 'SESSION_EXPIRED') console.error('❌ [TAGS SUB-ESP]:', e);
+    }
+}
+
+/**
  * Gerencia a adição/remoção de tags de especialidades nos modais.
  */
 function addTagEspecialista(tipo) {
     const inputId = tipo === 'novo' ? 'novo-especialista-input-tag' : 'editar-especialista-input-tag';
-    const val = window.top.document.getElementById(inputId).value.trim();
+    const el = window.top.document.getElementById(inputId);
+    const val = el ? el.value.trim() : '';
     if (!val) return;
 
     if (tipo === 'novo') {
@@ -2946,7 +2987,8 @@ function addTagEspecialista(tipo) {
         if (!window._tagsEspecialistaEdicao.includes(val)) window._tagsEspecialistaEdicao.push(val);
     }
 
-    window.top.document.getElementById(inputId).value = '';
+    // Reset select to placeholder
+    if (el) el.value = '';
     renderizarTagsEspecialista(tipo);
 }
 
