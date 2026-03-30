@@ -184,13 +184,13 @@ async function fazerLogin() {
             check();
         });
 
-        // Força reload total para limpar o ApiClient em memória e carregar o novo token (fix: Ghost Token Loop 401)
+        console.log("✅ Token verificado. Forçando refresh para injetar nova sessão...");
+        // A MÁGICA ACONTECE AQUI: Forçamos o recarregamento da página para limpar a RAM do ApiClient
         window.location.reload();
 
     } catch (err) {
         console.error(err);
         alert("Falha de Autenticação: Email ou senha incorretos.");
-    } finally {
         if (btnEntrar) {
             btnEntrar.disabled = false;
             btnEntrar.textContent = "ENTRAR";
