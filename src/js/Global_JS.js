@@ -2488,11 +2488,14 @@ async function prepararEdicaoProduto(id) {
                 if (el) el.value = fields[idField] || "";
             }
 
-            // Define o nome da sub-especialidade no campo Read-Only
-            const inputSubNome = document.getElementById('editar-produto-sub-nome');
-            if (inputSubNome) {
-                // Tenta mapear o nome da sub-especialidade em diferentes chaves (conforme análise Sync)
-                inputSubNome.value = p.nome_sub_especialidade || p.subespecialidade_nome || p.sub_especialidade || "N/A";
+            // Substituição Visual: Injeção de Tags de Contexto dinâmicas 
+            const labelContexto = document.getElementById('editar-produto-contexto-especialidade');
+            if (labelContexto) labelContexto.innerHTML = "<span class='tw-px-3 tw-py-1 tw-bg-blue-50 tw-text-primary tw-rounded-full tw-text-xs tw-font-bold'>Especialidade: " + (escapeHtml(p.especialidade) || "N/D") + "</span>";
+
+            const labelContextoSub = document.getElementById('editar-produto-contexto-sub-especialidade');
+            if (labelContextoSub) {
+                const snome = p.nome_sub_especialidade || p.subespecialidade_nome || p.sub_especialidade || "N/A";
+                labelContextoSub.innerHTML = "<span class='tw-px-3 tw-py-1 tw-bg-purple-50 tw-text-purple-700 tw-rounded-full tw-text-xs tw-font-bold'>Sub Especialidade: " + escapeHtml(snome) + "</span>";
             }
 
             // [SINCRONIA] Garante que o ID da sub-especialidade seja mapeado corretamente para o POST invisível

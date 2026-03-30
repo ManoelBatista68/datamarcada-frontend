@@ -7,7 +7,7 @@ class ApiClient {
     static isExpiredAlerted = false;
 
     static handleSessionExpired() {
-        if (this.isExpiredAlerted) return; // Evita spam de alertas em requisições paralelas
+        if (this.isExpiredAlerted || (typeof document !== 'undefined' && document.getElementById('modal-sessao-expirada'))) return; // Evita spam e stacking
         this.isExpiredAlerted = true;
 
         console.error("⛔ [SESSÃO] Expiração ou Token Inválido detectado. Limpando sessão...");
@@ -18,13 +18,30 @@ class ApiClient {
             delete window._currentNovoProdutoSubId;
         }
 
-        alert("Sua sessão expirou por inatividade ou segurança. Por favor, faça login novamente.");
+        if (typeof document !== 'undefined') {
+            // Injeção Dinâmica do Modal SaaS Premium (Anti-Alert)
+            const m = document.createElement('div');
+            m.id = 'modal-sessao-expirada';
+            m.className = 'tw-fixed tw-inset-0 tw-z-[9999] tw-bg-slate-900/60 tw-backdrop-blur-sm tw-flex tw-items-center tw-justify-center tw-p-4';
+            m.innerHTML = `
+                <div class="tw-bg-white tw-rounded-2xl tw-shadow-2xl tw-p-8 tw-max-w-sm tw-w-full tw-mx-4 tw-text-center tw-transform tw-transition-all tw-scale-100">
+                    <span class="material-icons tw-text-5xl tw-bg-amber-100 tw-text-amber-600 tw-p-4 tw-rounded-full tw-inline-block tw-mb-4">lock_clock</span>
+                    <h2 class="tw-text-xl tw-font-bold tw-text-slate-800">Sessão Expirada</h2>
+                    <p class="tw-text-sm tw-text-slate-500 tw-mt-3 tw-leading-relaxed">
+                        Para a sua segurança, desconectamos sua conta após um período de inatividade. Por favor, faça login novamente para continuar.
+                    </p>
+                    <button id="btn-reconnect-session" class="tw-w-full tw-mt-6 tw-bg-primary hover:tw-bg-primary/90 tw-text-white tw-font-bold tw-py-3 tw-px-4 tw-rounded-xl tw-transition-colors">
+                        Fazer Login Novamente
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(m);
 
-        // Salto Forçado Extra-Iframe (Evita o loop infernal dentro de janelas filhas ou recarregamento cego)
-        if (window.top) {
-            window.top.location.href = 'index.html';
-        } else {
-            window.location.href = 'index.html';
+            // Vinculando Ejeção Radical de Iframe ao Clique do Usuário
+            document.getElementById('btn-reconnect-session').onclick = () => {
+                if (window.top) window.top.location.href = 'index.html';
+                else window.location.href = 'index.html';
+            };
         }
     }
 
