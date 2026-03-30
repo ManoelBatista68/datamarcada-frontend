@@ -2775,18 +2775,37 @@ async function abrirModalNovoEspecialista() {
     const modal = window.top.document.getElementById('modal-novo-especialista');
     if (!modal) return;
 
-    // Reset do form
-    window.top.document.getElementById('novo-especialista-nome').value = '';
-    window.top.document.getElementById('novo-especialista-email').value = '';
-    window.top.document.getElementById('novo-especialista-celular').value = '';
+    const topDoc = window.top.document;
 
-    // Limpa tags de especialidades
-    const tagContainer = window.top.document.getElementById('novo-especialista-tags');
+    // Reset do form
+    topDoc.getElementById('novo-especialista-nome').value = '';
+    topDoc.getElementById('novo-especialista-email').value = '';
+    topDoc.getElementById('novo-especialista-celular').value = '';
+    const infoGeral = topDoc.getElementById('novo-especialista-info-geral');
+    if (infoGeral) infoGeral.value = '';
+
+    // Reset toggles
+    const chkAdmin = topDoc.getElementById('novo-especialista-admin');
+    const chkSil = topDoc.getElementById('novo-especialista-silenciar');
+    const chkAtivo = topDoc.getElementById('novo-especialista-ativo');
+    if (chkAdmin) chkAdmin.checked = false;
+    if (chkSil) chkSil.checked = false;
+    if (chkAtivo) chkAtivo.checked = true;
+
+    // RBAC — exibe toggles Administrador/Ativo apenas para admins
+    const isAdmin = typeof tipoUsuarioAtual !== 'undefined' && tipoUsuarioAtual.toLowerCase() === 'admim';
+    const wAdmin = topDoc.getElementById('wrapper-novo-admin');
+    const wAtivo = topDoc.getElementById('wrapper-novo-ativo');
+    if (wAdmin) wAdmin.style.display = isAdmin ? '' : 'none';
+    if (wAtivo) wAtivo.style.display = isAdmin ? '' : 'none';
+
+    // Limpa tags
+    const tagContainer = topDoc.getElementById('novo-especialista-tags');
     if (tagContainer) tagContainer.innerHTML = '';
     window._tagsEspecialistaPendente = [];
 
-    // Carrega lista para o typeahead (Regra 19)
-    await carregarSubEspecialidadesParaTags();
+    // Carrega seletores encadeados
+    await carregarEspecialidadesNoModal('novo');
 
     modal.style.display = 'flex';
 }
@@ -2810,7 +2829,11 @@ async function salvarNovoEspecialista() {
             nome,
             email,
             celular,
-            sub_especialidades: window._tagsEspecialistaPendente || []
+            sub_especialidades: window._tagsEspecialistaPendente || [],
+            admin: !!window.top.document.getElementById('novo-especialista-admin')?.checked,
+            silenciar_notificacao: !!window.top.document.getElementById('novo-especialista-silenciar')?.checked,
+            ativo: !!window.top.document.getElementById('novo-especialista-ativo')?.checked,
+            info_geral: (window.top.document.getElementById('novo-especialista-info-geral')?.value || '').trim()
         });
 
         if (res.sucesso) {
@@ -2850,20 +2873,39 @@ async function prepararEdicaoEspecialista(id) {
         const modal = window.top.document.getElementById('modal-editar-especialista');
         if (!modal) return;
 
-        window.top.document.getElementById('editar-especialista-id').value = esp.id;
-        window.top.document.getElementById('editar-especialista-nome').value = esp.nome;
-        window.top.document.getElementById('editar-especialista-email').value = esp.email || '';
-        window.top.document.getElementById('editar-especialista-celular').value = esp.celular || '';
-        window.top.document.getElementById('editar-especialista-codigo').value = esp.codigo_especialista || '';
+        const topDoc = window.top.document;
 
-        // Renderiza tags
+        topDoc.getElementById('editar-especialista-id').value = esp.id;
+        topDoc.getElementById('editar-especialista-nome').value = esp.nome;
+        topDoc.getElementById('editar-especialista-email').value = esp.email || '';
+        topDoc.getElementById('editar-especialista-celular').value = esp.celular || '';
+        topDoc.getElementById('editar-especialista-codigo').value = esp.codigo_especialista || '';
+        const infoGeral = topDoc.getElementById('editar-especialista-info-geral');
+        if (infoGeral) infoGeral.value = esp.info_geral || '';
+
+        // Toggles
+        const chkAdmin = topDoc.getElementById('editar-especialista-admin');
+        const chkSil = topDoc.getElementById('editar-especialista-silenciar');
+        const chkAtivo = topDoc.getElementById('editar-especialista-ativo');
+        if (chkAdmin) chkAdmin.checked = !!esp.admin;
+        if (chkSil) chkSil.checked = !!esp.silenciar_notificacao;
+        if (chkAtivo) chkAtivo.checked = esp.ativo !== false;
+
+        // RBAC — exibe toggles Administrador/Ativo apenas para admins
+        const isAdmin = typeof tipoUsuarioAtual !== 'undefined' && tipoUsuarioAtual.toLowerCase() === 'admim';
+        const wAdmin = topDoc.getElementById('wrapper-editar-admin');
+        const wAtivo = topDoc.getElementById('wrapper-editar-ativo');
+        if (wAdmin) wAdmin.style.display = isAdmin ? '' : 'none';
+        if (wAtivo) wAtivo.style.display = isAdmin ? '' : 'none';
+
+        // Renderiza tags existentes
         window._tagsEspecialistaEdicao = Array.isArray(esp.sub_especialidades)
             ? esp.sub_especialidades
             : (esp.sub_especialidades ? esp.sub_especialidades.split(',').map(s => s.trim()).filter(Boolean) : []);
         renderizarTagsEspecialista('editar');
 
-        // Carrega lista para o typeahead (Regra 19)
-        await carregarSubEspecialidadesParaTags();
+        // Carrega seletores encadeados
+        await carregarEspecialidadesNoModal('editar');
 
         modal.style.display = 'flex';
     } catch (e) {
@@ -2896,7 +2938,11 @@ async function salvarEdicaoEspecialista() {
             email,
             celular,
             codigo_especialista: codigo,
-            sub_especialidades: window._tagsEspecialistaEdicao || []
+            sub_especialidades: window._tagsEspecialistaEdicao || [],
+            admin: !!window.top.document.getElementById('editar-especialista-admin')?.checked,
+            silenciar_notificacao: !!window.top.document.getElementById('editar-especialista-silenciar')?.checked,
+            ativo: !!window.top.document.getElementById('editar-especialista-ativo')?.checked,
+            info_geral: (window.top.document.getElementById('editar-especialista-info-geral')?.value || '').trim()
         });
 
         if (res.sucesso) {
@@ -2936,6 +2982,97 @@ async function prepararExclusaoEspecialista(id, nome) {
             if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
         }
     });
+}
+
+/**
+ * Carrega Especialidades no select do modal (primeiro nível do encadeamento).
+ */
+async function carregarEspecialidadesNoModal(tipo) {
+    const selectId = tipo === 'novo' ? 'novo-especialista-especialidade' : 'editar-especialista-especialidade';
+    const subSelectId = tipo === 'novo' ? 'novo-especialista-sub-especialidade' : 'editar-especialista-sub-especialidade';
+    const topDoc = window.top.document;
+    const sel = topDoc.getElementById(selectId);
+    const subSel = topDoc.getElementById(subSelectId);
+    if (!sel) return;
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'listar_especialidades_geral',
+            codigoempresa: userCodigoEmpresa
+        });
+        if (res.sucesso && res.dados && res.dados.length > 0) {
+            sel.innerHTML = '<option value="">Selecione a Especialidade...</option>' +
+                res.dados.map(e => `<option value="${e.id}">${escapeHtml(e.nome)}</option>`).join('');
+        } else {
+            sel.innerHTML = '<option value="">Nenhuma especialidade cadastrada</option>';
+        }
+        if (subSel) subSel.innerHTML = '<option value="">Selecione a Especialidade primeiro</option>';
+    } catch (e) {
+        if (e.message !== 'SESSION_EXPIRED') console.error('❌ [LOAD ESPECIALIDADES MODAL]:', e);
+        if (sel) sel.innerHTML = '<option value="">Erro ao carregar</option>';
+    }
+}
+
+/**
+ * Chamado no onchange do select de Especialidade — carrega Sub-Especialidades filtradas.
+ */
+async function onChangeEspecialidadeModal(tipo) {
+    const selectId = tipo === 'novo' ? 'novo-especialista-especialidade' : 'editar-especialista-especialidade';
+    const subSelectId = tipo === 'novo' ? 'novo-especialista-sub-especialidade' : 'editar-especialista-sub-especialidade';
+    const topDoc = window.top.document;
+    const sel = topDoc.getElementById(selectId);
+    const subSel = topDoc.getElementById(subSelectId);
+    if (!sel || !subSel) return;
+
+    const especialidadeId = sel.value;
+    if (!especialidadeId) {
+        subSel.innerHTML = '<option value="">Selecione a Especialidade primeiro</option>';
+        return;
+    }
+
+    subSel.innerHTML = '<option value="">Carregando...</option>';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'listar_sub_especialidades_v2',
+            codigoempresa: userCodigoEmpresa,
+            especialidade_id: especialidadeId
+        });
+        if (res.sucesso && res.dados && res.dados.length > 0) {
+            subSel.innerHTML = '<option value="">Selecione a Sub-Especialidade...</option>' +
+                res.dados.map(s => `<option value="${escapeHtml(s.nome)}">${escapeHtml(s.nome)}</option>`).join('');
+        } else {
+            subSel.innerHTML = '<option value="">Nenhuma sub-especialidade encontrada</option>';
+        }
+    } catch (e) {
+        if (e.message !== 'SESSION_EXPIRED') console.error('❌ [LOAD SUB-ESP MODAL]:', e);
+        subSel.innerHTML = '<option value="">Erro ao carregar</option>';
+    }
+}
+
+/**
+ * Chamado no onchange do select de Sub-Especialidade — adiciona a tag automaticamente.
+ */
+function selecionarSubEspecialidadeTag(tipo) {
+    const subSelectId = tipo === 'novo' ? 'novo-especialista-sub-especialidade' : 'editar-especialista-sub-especialidade';
+    const topDoc = window.top.document;
+    const subSel = topDoc.getElementById(subSelectId);
+    if (!subSel) return;
+
+    const nome = subSel.value;
+    if (!nome) return;
+
+    if (tipo === 'novo') {
+        if (!window._tagsEspecialistaPendente) window._tagsEspecialistaPendente = [];
+        if (!window._tagsEspecialistaPendente.includes(nome)) window._tagsEspecialistaPendente.push(nome);
+    } else {
+        if (!window._tagsEspecialistaEdicao) window._tagsEspecialistaEdicao = [];
+        if (!window._tagsEspecialistaEdicao.includes(nome)) window._tagsEspecialistaEdicao.push(nome);
+    }
+
+    // Reset to prompt after selection
+    subSel.value = '';
+    renderizarTagsEspecialista(tipo);
 }
 
 /**

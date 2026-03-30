@@ -1486,26 +1486,80 @@
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
                                 placeholder="(11) 99999-9999" type="text" />
                         </div>
-                        <div class="tw-col-span-full tw-space-y-2 tw-mt-2">
+                        <!-- Sub-especialidades: Seletores Encadeados (Regra 19) -->
+                        <div class="tw-space-y-1.5">
+                            <label
+                                class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Especialidade</label>
+                            <select id="novo-especialista-especialidade"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-3 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer"
+                                onchange="onChangeEspecialidadeModal('novo')">
+                                <option value="">Carregando...</option>
+                            </select>
+                        </div>
+                        <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Sub
-                                Especialidades (Typeahead)</label>
-                            <div class="tw-flex tw-gap-2 tw-relative">
-                                <div class="tw-flex-1 tw-relative">
-                                    <input id="novo-especialista-input-tag" type="text" autocomplete="off"
-                                        class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                                        placeholder="Digite para buscar sub-especialidade..."
-                                        oninput="filtrarSugestoesTag('novo')" />
-                                    <div id="novo-especialista-sugestoes-tags"
-                                        class="tw-absolute tw-left-0 tw-right-0 tw-bg-white tw-border tw-border-[#ddd] tw-rounded-[8px] tw-shadow-xl tw-overflow-y-auto tw-z-[99999]"
-                                        style="display:none; top: calc(100% + 4px); max-height: 160px;">
+                                Especialidade</label>
+                            <select id="novo-especialista-sub-especialidade"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-3 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer"
+                                onchange="selecionarSubEspecialidadeTag('novo')">
+                                <option value="">Selecione a Especialidade primeiro</option>
+                            </select>
+                        </div>
+                        <div id="novo-especialista-tags"
+                            class="tw-col-span-full tw-flex tw-flex-wrap tw-gap-2 tw-min-h-[28px]"></div>
+                        <!-- Toggles de Controle -->
+                        <div class="tw-col-span-full tw-flex tw-flex-wrap tw-gap-6 tw-pt-2">
+                            <div id="wrapper-novo-admin" style="display:none;">
+                                <label
+                                    class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-block tw-mb-1">Administrador</label>
+                                <label class="tw-relative tw-inline-flex tw-items-center tw-cursor-pointer">
+                                    <input type="checkbox" id="novo-especialista-admin" class="tw-sr-only tw-peer" />
+                                    <div
+                                        class="tw-w-11 tw-h-6 tw-bg-gray-200 peer-checked:tw-bg-primary tw-rounded-full tw-peer tw-transition-colors">
                                     </div>
-                                </div>
-                                <button type="button" onclick="addTagEspecialista('novo')"
-                                    class="tw-w-[38px] tw-h-[38px] tw-bg-primary tw-text-white tw-rounded-[8px] tw-flex tw-items-center tw-justify-center tw-shadow-lg hover:tw-brightness-110 tw-transition-all tw-border-none tw-cursor-pointer tw-shrink-0">
-                                    <span class="material-symbols-outlined">add</span>
-                                </button>
+                                    <div
+                                        class="tw-absolute tw-left-[2px] tw-top-[2px] tw-bg-white tw-border tw-border-gray-200 tw-rounded-full tw-h-5 tw-w-5 peer-checked:tw-translate-x-full peer-checked:tw-border-white tw-transition-transform">
+                                    </div>
+                                </label>
                             </div>
-                            <div id="novo-especialista-tags" class="tw-mt-3 tw-flex tw-flex-wrap tw-gap-2"></div>
+                            <div>
+                                <label
+                                    class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-block tw-mb-1">Silenciar
+                                    Notificações</label>
+                                <label class="tw-relative tw-inline-flex tw-items-center tw-cursor-pointer">
+                                    <input type="checkbox" id="novo-especialista-silenciar"
+                                        class="tw-sr-only tw-peer" />
+                                    <div
+                                        class="tw-w-11 tw-h-6 tw-bg-gray-200 peer-checked:tw-bg-primary tw-rounded-full tw-peer tw-transition-colors">
+                                    </div>
+                                    <div
+                                        class="tw-absolute tw-left-[2px] tw-top-[2px] tw-bg-white tw-border tw-border-gray-200 tw-rounded-full tw-h-5 tw-w-5 peer-checked:tw-translate-x-full peer-checked:tw-border-white tw-transition-transform">
+                                    </div>
+                                </label>
+                            </div>
+                            <div id="wrapper-novo-ativo" style="display:none;">
+                                <label
+                                    class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-block tw-mb-1">Ativo</label>
+                                <label class="tw-relative tw-inline-flex tw-items-center tw-cursor-pointer">
+                                    <input type="checkbox" id="novo-especialista-ativo" class="tw-sr-only tw-peer"
+                                        checked />
+                                    <div
+                                        class="tw-w-11 tw-h-6 tw-bg-gray-200 peer-checked:tw-bg-primary tw-rounded-full tw-peer tw-transition-colors">
+                                    </div>
+                                    <div
+                                        class="tw-absolute tw-left-[2px] tw-top-[2px] tw-bg-white tw-border tw-border-gray-200 tw-rounded-full tw-h-5 tw-w-5 peer-checked:tw-translate-x-full peer-checked:tw-border-white tw-transition-transform">
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- Informações Gerais -->
+                        <div class="tw-col-span-full tw-space-y-1.5">
+                            <label
+                                class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Informações
+                                Gerais</label>
+                            <textarea id="novo-especialista-info-geral" rows="3"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-p-3 tw-text-sm tw-outline-none tw-transition-all tw-resize-y"
+                                placeholder="Observações sobre o especialista..."></textarea>
                         </div>
                         <div class="tw-col-span-full tw-flex tw-justify-end tw-gap-3 tw-pt-4">
                             <button type="button"
@@ -1568,26 +1622,80 @@
                                 class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
                                 type="text" />
                         </div>
-                        <div class="tw-col-span-full tw-space-y-2 tw-mt-2">
+                        <!-- Sub-especialidades: Seletores Encadeados (Regra 19) -->
+                        <div class="tw-space-y-1.5">
+                            <label
+                                class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Especialidade</label>
+                            <select id="editar-especialista-especialidade"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-3 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer"
+                                onchange="onChangeEspecialidadeModal('editar')">
+                                <option value="">Carregando...</option>
+                            </select>
+                        </div>
+                        <div class="tw-space-y-1.5">
                             <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Sub
-                                Especialidades (Typeahead)</label>
-                            <div class="tw-flex tw-gap-2 tw-relative">
-                                <div class="tw-flex-1 tw-relative">
-                                    <input id="editar-especialista-input-tag" type="text" autocomplete="off"
-                                        class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                                        placeholder="Digite para buscar sub-especialidade..."
-                                        oninput="filtrarSugestoesTag('editar')" />
-                                    <div id="editar-especialista-sugestoes-tags"
-                                        class="tw-absolute tw-left-0 tw-right-0 tw-bg-white tw-border tw-border-[#ddd] tw-rounded-[8px] tw-shadow-xl tw-overflow-y-auto tw-z-[99999]"
-                                        style="display:none; top: calc(100% + 4px); max-height: 160px;">
+                                Especialidade</label>
+                            <select id="editar-especialista-sub-especialidade"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-3 tw-text-sm tw-outline-none tw-transition-all tw-cursor-pointer"
+                                onchange="selecionarSubEspecialidadeTag('editar')">
+                                <option value="">Selecione a Especialidade primeiro</option>
+                            </select>
+                        </div>
+                        <div id="editar-especialista-tags"
+                            class="tw-col-span-full tw-flex tw-flex-wrap tw-gap-2 tw-min-h-[28px]"></div>
+                        <!-- Toggles de Controle -->
+                        <div class="tw-col-span-full tw-flex tw-flex-wrap tw-gap-6 tw-pt-2">
+                            <div id="wrapper-editar-admin" style="display:none;">
+                                <label
+                                    class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-block tw-mb-1">Administrador</label>
+                                <label class="tw-relative tw-inline-flex tw-items-center tw-cursor-pointer">
+                                    <input type="checkbox" id="editar-especialista-admin" class="tw-sr-only tw-peer" />
+                                    <div
+                                        class="tw-w-11 tw-h-6 tw-bg-gray-200 peer-checked:tw-bg-primary tw-rounded-full tw-peer tw-transition-colors">
                                     </div>
-                                </div>
-                                <button type="button" onclick="addTagEspecialista('editar')"
-                                    class="tw-w-[38px] tw-h-[38px] tw-bg-primary tw-text-white tw-rounded-[8px] tw-flex tw-items-center tw-justify-center tw-shadow-lg hover:tw-brightness-110 tw-transition-all tw-border-none tw-cursor-pointer tw-shrink-0">
-                                    <span class="material-symbols-outlined">add</span>
-                                </button>
+                                    <div
+                                        class="tw-absolute tw-left-[2px] tw-top-[2px] tw-bg-white tw-border tw-border-gray-200 tw-rounded-full tw-h-5 tw-w-5 peer-checked:tw-translate-x-full peer-checked:tw-border-white tw-transition-transform">
+                                    </div>
+                                </label>
                             </div>
-                            <div id="editar-especialista-tags" class="tw-mt-3 tw-flex tw-flex-wrap tw-gap-2"></div>
+                            <div>
+                                <label
+                                    class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-block tw-mb-1">Silenciar
+                                    Notificações</label>
+                                <label class="tw-relative tw-inline-flex tw-items-center tw-cursor-pointer">
+                                    <input type="checkbox" id="editar-especialista-silenciar"
+                                        class="tw-sr-only tw-peer" />
+                                    <div
+                                        class="tw-w-11 tw-h-6 tw-bg-gray-200 peer-checked:tw-bg-primary tw-rounded-full tw-peer tw-transition-colors">
+                                    </div>
+                                    <div
+                                        class="tw-absolute tw-left-[2px] tw-top-[2px] tw-bg-white tw-border tw-border-gray-200 tw-rounded-full tw-h-5 tw-w-5 peer-checked:tw-translate-x-full peer-checked:tw-border-white tw-transition-transform">
+                                    </div>
+                                </label>
+                            </div>
+                            <div id="wrapper-editar-ativo" style="display:none;">
+                                <label
+                                    class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-block tw-mb-1">Ativo</label>
+                                <label class="tw-relative tw-inline-flex tw-items-center tw-cursor-pointer">
+                                    <input type="checkbox" id="editar-especialista-ativo" class="tw-sr-only tw-peer"
+                                        checked />
+                                    <div
+                                        class="tw-w-11 tw-h-6 tw-bg-gray-200 peer-checked:tw-bg-primary tw-rounded-full tw-peer tw-transition-colors">
+                                    </div>
+                                    <div
+                                        class="tw-absolute tw-left-[2px] tw-top-[2px] tw-bg-white tw-border tw-border-gray-200 tw-rounded-full tw-h-5 tw-w-5 peer-checked:tw-translate-x-full peer-checked:tw-border-white tw-transition-transform">
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- Informações Gerais -->
+                        <div class="tw-col-span-full tw-space-y-1.5">
+                            <label
+                                class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Informações
+                                Gerais</label>
+                            <textarea id="editar-especialista-info-geral" rows="3"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-p-3 tw-text-sm tw-outline-none tw-transition-all tw-resize-y"
+                                placeholder="Observações sobre o especialista..."></textarea>
                         </div>
                         <div class="tw-col-span-full tw-flex tw-justify-end tw-gap-3 tw-pt-4">
                             <button type="button"

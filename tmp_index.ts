@@ -1734,7 +1734,9 @@ serve(async (req) => {
         // ROTA 31 - SALVAR ESPECIALISTA (CRIAR/ATUALIZAR + LÓGICA EPXX)
         case 'salvar_especialista': {
           try {
-            const { id, nome, email, celular, sub_especialidades, codigoempresa } = payload;
+            const { id, nome, email, celular, sub_especialidades, codigoempresa,
+              admin, silenciar_notificacao, ativo, info_geral } = payload;
+
             if (!nome || !codigoempresa) throw new Error("Nome e codigoempresa são obrigatórios.");
 
             const dadosBasicos: any = {
@@ -1742,6 +1744,9 @@ serve(async (req) => {
               email: email || null,
               celular: celular || null,
               sub_especialidades: Array.isArray(sub_especialidades) ? sub_especialidades : [],
+              admin: Boolean(admin),
+              silenciar_notificacao: Boolean(silenciar_notificacao),
+              info_geral: info_geral || null,
               updated_at: new Date().toISOString()
             };
 
@@ -1777,7 +1782,7 @@ serve(async (req) => {
                 ...dadosBasicos,
                 codigo_especialista: novoCodigo,
                 codigoempresa,
-                ativo: true,
+                ativo: typeof ativo !== 'undefined' ? Boolean(ativo) : true,
                 created_at: new Date().toISOString()
               };
 
