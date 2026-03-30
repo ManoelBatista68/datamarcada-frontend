@@ -129,7 +129,8 @@
                         <div class="action-add tw-cursor-pointer"
                             style="width: 40px; height: 40px; border-radius: 50%; background: #1a73e8; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(26,115,232,0.3); transition: all 0.2s ease;"
                             onmouseover="this.style.filter='brightness(1.1)'"
-                            onmouseout="this.style.filter='brightness(1)'">
+                            onmouseout="this.style.filter='brightness(1)'"
+                            onclick="window.parent.abrirModalNovoEspecialista()">
                             <span class="material-symbols-outlined"
                                 style="font-size: 24px; color: white;">person_add</span>
                         </div>
@@ -147,125 +148,14 @@
                                 </tr>
                             </thead>
                             <tbody class="tw-divide-y tw-divide-[#eee]">
-                                <tr class="hover:tw-bg-[#eff6ff]/50 tw-transition-colors">
-                                    <td class="tw-px-6 tw-py-4">
-                                        <div class="tw-flex tw-items-center tw-gap-3">
-                                            <img alt="Specialist"
-                                                class="tw-w-10 tw-h-10 tw-rounded-full tw-object-cover"
-                                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwEmp-YXzn_CS3AuKaYaU1SkHO_cvRoULF8gTiVFHCfkBB7Z5lwYdMewGifdGcS4qUbnWgI969nmJeWDeKwm36QKk2k6hkMBbg9iHd0VVrHBG-n9OAt-HXQnLosFghY9af_JweTSQGDKtBnBll1nJAVcthAJYqkT0-vRlFVPpmDi4hp1Q6b_6XL3PNqBOqzPSdn_SSFATU-ib8mlRZou74araJ-Bz8_odFFs4ao8104E_-fVOcURyDWz_jyd8nUnSqO8ZSYaQRgpk" />
-                                            <div>
-                                                <p class="tw-font-bold tw-text-on-surface tw-text-sm">Dr. Arthur Mendes
-                                                </p>
-                                                <p class="tw-text-[10px] tw-font-mono tw-text-outline tw-uppercase">CRM
-                                                    12345-SP</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="tw-px-6 tw-py-4">
-                                        <p class="tw-text-xs tw-font-medium tw-text-on-surface-variant">(11) 98765-4321
-                                        </p>
-                                        <p class="tw-text-xs tw-text-outline">arthur.m@medpavilion.com</p>
-                                    </td>
-                                    <td class="tw-px-6 tw-py-4">
-                                        <div class="tw-flex tw-flex-wrap tw-gap-1">
-                                            <span
-                                                class="tw-px-2 tw-py-0.5 tw-bg-[#eff6ff] tw-text-primary tw-text-[10px] tw-font-bold tw-rounded">Cardiologia</span>
-                                            <span
-                                                class="tw-px-2 tw-py-0.5 tw-bg-[#f2f4f6] tw-text-slate-600 tw-text-[10px] tw-font-bold tw-rounded">Ecocardiografia</span>
-                                        </div>
-                                    </td>
-                                    <td class="tw-px-6 tw-py-4 tw-text-right">
-                                        <button
-                                            class="tw-text-primary hover:tw-underline tw-text-xs tw-font-bold tw-bg-transparent tw-border-none tw-cursor-pointer">Gerenciar</button>
+                                <tr>
+                                    <td colspan="4" class="tw-px-6 tw-py-10 tw-text-center tw-text-slate-400 tw-italic">
+                                        Carregando corpo clínico...
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                </div>
-
-                <div
-                    class="tw-mt-12 tw-bg-white tw-rounded-xl tw-p-6 md:tw-p-8 tw-border tw-border-[#ddd] tw-shadow-sm">
-                    <div class="tw-flex tw-items-center tw-gap-4 tw-mb-8">
-                        <div
-                            class="tw-w-12 tw-h-12 tw-rounded-full tw-bg-[#1a73e8] tw-flex tw-items-center tw-justify-center tw-text-white tw-shrink-0">
-                            <span class="material-symbols-outlined">person_add</span>
-                        </div>
-                        <div>
-                            <h2 class="tw-text-2xl tw-font-bold tw-tracking-tight">Novo Especialista</h2>
-                            <p class="tw-text-sm tw-text-on-surface-variant tw-font-medium">Cadastre um novo
-                                profissional para a unidade <span class="tw-text-primary">CP-01 (Clinical
-                                    Pavilion)</span></p>
-                        </div>
-                    </div>
-
-                    <form class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6">
-                        <div class="tw-space-y-1.5">
-                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome
-                                Completo</label>
-                            <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
-                                placeholder="Ex: Dr. Roberto Silva" type="text" />
-                        </div>
-                        <div class="tw-space-y-1.5">
-                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Registro /
-                                Código</label>
-                            <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
-                                placeholder="Ex: CRM 99.123" type="text" />
-                        </div>
-                        <div class="tw-space-y-1.5">
-                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Celular /
-                                WhatsApp</label>
-                            <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-transition-all tw-duration-200 tw-outline-none"
-                                placeholder="(11) 99999-9999" type="text" />
-                        </div>
-                        <div class="tw-space-y-1.5">
-                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">E-mail
-                                Profissional</label>
-                            <input
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
-                                placeholder="roberto@clinica.com" type="email" />
-                        </div>
-                        <div class="tw-space-y-1.5 lg:tw-col-span-2">
-                            <label
-                                class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Especialidades
-                                (Multiseleção)</label>
-                            <div
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] tw-rounded-[8px] tw-px-4 tw-min-h-[38px] tw-flex tw-items-center tw-flex-wrap tw-gap-2 tw-py-1">
-                                <span
-                                    class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-[#eff6ff] tw-text-primary tw-px-2 tw-py-0.5 tw-rounded tw-text-xs tw-font-bold">
-                                    Cardiologia <button type="button"
-                                        class="material-symbols-outlined tw-text-xs tw-bg-transparent tw-border-none tw-p-0 tw-cursor-pointer">close</button>
-                                </span>
-                                <span
-                                    class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-[#eff6ff] tw-text-primary tw-px-2 tw-py-0.5 tw-rounded tw-text-xs tw-font-bold">
-                                    Geriatria <button type="button"
-                                        class="material-symbols-outlined tw-text-xs tw-bg-transparent tw-border-none tw-p-0 tw-cursor-pointer">close</button>
-                                </span>
-                                <button type="button"
-                                    class="tw-text-xs tw-text-slate-400 tw-font-bold hover:tw-text-primary tw-ml-auto tw-bg-transparent tw-border-none tw-cursor-pointer">+
-                                    Selecionar</button>
-                            </div>
-                        </div>
-                        <div class="tw-space-y-1.5 md:tw-col-span-2 lg:tw-col-span-3">
-                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Biografia
-                                / Descrição Profissional</label>
-                            <textarea
-                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-px-4 tw-py-3 tw-text-sm tw-transition-all tw-duration-200 tw-outline-none"
-                                placeholder="Conte um pouco sobre a experiência do profissional..." rows="3"></textarea>
-                        </div>
-
-                        <div class="md:tw-col-span-2 lg:tw-col-span-3 tw-pt-6 tw-flex tw-justify-end tw-gap-3">
-                            <button
-                                class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-transition-all tw-duration-200 tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center"
-                                style="background:#e0e0e0; color:#333;" type="button">Cancelar</button>
-                            <button
-                                class="tw-h-[38px] tw-px-10 tw-rounded-[8px] tw-font-bold tw-transition-all tw-duration-200 tw-shadow-sm hover:tw-brightness-110 active:tw-scale-95 tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center"
-                                style="background:#34a853; color:white;" type="submit">Salvar Especialista</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -310,6 +200,10 @@
                 content1.style.display = "none";
                 content2.style.display = "block";
                 content2.className = "tw-fade-in-smooth";
+                // Carrega especialistas ao alternar para a aba
+                if (window.parent && typeof window.parent.carregarEspecialistas === 'function') {
+                    window.parent.carregarEspecialistas();
+                }
             }
             debouncedSendHeight();
         }

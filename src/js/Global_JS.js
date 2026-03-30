@@ -2685,3 +2685,279 @@ async function confirmarExclusaoProduto() {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
     }
 }
+
+// --- CRUD DE ESPECIALISTAS (MODAL-BASED) ---
+
+/**
+ * Busca a lista de especialistas e renderiza a tabela no Iframe de Cadastro Geral.
+ */
+async function carregarEspecialistas() {
+    if (!userCodigoEmpresa) userCodigoEmpresa = localStorage.getItem('appAgendaUserCodigoEmpresa') || "";
+    console.log("👥 [ESPECIALISTAS] Carregando corpo clínico...");
+
+    const iframe = document.querySelector('iframe[src*="tela_cadastro_mockup"]');
+    if (!iframe) return;
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-especialistas', {
+            acao: 'listar_especialistas',
+            codigoempresa: userCodigoEmpresa
+        });
+
+        if (!res.sucesso) {
+            console.error("❌ [ESPECIALISTAS] Erro ao listar:", res.erro);
+            return;
+        }
+
+        const especialistas = res.especialistas || [];
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        const tbody = doc.querySelector('#content-2 table tbody');
+        if (!tbody) return;
+
+        if (especialistas.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="tw-px-6 tw-py-10 tw-text-center tw-text-slate-400 tw-italic">Nenhum especialista cadastrado.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = especialistas.map(esp => {
+            const subs = Array.isArray(esp.sub_especialidades) ? esp.sub_especialidades : [];
+            return `
+            <tr class="hover:tw-bg-[#eff6ff]/50 tw-transition-colors">
+                <td class="tw-px-6 tw-py-4">
+                    <div class="tw-flex tw-items-center tw-gap-3">
+                        <div class="tw-w-10 tw-h-10 tw-rounded-full tw-bg-primary/10 tw-flex tw-items-center tw-justify-center tw-text-primary">
+                            <span class="material-symbols-outlined">person</span>
+                        </div>
+                        <div>
+                            <p class="tw-font-bold tw-text-on-surface tw-text-sm">${escapeHtml(esp.nome)}</p>
+                            <p class="tw-text-[10px] tw-font-mono tw-text-outline tw-uppercase">${escapeHtml(esp.codigo_especialista || '---')}</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="tw-px-6 tw-py-4">
+                    <p class="tw-text-xs tw-font-medium tw-text-on-surface-variant">${escapeHtml(esp.celular || '---')}</p>
+                    <p class="tw-text-[11px] tw-text-outline">${escapeHtml(esp.email || '---')}</p>
+                </td>
+                <td class="tw-px-6 tw-py-4">
+                    <div class="tw-flex tw-flex-wrap tw-gap-1">
+                        ${subs.length > 0 ? subs.map(s => `
+                            <span class="tw-px-2 tw-py-0.5 tw-bg-[#eff6ff] tw-text-primary tw-text-[10px] tw-font-bold tw-rounded">${escapeHtml(s)}</span>
+                        `).join('') : '<span class="tw-text-[10px] tw-text-slate-400 tw-italic">Atendimento Geral</span>'}
+                    </div>
+                </td>
+                <td class="tw-px-6 tw-py-4 tw-text-right">
+                    <button onclick="window.parent.prepararEdicaoEspecialista('${esp.id}')" 
+                        class="tw-text-primary hover:tw-underline tw-text-xs tw-font-bold tw-bg-transparent tw-border-none tw-cursor-pointer">Gerenciar</button>
+                    <button onclick="window.parent.prepararExclusaoEspecialista('${esp.id}', '${escapeHtml(esp.nome)}')" 
+                        class="tw-text-error hover:tw-underline tw-text-xs tw-font-bold tw-bg-transparent tw-border-none tw-cursor-pointer tw-ml-3">Excluir</button>
+                </td>
+            </tr>`;
+        }).join('');
+
+    } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
+        console.error("❌ [ESPECIALISTAS] Falha na renderização:", e);
+    }
+}
+
+/**
+ * Limpa e abre o modal de criação de especialista.
+ */
+async function abrirModalNovoEspecialista() {
+    const modal = window.top.document.getElementById('modal-novo-especialista');
+    if (!modal) return;
+
+    // Reset do form
+    window.top.document.getElementById('novo-especialista-nome').value = '';
+    window.top.document.getElementById('novo-especialista-email').value = '';
+    window.top.document.getElementById('novo-especialista-celular').value = '';
+    window.top.document.getElementById('novo-especialista-codigo').value = '';
+
+    // Limpa tags de especialidades
+    const tagContainer = window.top.document.getElementById('novo-especialista-tags');
+    if (tagContainer) tagContainer.innerHTML = '';
+    window._tagsEspecialistaPendente = [];
+
+    modal.style.display = 'flex';
+}
+
+/**
+ * Salva um novo especialista via API.
+ */
+async function salvarNovoEspecialista() {
+    const nome = window.top.document.getElementById('novo-especialista-nome').value.trim();
+    const email = window.top.document.getElementById('novo-especialista-email').value.trim();
+    const celular = window.top.document.getElementById('novo-especialista-celular').value.trim();
+    const codigo = window.top.document.getElementById('novo-especialista-codigo').value.trim();
+
+    if (!nome) return mostrarMensagem("Aviso", "O nome do especialista é obrigatório.");
+
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-especialistas', {
+            acao: 'salvar_especialista',
+            codigoempresa: userCodigoEmpresa,
+            nome,
+            email,
+            celular,
+            codigo_especialista: codigo,
+            sub_especialidades: window._tagsEspecialistaPendente || []
+        });
+
+        if (res.sucesso) {
+            if (window.top.document.getElementById('modal-novo-especialista'))
+                window.top.document.getElementById('modal-novo-especialista').style.display = 'none';
+            await carregarEspecialistas();
+        } else {
+            mostrarMensagem("Erro", res.erro || "Falha ao salvar especialista.");
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+    }
+}
+
+/**
+ * Busca dados e abre o modal de edição.
+ */
+async function prepararEdicaoEspecialista(id) {
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-especialistas', {
+            acao: 'buscar_especialista',
+            id: id,
+            codigoempresa: userCodigoEmpresa
+        });
+
+        if (!res.sucesso) {
+            mostrarMensagem("Erro", "Especialista não encontrado.");
+            return;
+        }
+
+        const esp = res.especialista;
+        const modal = window.top.document.getElementById('modal-editar-especialista');
+        if (!modal) return;
+
+        window.top.document.getElementById('editar-especialista-id').value = esp.id;
+        window.top.document.getElementById('editar-especialista-nome').value = esp.nome;
+        window.top.document.getElementById('editar-especialista-email').value = esp.email || '';
+        window.top.document.getElementById('editar-especialista-celular').value = esp.celular || '';
+        window.top.document.getElementById('editar-especialista-codigo').value = esp.codigo_especialista || '';
+
+        // Renderiza tags
+        window._tagsEspecialistaEdicao = Array.isArray(esp.sub_especialidades) ? esp.sub_especialidades : [];
+        renderizarTagsEspecialista('editar');
+
+        modal.style.display = 'flex';
+    } catch (e) {
+        console.error(e);
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+    }
+}
+
+/**
+ * Salva alterações de um especialista existente.
+ */
+async function salvarEdicaoEspecialista() {
+    const id = window.top.document.getElementById('editar-especialista-id').value;
+    const nome = window.top.document.getElementById('editar-especialista-nome').value.trim();
+    const email = window.top.document.getElementById('editar-especialista-email').value.trim();
+    const celular = window.top.document.getElementById('editar-especialista-celular').value.trim();
+    const codigo = window.top.document.getElementById('editar-especialista-codigo').value.trim();
+
+    if (!nome || !id) return mostrarMensagem("Aviso", "Nome e ID são obrigatórios.");
+
+    if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-especialistas', {
+            acao: 'salvar_especialista',
+            id,
+            codigoempresa: userCodigoEmpresa,
+            nome,
+            email,
+            celular,
+            codigo_especialista: codigo,
+            sub_especialidades: window._tagsEspecialistaEdicao || []
+        });
+
+        if (res.sucesso) {
+            if (window.top.document.getElementById('modal-editar-especialista'))
+                window.top.document.getElementById('modal-editar-especialista').style.display = 'none';
+            await carregarEspecialistas();
+        } else {
+            mostrarMensagem("Erro", res.erro || "Falha ao atualizar especialista.");
+        }
+    } catch (e) {
+        console.error(e);
+    } finally {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+    }
+}
+
+/**
+ * Executa o Soft Delete via API.
+ */
+async function prepararExclusaoEspecialista(id, nome) {
+    mostrarConfirmacao("Excluir Especialista", `Deseja remover "${nome}"? O registro será mantido historicamente mas não aparecerá em novos agendamentos.`, async function () {
+        if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
+        try {
+            const res = await ApiClient.post('/functions/v1/gerenciar-especialistas', {
+                acao: 'excluir_especialista',
+                id: id,
+                codigoempresa: userCodigoEmpresa
+            });
+            if (res.sucesso) await carregarEspecialistas();
+            else mostrarMensagem("Erro", res.erro || "Falha ao excluir.");
+        } catch (e) {
+            console.error(e);
+        } finally {
+            if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
+        }
+    });
+}
+
+/**
+ * Gerencia a adição/remoção de tags de especialidades nos modais.
+ */
+function addTagEspecialista(tipo) {
+    const inputId = tipo === 'novo' ? 'novo-especialista-input-tag' : 'editar-especialista-input-tag';
+    const val = window.top.document.getElementById(inputId).value.trim();
+    if (!val) return;
+
+    if (tipo === 'novo') {
+        if (!window._tagsEspecialistaPendente) window._tagsEspecialistaPendente = [];
+        if (!window._tagsEspecialistaPendente.includes(val)) window._tagsEspecialistaPendente.push(val);
+    } else {
+        if (!window._tagsEspecialistaEdicao) window._tagsEspecialistaEdicao = [];
+        if (!window._tagsEspecialistaEdicao.includes(val)) window._tagsEspecialistaEdicao.push(val);
+    }
+
+    window.top.document.getElementById(inputId).value = '';
+    renderizarTagsEspecialista(tipo);
+}
+
+function renderizarTagsEspecialista(tipo) {
+    const list = tipo === 'novo' ? window._tagsEspecialistaPendente : window._tagsEspecialistaEdicao;
+    const containerId = tipo === 'novo' ? 'novo-especialista-tags' : 'editar-especialista-tags';
+    const container = window.top.document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = (list || []).map((t, idx) => `
+        <span class="tw-inline-flex tw-items-center tw-gap-1 tw-bg-[#eff6ff] tw-text-primary tw-px-2 tw-py-0.5 tw-rounded tw-text-xs tw-font-bold">
+            ${escapeHtml(t)}
+            <button type="button" onclick="window.parent.removeTagEspecialista('${tipo}', ${idx})" 
+                class="material-symbols-outlined tw-text-xs tw-bg-transparent tw-border-none tw-p-0 tw-cursor-pointer">close</button>
+        </span>
+    `).join('');
+}
+
+function removeTagEspecialista(tipo, idx) {
+    if (tipo === 'novo') window._tagsEspecialistaPendente.splice(idx, 1);
+    else window._tagsEspecialistaEdicao.splice(idx, 1);
+    renderizarTagsEspecialista(tipo);
+}

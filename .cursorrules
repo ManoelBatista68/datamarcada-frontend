@@ -87,4 +87,7 @@ Sempre que um modal for utilizado para Edição ou Exclusão de registros do ban
 ## 16. Tratamento de Sessão Expirada e UI de Hierarquia
 1. Ocultação Padrão: Todo elemento de Accordion/Sanfona (Grids filhas) DEVE carregar com a classe 'tw-hidden' por padrão e com o ícone 'visibility_off'.
 2. Injeção Top-Level: Modais Globais (como Sessão Expirada) injetados via JS DEVEM ser atrelados ao 'window.top.document.body' para garantir a cobertura total da tela e herdar as classes Tailwind do contexto principal, fugindo do escopo de iframes.
-3. Silenciamento de Catch: É TERMINANTEMENTE PROIBIDO exibir 'alert()' ou modais de erro genéricos em blocos 'catch' se a mensagem de erro for 'SESSION_EXPIRED'. O código deve apenas dar 'return', deixando a UI sob responsabilidade exclusiva do Interceptador Global.
+3. Silenciamento de Catch: É TERMINANTEMENTE PROIBIDO exibir alerts nativos em blocos catch quando o erro capturado for 'SESSION_EXPIRED', pois o interceptador global já trata a UI.
+
+## 17. Padrão de Exclusão Lógica (Soft Delete) para Entidades Relacionais
+É ESTRITAMENTE PROIBIDO utilizar comandos físicos de DELETE no Supabase para entidades que possuem relacionamento com o histórico do sistema (Especialistas, Clientes, Produtos, Agendamentos). A exclusão visual deve ser sempre tratada via 'Soft Delete', atualizando uma coluna de controle (ex: 'status = inactive' ou 'ativo = false'). O frontend deve filtrar essas entidades nas listagens ativas, mas o backend preservará os dados para garantir a integridade referencial dos relatórios e históricos.
