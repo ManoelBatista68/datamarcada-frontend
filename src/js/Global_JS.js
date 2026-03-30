@@ -1640,11 +1640,12 @@ async function carregarEstruturaHierarquica() {
                     ${subs.length > 0 ? subs.map(sub => {
                 const subProds = prodMap[sub.codigo_sub_especialidade] || prodMap[sub.id] || prodMap[sub.nome] || [];
                 const subContainerId = `prod-sub-${sub.id}`;
+                const subIconId = `icon-sub-${sub.id}`;
 
                 return `
                 <div class="tw-space-y-4">
                     <!-- HEADER SUB-ESPECIALIDADE -->
-                    <div class="tw-flex tw-items-center tw-justify-between">
+                    <div class="tw-bg-white tw-flex tw-items-center tw-justify-between tw-p-5 tw-rounded-xl tw-shadow-sm tw-border tw-border-outline-variant/10">
                         <div class="tw-flex tw-items-center tw-gap-2">
                             <span class="material-symbols-outlined tw-text-outline">subdirectory_arrow_right</span>
                             <h4 class="tw-font-bold tw-text-on-surface-variant tw-text-base">
@@ -1653,14 +1654,21 @@ async function carregarEstruturaHierarquica() {
                                     onclick="window.parent.prepararEdicaoSubEspecialidade('${sub.id}', '${escapeHtml(sub.nome)}', '${esp.id}')">settings</span>
                             </h4>
                         </div>
-                        <button onclick="window.parent.prepararNovoProduto('${sub.id}', '${escapeHtml(sub.nome)}', '${esp.id}', '${escapeHtml(esp.nome)}')" 
-                            class="tw-h-[36px] tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-2 tw-px-4 tw-bg-primary tw-text-white hover:tw-bg-blue-700 tw-transition-colors tw-border-none tw-cursor-pointer">
-                            <span class="material-symbols-outlined tw-text-lg">add</span> Novo Produto
-                        </button>
+                        <div class="tw-flex tw-items-center tw-gap-3">
+                            <button onclick="window.parent.prepararNovoProduto('${sub.id}', '${escapeHtml(sub.nome)}', '${esp.id}', '${escapeHtml(esp.nome)}')" 
+                                class="tw-h-[36px] tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-2 tw-px-4 tw-bg-primary tw-text-white hover:tw-bg-blue-700 tw-transition-colors tw-border-none tw-cursor-pointer">
+                                <span class="material-symbols-outlined tw-text-lg">add</span> Novo Produto
+                            </button>
+                            <div class="tw-h-8 tw-w-[1px] tw-bg-outline-variant/30"></div>
+                            <button type="button" onclick="window.parent.toggleHierarquia('${subContainerId}', '${subIconId}')" 
+                                class="tw-p-2 tw-rounded-lg tw-text-outline hover:tw-text-primary hover:tw-bg-primary-fixed/30 tw-transition-all tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-border-none tw-bg-transparent tw-cursor-pointer" title="Expandir/Recolher">
+                                <span id="${subIconId}" class="material-symbols-outlined tw-text-2xl">visibility</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- GRID PRODUTOS -->
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 xl:tw-grid-cols-3 tw-gap-6">
+                    <div id="${subContainerId}" class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 xl:tw-grid-cols-3 tw-gap-6 tw-transition-all">
                         ${subProds.length > 0 ? subProds.map(prod => `
                         <div class="tw-bg-white tw-p-5 tw-rounded-xl tw-shadow-sm tw-border tw-border-outline-variant/10 hover:tw-border-secondary/30 hover:tw-shadow-lg tw-transition-all tw-group">
                             <div class="tw-flex tw-justify-between tw-items-start tw-mb-4">
