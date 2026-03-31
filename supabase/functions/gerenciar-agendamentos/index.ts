@@ -162,38 +162,38 @@ serve(async (req) => {
 
         // ROTA 1 - BUSCAR ESPECIALISTA (raw SQL - bypass RLS)
         case 'buscar_especialista': {
-    const id = payload.id;
-    const cod = payload.codigo_especialista || payload.codEspecialista;
-    const emp = String(payload.codigoempresa || "").trim();
+          const id = payload.id;
+          const cod = payload.codigo_especialista || payload.codEspecialista;
+          const emp = String(payload.codigoempresa || payload.codigoEmpresa || "").trim();
 
-    if (!emp) return responderJSON({ sucesso: false, erro: "codigoempresa obrigatorio." }, 200);
-    if (!id && !cod) return responderJSON({ sucesso: false, erro: "ID ou Codigo obrigatorios." }, 200);
+          if (!emp) return responderJSON({ sucesso: false, erro: "codigoempresa obrigatorio." }, 200);
+          if (!id && !cod) return responderJSON({ sucesso: false, erro: "ID ou Codigo obrigatorios." }, 200);
 
-    const filter = id ? "AND id = $2" : "AND codigo_especialista = $2";
-    const filterVal = id || cod;
+          const filter = id ? "AND id = $2" : "AND codigo_especialista = $2";
+          const filterVal = id || cod;
 
-    const res = await connection.queryObject<any>({
-        text: `SELECT * FROM especialistas WHERE codigoempresa = $1 AND ativo = true ${filter} LIMIT 1`,
-        args: [emp, filterVal]
-    });
+          const res = await connection.queryObject<any>({
+            text: `SELECT * FROM especialistas WHERE codigoempresa = $1 AND ativo = true ${filter} LIMIT 1`,
+            args: [emp, filterVal]
+          });
 
-    if (!res.rows || res.rows.length === 0)
-        return responderJSON({ sucesso: false, erro: "Especialista nao encontrado." }, 200);
-    return responderJSON({ sucesso: true, especialista: res.rows[0] });
-}
+          if (!res.rows || res.rows.length === 0)
+            return responderJSON({ sucesso: false, erro: "Especialista nao encontrado." }, 200);
+          return responderJSON({ sucesso: true, especialista: res.rows[0] });
+        }
 
         // ROTA 2 - LISTAR ESPECIALISTAS ATIVOS (raw SQL - bypass RLS)
         case 'listar_especialistas': {
-    const emp = String(payload.codigoempresa || "").trim();
-    if (!emp) return responderJSON({ sucesso: false, erro: "codigoempresa ausente." }, 200);
+          const emp = String(payload.codigoempresa || payload.codigoEmpresa || "").trim();
+          if (!emp) return responderJSON({ sucesso: false, erro: "codigoempresa ausente." }, 200);
 
-    const res = await connection.queryObject<any>({
-        text: `SELECT * FROM especialistas WHERE codigoempresa = $1 AND ativo = true ORDER BY nome ASC`,
-        args: [emp]
-    });
+          const res = await connection.queryObject<any>({
+            text: `SELECT * FROM especialistas WHERE codigoempresa = $1 AND ativo = true ORDER BY nome ASC`,
+            args: [emp]
+          });
 
-    return responderJSON({ sucesso: true, especialistas: res.rows });
-}
+          return responderJSON({ sucesso: true, especialistas: res.rows });
+        }
 
 
         // ROTA 3 - LISTAR DATAS DISPONÍVEIS
@@ -667,14 +667,16 @@ serve(async (req) => {
 
         // ROTA 10 - PONTO DE ENTRADA DO BOT N8N (LISTAR CONSULTAS CLIENTE)
         case 'listar_consultas_cliente': {
-          console.log("DEBUG VARS ROTA 10:", { empresa: payload.codigoempresa, celular: payload.celularCliente });
+          // Tolerância camelCase: aceita codigoempresa (N8N/legacy) ou codigoEmpresa (frontend)
+          const codigoempresa = payload.codigoempresa || payload.codigoEmpresa;
+          console.log("DEBUG VARS ROTA 10:", { empresa: codigoempresa, celular: payload.celularCliente });
 
-          if (!payload.codigoempresa || !payload.celularCliente) {
+          if (!codigoempresa || !payload.celularCliente) {
             throw new Error("Parâmetros codigoempresa ou celularCliente ausentes no payload.");
           }
 
           const celProcurado = String(payload.celularCliente).replace(/\D/g, '');
-          const empresaBuscada = String(payload.codigoempresa).trim();
+          const empresaBuscada = String(codigoempresa).trim();
           const textoBoasVindas = String(payload.boasVindas || "").trim();
           const horasMinimas = parseInt(payload.horasMinimas) || 4;
           const linkPainel = String(payload.linkPainel || "").trim();
@@ -688,7 +690,7 @@ serve(async (req) => {
           `;
           const resConsultas = await connection.queryObject({
             text: queryConsultas,
-            args: [String(payload.codigoempresa), String(payload.celularCliente)]
+            args: [String(codigoempresa), String(payload.celularCliente)]
           });
 
           const agora = new Date();
@@ -1737,22 +1739,22 @@ serve(async (req) => {
 
         // ROTA 31 - SALVAR ESPECIALISTA (CRIAR/ATUALIZAR + LÓGICA EPXX)
         case 'salvar_especialista': {
-    try {
-        const { id, nome, email, celular, sub_especialidades, codigoempresa,
-            admin, silenciar_notificacao, ativo, info_geral } = payload;
+          try {
+            const { id, nome, email, celular, sub_especialidades, codigoempresa,
+              admin, silenciar_notificacao, ativo, info_geral } = payload;
 
-        if (!nome || !codigoempresa) throw new Error("Nome e codigoempresa sao obrigatorios.");
+            if (!nome || !codigoempresa) throw new Error("Nome e codigoempresa sao obrigatorios.");
 
-        const adminVal = Boolean(admin);
-        const silVal = Boolean(silenciar_notificacao);
-        const infoVal = info_geral || null;
-        const subEsp = Array.isArray(sub_especialidades) ? sub_especialidades : [];
-        const now = new Date().toISOString();
+            const adminVal = Boolean(admin);
+            const silVal = Boolean(silenciar_notificacao);
+            const infoVal = info_geral || null;
+            const subEsp = Array.isArray(sub_especialidades) ? sub_especialidades : [];
+            const now = new Date().toISOString();
 
-        if (id) {
-            // EDICAO: UPDATE com raw SQL via pool (bypass RLS)
-            const ativoVal = typeof ativo !== 'undefined' ? Boolean(ativo) : true;
-            await connection.queryObject<any>({
+            if (id) {
+              // EDICAO: UPDATE com raw SQL via pool (bypass RLS)
+              const ativoVal = typeof ativo !== 'undefined' ? Boolean(ativo) : true;
+              await connection.queryObject<any>({
                 text: `
                   UPDATE especialistas
                   SET nome = $1, email = $2, celular = $3,
@@ -1762,35 +1764,35 @@ serve(async (req) => {
                   WHERE id = $10 AND codigoempresa = $11
                 `,
                 args: [
-                    nome, email || null, celular || null,
-                    JSON.stringify(subEsp), adminVal,
-                    silVal, infoVal,
-                    ativoVal, now,
-                    id, codigoempresa
+                  nome, email || null, celular || null,
+                  JSON.stringify(subEsp), adminVal,
+                  silVal, infoVal,
+                  ativoVal, now,
+                  id, codigoempresa
                 ]
-            });
-            return responderJSON({ sucesso: true, mensagem: "Especialista atualizado com sucesso." });
+              });
+              return responderJSON({ sucesso: true, mensagem: "Especialista atualizado com sucesso." });
 
-        } else {
-            // CRIACAO: busca ultimo codigo EP via pool e insere com raw SQL (bypass RLS)
-            const lastRes = await connection.queryObject<any>({
+            } else {
+              // CRIACAO: busca ultimo codigo EP via pool e insere com raw SQL (bypass RLS)
+              const lastRes = await connection.queryObject<any>({
                 text: `
                   SELECT codigo_especialista FROM especialistas
                   WHERE codigoempresa = $1 AND codigo_especialista LIKE 'EP%'
                   ORDER BY codigo_especialista DESC LIMIT 1
                 `,
                 args: [codigoempresa]
-            });
+              });
 
-            let nextNum = 1;
-            if (lastRes.rows && lastRes.rows.length > 0) {
+              let nextNum = 1;
+              if (lastRes.rows && lastRes.rows.length > 0) {
                 const match = (lastRes.rows[0].codigo_especialista as string).match(/\d+/);
                 if (match) nextNum = parseInt(match[0]) + 1;
-            }
-            const novoCodigo = `EP${String(nextNum).padStart(2, '0')}`;
-            const ativoVal = typeof ativo !== 'undefined' ? Boolean(ativo) : true;
+              }
+              const novoCodigo = `EP${String(nextNum).padStart(2, '0')}`;
+              const ativoVal = typeof ativo !== 'undefined' ? Boolean(ativo) : true;
 
-            const ins = await connection.queryObject<any>({
+              const ins = await connection.queryObject<any>({
                 text: `
                   INSERT INTO especialistas
                     (nome, email, celular, sub_especialidades, admin,
@@ -1800,43 +1802,43 @@ serve(async (req) => {
                   RETURNING *
                 `,
                 args: [
-                    nome, email || null, celular || null,
-                    JSON.stringify(subEsp), adminVal,
-                    silVal, infoVal, ativoVal,
-                    novoCodigo, codigoempresa, now, now
+                  nome, email || null, celular || null,
+                  JSON.stringify(subEsp), adminVal,
+                  silVal, infoVal, ativoVal,
+                  novoCodigo, codigoempresa, now, now
                 ]
-            });
+              });
 
-            const criado = ins.rows?.[0] ?? null;
-            return responderJSON({ sucesso: true, mensagem: "Especialista criado com sucesso.", dados: criado, novoCodigo });
+              const criado = ins.rows?.[0] ?? null;
+              return responderJSON({ sucesso: true, mensagem: "Especialista criado com sucesso.", dados: criado, novoCodigo });
+            }
+          } catch (e: any) {
+            console.error("[ERRO SALVAR ESPECIALISTA]:", e.message);
+            return responderJSON({ sucesso: false, erro: e.message }, 200);
+          }
         }
-    } catch (e: any) {
-        console.error("[ERRO SALVAR ESPECIALISTA]:", e.message);
-        return responderJSON({ sucesso: false, erro: e.message }, 200);
-    }
-}
 
         // ROTA 32 - EXCLUIR ESPECIALISTA (SOFT DELETE via raw SQL - REGRA 17)
         case 'excluir_especialista': {
-    try {
-        const { id, codigoempresa } = payload;
-        if (!id || !codigoempresa) throw new Error("ID e codigoempresa sao obrigatorios.");
+          try {
+            const { id, codigoempresa } = payload;
+            if (!id || !codigoempresa) throw new Error("ID e codigoempresa sao obrigatorios.");
 
-        await connection.queryObject<any>({
-            text: `
+            await connection.queryObject<any>({
+              text: `
                 UPDATE especialistas
                 SET ativo = false, updated_at = $1
                 WHERE id = $2 AND codigoempresa = $3
               `,
-            args: [new Date().toISOString(), id, codigoempresa]
-        });
+              args: [new Date().toISOString(), id, codigoempresa]
+            });
 
-        return responderJSON({ sucesso: true, mensagem: "Especialista removido (soft-delete) com sucesso." });
-    } catch (e: any) {
-        console.error("[ERRO EXCLUIR ESPECIALISTA]:", e.message);
-        return responderJSON({ sucesso: false, erro: e.message }, 200);
-    }
-}
+            return responderJSON({ sucesso: true, mensagem: "Especialista removido (soft-delete) com sucesso." });
+          } catch (e: any) {
+            console.error("[ERRO EXCLUIR ESPECIALISTA]:", e.message);
+            return responderJSON({ sucesso: false, erro: e.message }, 200);
+          }
+        }
         default:
           return responderJSON({ sucesso: false, erro: "Ação não reconhecida: " + acao }, 200);
       }
