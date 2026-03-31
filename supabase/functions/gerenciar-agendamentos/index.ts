@@ -877,19 +877,25 @@ serve(async (req) => {
             const u: any = resUser.rows[0];
             if (u.email) {
               temPerfil = true;
-              textoPerfil = `?? Aqui estão as informações do seu Perfil:\n*Nome e sobrenome:* ${u.nome_sobrenome}\n*Email:* ${u.email}\n*Tipo Usuário:* ${u.tipo_usuario}\n*Acesso a Painel Geral:* ${linkPainel}`;
+              textoPerfil = `👤 Aqui estão as informações do seu Perfil:\n*Nome e sobrenome:* ${u.nome_sobrenome}\n*Email:* ${u.email}\n*Tipo Usuário:* ${u.tipo_usuario}\n*Acesso a Painel Geral:* ${linkPainel}`;
             }
           }
 
           if (temPerfil) {
-            if (consultasDentroHorario.length > 0) menuRows.push({ id: "consultas_a_realizar", title: "1?? Consultas à Realizar", description: "Veja suas Consultas agendadas." });
-            if (consultasParaRemarcacao.length > 0) menuRows.push({ id: "para_remarcar", title: "2?? Para Remarcar", description: "Consultas que ainda podem ser remarcadas." });
-            if (consultasConfirmadaVencida.length > 0) menuRows.push({ id: "consultas_vencidas", title: "3?? Consultas Vencidas", description: "Consultas Agendadas e Vencidas." });
-            if (consultasAtendidas.length > 0) menuRows.push({ id: "historico_consultas", title: "4?? Consultas Realizadas", description: "Consultas Atendidas." });
-            menuRows.push({ id: "meu_perfil", title: "5?? Meu Perfil", description: "Acesse os dados do seu perfil." });
+            if (consultasDentroHorario.length > 0) menuRows.push({ id: "consultas_a_realizar", title: "Consultas à Realizar", description: "Veja suas Consultas agendadas." });
+            if (consultasParaRemarcacao.length > 0) menuRows.push({ id: "para_remarcar", title: "Para Remarcar", description: "Consultas que ainda podem ser remarcadas." });
+            if (consultasConfirmadaVencida.length > 0) menuRows.push({ id: "consultas_vencidas", title: "Consultas Vencidas", description: "Consultas Agendadas e Vencidas." });
+            if (consultasAtendidas.length > 0) menuRows.push({ id: "historico_consultas", title: "Consultas Realizadas", description: "Consultas Atendidas." });
+            menuRows.push({ id: "meu_perfil", title: "Meu Perfil", description: "Acesse os dados do seu perfil." });
           }
 
-          const menuGeral: any = menuRows.length > 0 ? menuRows : "Lista vazia";
+          // Numeração dinâmica: emoji gerado pelo índice real do array final
+          const emojisNum = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+          const menuGeralNumerado = menuRows.map((item, idx) => ({
+            ...item,
+            title: `${emojisNum[idx] ?? (idx + 1) + '.'} ${item.title}`
+          }));
+          const menuGeral: any = menuGeralNumerado.length > 0 ? menuGeralNumerado : "Lista vazia";
 
           const limparSaidaArray = (arr: any[]) => {
             return arr.map(c => {
