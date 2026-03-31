@@ -865,10 +865,12 @@ serve(async (req) => {
           let textoPerfil = "Perfil não encontrado.";
           const menuRows = [];
 
-          const queryUser = `SELECT * FROM usuarios WHERE celular = regexp_replace($1, '\\D', '', 'g') AND codigoempresa = $2 LIMIT 1`;
+          // 🛡️ FIX: regexp_replace aplicado ao parâmetro de entrada, comparado contra a coluna celular já limpa no banco
+          const celLimpoParam = String(payload.celularCliente).replace(/\D/g, '');
+          const queryUser = `SELECT * FROM usuarios WHERE celular = $1 AND codigoempresa = $2 LIMIT 1`;
           const resUser = await connection.queryObject({
             text: queryUser,
-            args: [String(payload.celularCliente), String(payload.codigoempresa)]
+            args: [celLimpoParam, String(codigoempresa)]
           });
 
           if (resUser.rowCount > 0) {
