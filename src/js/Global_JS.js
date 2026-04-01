@@ -215,6 +215,8 @@ function fazerLogout() {
         console.warn("⚠️ [UI] Falha na limpeza de modais durante o logout:", err);
     }
 
+    if (typeof ApiClient !== 'undefined') ApiClient.isExpiredAlerted = false;
+
     localStorage.removeItem('appAgendaUserEmail');
     localStorage.removeItem('appAgendaUserTipo');
     localStorage.removeItem('appAgendaUserCodigoEmpresa');

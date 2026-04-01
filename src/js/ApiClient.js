@@ -3,11 +3,13 @@ const SUPABASE_URL = "https://xugyekefbinusnrmzcrj.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1Z3lla2VmYmludXNucm16Y3JqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMjE3NzEsImV4cCI6MjA4OTY5Nzc3MX0.dac0acC0OkKbJ48BM4c-PKZf8N0JOb3Xh7f47lkPd-Y";
 
 class ApiClient {
-    static isExpiredAlerted = false;
 
-    // 🛡️ MODO PASSIVO: Sem localStorage.clear(), sem modal, sem loop.
     static handleSessionExpired() {
-        console.error("⛔ API retornou 401, mas a autodestruição da sessão foi DESATIVADA.");
+        if (this.isExpiredAlerted) return;
+        this.isExpiredAlerted = true;
+        const doc = (typeof window !== 'undefined' && window.top) ? window.top.document : document;
+        const modal = doc.getElementById('modal-sessao-expirada');
+        if (modal) modal.style.display = 'flex';
     }
 
     static async request(endpoint, options = {}) {
@@ -106,3 +108,4 @@ class ApiClient {
         return this.request(endpoint, { ...options, method: 'DELETE' });
     }
 }
+ApiClient.isExpiredAlerted = false;
