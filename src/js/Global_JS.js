@@ -2205,12 +2205,12 @@ async function prepararNovoSubEspecialidade(espId, espNome) {
         selPai.dispatchEvent(new Event('change'));
     }
 
-    // [SINCRONIA] Carrega as subs cadastradas para o container lateral
-    if (typeof carregarSubEspecialidades === 'function') {
-        await carregarSubEspecialidades(espId);
-    }
-
     abrirModal('modal-nova-subespecialidade');
+
+    // [SINCRONIA] Carrega as subs cadastradas para o container lateral em segundo plano
+    if (typeof carregarSubEspecialidades === 'function') {
+        carregarSubEspecialidades(espId);
+    }
 }
 
 function prepararExclusaoSubEspecialidade(id, nome) {
