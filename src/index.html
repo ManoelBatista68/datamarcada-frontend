@@ -1042,44 +1042,48 @@
         </div>
 
         <div id="modal-editar-subespecialidade"
-            class="tw-fixed tw-inset-0 tw-items-center tw-justify-center tw-bg-slate-900/60 tw-backdrop-blur-sm"
+            class="tw-fixed tw-inset-0 tw-bg-slate-900/60 tw-backdrop-blur-sm"
             style="display: none; z-index: 50040;">
-            <div
-                class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-p-6 tw-w-[90%] tw-max-w-[450px]">
-                <span
-                    class="material-icons tw-absolute tw-top-4 tw-right-4 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
-                    onclick="fecharModal('modal-editar-subespecialidade')">close</span>
-
-                <div class="tw-text-xl tw-font-bold tw-text-primary tw-mb-1">Editar Sub-especialidade</div>
-                <p class="tw-text-[12px] tw-text-slate-500 tw-mb-5">Gerencie os detalhes desta categoria no sistema.</p>
-
-                <div class="tw-space-y-4 tw-mb-6">
-                    <div class="tw-space-y-1.5">
-                        <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da
-                            Sub-especialidade</label>
-                        <input type="hidden" id="edit-sub-especialidade-id" />
-                        <input id="edit-sub-especialidade-nome"
-                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
-                            type="text" value="Cardiologia Pediátrica" />
-                    </div>
-                    <div class="tw-space-y-1.5">
-                        <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Status</label>
-                        <select
-                            class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all tw-appearance-none tw-cursor-pointer">
-                            <option selected value="active">Ativo</option>
-                            <option value="inactive">Inativo</option>
-                        </select>
-                    </div>
+            <div class="tw-bg-white tw-rounded-[8px] tw-shadow-2xl tw-flex tw-flex-col tw-overflow-hidden"
+                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: calc(100% - 32px); max-width: 900px; max-height: 90vh;">
+                <div class="tw-p-6 tw-pb-4 tw-bg-white tw-border-b tw-border-[#eee] tw-shrink-0 tw-relative tw-rounded-t-[8px]">
+                    <span
+                        class="material-icons tw-absolute tw-top-6 tw-right-6 tw-text-slate-400 hover:tw-text-slate-600 tw-cursor-pointer tw-transition-colors"
+                        onclick="fecharModal('modal-editar-subespecialidade')">close</span>
+                    <div class="tw-text-xl tw-font-bold tw-text-primary tw-mb-1">Editar Sub-especialidade</div>
+                    <p class="tw-text-[12px] tw-text-slate-500 tw-m-0">Gerencie os detalhes desta categoria no sistema.</p>
                 </div>
-                <div class="tw-flex tw-justify-end tw-gap-3">
-                    <button
-                        class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                        style="background:#e0e0e0; color:#333;"
-                        onclick="fecharModal('modal-editar-subespecialidade')">Cancelar</button>
-                    <button
-                        class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
-                        style="background:#34a853; color:white;" onclick="atualizarSubEspecialidade()">Salvar
-                        Alterações</button>
+                <div class="tw-p-6 tw-overflow-y-auto tw-custom-scrollbar tw-flex-1 tw-min-h-0">
+                    <div class="tw-space-y-4">
+                        <div class="tw-space-y-1.5">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Nome da Sub-especialidade</label>
+                            <input type="hidden" id="edit-sub-especialidade-id" />
+                            <input id="edit-sub-especialidade-nome"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-h-[38px] tw-px-4 tw-text-sm tw-outline-none tw-transition-all"
+                                type="text" />
+                        </div>
+                        <div class="tw-space-y-1.5">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Informações</label>
+                            <textarea id="edit-sub-info-geral"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-px-4 tw-py-2 tw-text-sm tw-outline-none tw-transition-all tw-resize-y tw-min-h-[80px]"
+                                placeholder="Descreva os detalhes e informações gerais..."></textarea>
+                        </div>
+                        <div class="tw-space-y-1.5">
+                            <label class="tw-text-[11px] tw-font-bold tw-text-slate-400 tw-uppercase tw-ml-1">Orientações ao Cliente</label>
+                            <textarea id="edit-sub-info-cliente"
+                                class="tw-w-full tw-bg-white tw-border tw-border-[#ddd] focus:tw-ring-2 focus:tw-ring-primary/20 focus:tw-border-primary tw-rounded-[8px] tw-px-4 tw-py-2 tw-text-sm tw-outline-none tw-transition-all tw-resize-y tw-min-h-[80px]"
+                                placeholder="Instruções para o paciente..."></textarea>
+                        </div>
+                    </div>
+                    <div class="tw-flex tw-justify-end tw-gap-3 tw-mt-5">
+                        <button type="button"
+                            class="tw-h-[38px] tw-px-6 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
+                            style="background:#e0e0e0; color:#333;"
+                            onclick="fecharModal('modal-editar-subespecialidade')">Cancelar</button>
+                        <button type="button"
+                            class="tw-h-[38px] tw-px-8 tw-rounded-[8px] tw-font-bold tw-border-none tw-cursor-pointer tw-transition-all hover:tw-brightness-110"
+                            style="background:#34a853; color:white;" onclick="atualizarSubEspecialidade()">Salvar Alterações</button>
+                    </div>
                 </div>
             </div>
         </div>

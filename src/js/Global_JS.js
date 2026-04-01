@@ -2177,16 +2177,35 @@ function filtrarListaSubEspecialidades() {
     });
 }
 
-function prepararEdicaoSubEspecialidade(id, nome, espId) {
+async function prepararEdicaoSubEspecialidade(id, nome, espId) {
     const hiddenId = document.getElementById('edit-sub-especialidade-id');
     const inputNome = document.getElementById('edit-sub-especialidade-nome');
     const selectPai = document.getElementById('edit-sub-especialidade-pai') || document.getElementById('sub-especialidade-pai');
+    const editInfoGeral = document.getElementById('edit-sub-info-geral');
+    const editInfoCliente = document.getElementById('edit-sub-info-cliente');
 
     if (hiddenId) hiddenId.value = id;
     if (inputNome) inputNome.value = nome;
     if (selectPai && espId) selectPai.value = espId;
+    if (editInfoGeral) editInfoGeral.value = "";
+    if (editInfoCliente) editInfoCliente.value = "";
 
     if (typeof abrirModal === 'function') abrirModal('modal-editar-subespecialidade');
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'buscar_sub_especialidade',
+            id: id,
+            codigoempresa: userCodigoEmpresa
+        });
+        if (res.sucesso && res.dados) {
+            if (editInfoGeral) editInfoGeral.value = res.dados.info_geral || "";
+            if (editInfoCliente) editInfoCliente.value = res.dados.info_cliente || "";
+        }
+    } catch (e) {
+        if (e.message === "SESSION_EXPIRED") return;
+        console.error("Erro ao buscar dados da sub-especialidade:", e);
+    }
 }
 
 async function prepararNovoSubEspecialidade(espId, espNome) {
@@ -2225,6 +2244,8 @@ async function atualizarSubEspecialidade() {
     const id = document.getElementById('edit-sub-especialidade-id')?.value;
     const nome = document.getElementById('edit-sub-especialidade-nome')?.value.trim();
     const espId = document.getElementById('sub-especialidade-pai')?.value;
+    const infoGeral = document.getElementById('edit-sub-info-geral')?.value || "";
+    const infoCliente = document.getElementById('edit-sub-info-cliente')?.value || "";
 
     if (!nome) return mostrarMensagem("Aviso", "O nome não pode ser vazio.");
 
@@ -2236,6 +2257,8 @@ async function atualizarSubEspecialidade() {
             id: id,
             nome: nome,
             especialidade_id: espId,
+            info_geral: infoGeral,
+            info_cliente: infoCliente,
             codigoempresa: userCodigoEmpresa
         });
         if (res.sucesso) {
