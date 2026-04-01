@@ -2101,6 +2101,8 @@ async function salvarSubEspecialidade() {
 
     const espId = espPai.value;
     const nome = inputNome.value.trim();
+    const infoGeral = (document.getElementById('sub-info-geral') || {}).value || "";
+    const infoCliente = (document.getElementById('sub-info-cliente') || {}).value || "";
 
     if (!espId) return mostrarMensagem("Aviso", "Selecione a especialidade pai.");
     if (!nome) return mostrarMensagem("Aviso", "Digite o nome da sub-especialidade.");
@@ -2111,10 +2113,16 @@ async function salvarSubEspecialidade() {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
             acao: 'salvar_sub_especialidades',
             especialidade_id: espId,
-            nome: nome
+            nome: nome,
+            info_geral: infoGeral,
+            info_cliente: infoCliente
         });
         if (res.sucesso) {
             inputNome.value = "";
+            const elInfoGeral = document.getElementById('sub-info-geral');
+            const elInfoCliente = document.getElementById('sub-info-cliente');
+            if (elInfoGeral) elInfoGeral.value = "";
+            if (elInfoCliente) elInfoCliente.value = "";
             if (typeof fecharModal === 'function') fecharModal('modal-nova-subespecialidade');
             mostrarMensagem("Sucesso", "Sub-especialidade criada com o código: " + (res.dados?.codigo_sub_especialidade || "Gerado pelo BD"));
             await carregarSubEspecialidades(espId);
@@ -2590,8 +2598,6 @@ async function salvarNovoProduto() {
         valor_promo: document.getElementById('novo-produto-valor-promo') ? document.getElementById('novo-produto-valor-promo').value : "",
         status: document.getElementById('novo-produto-status') ? document.getElementById('novo-produto-status').value : "active",
         forma_atendimento: document.getElementById('novo-produto-tipo') ? document.getElementById('novo-produto-tipo').value : "presencial",
-        info_do_produto: document.getElementById('novo-produto-info') ? document.getElementById('novo-produto-info').value : "",
-        orientacao_cliente: document.getElementById('novo-produto-orientacao') ? document.getElementById('novo-produto-orientacao').value : "",
         local_atendimento: document.getElementById('novo-produto-local') ? document.getElementById('novo-produto-local').value : "",
         codigoempresa: userCodigoEmpresa
     };
