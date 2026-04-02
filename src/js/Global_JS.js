@@ -2729,10 +2729,9 @@ async function abrirModalNovoEspecialista() {
     if (tagContainer) tagContainer.innerHTML = '';
     window._tagsEspecialistaPendente = [];
 
-    // Carrega seletores encadeados
-    await carregarEspecialidadesNoModal('novo');
-
+    // Abre o modal imediatamente; carrega seletores em background
     modal.style.display = 'flex';
+    carregarEspecialidadesNoModal('novo');
 }
 
 /**
