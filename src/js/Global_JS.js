@@ -3006,7 +3006,7 @@ async function onChangeSubEspecialidadeModal(tipo) {
         if (res.sucesso && res.dados && res.dados.length > 0) {
             prodSel.innerHTML = '<option value="">Selecione o produto...</option>' +
                 res.dados.map(p => {
-                    const label = `${escapeHtml(p.nome_especialidade)} > ${escapeHtml(p.nome_sub)} > ${escapeHtml(p.nome_produto)}`;
+                    const label = `${escapeHtml(p.nome_sub)} > ${escapeHtml(p.nome_produto)}`;
                     return `<option value="${label}">${label}</option>`;
                 }).join('');
         } else {
