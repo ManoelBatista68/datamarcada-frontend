@@ -2915,9 +2915,11 @@ async function prepararExclusaoEspecialista(id, nome) {
 async function carregarEspecialidadesNoModal(tipo) {
     const selectId = tipo === 'novo' ? 'novo-especialista-especialidade' : 'editar-especialista-especialidade';
     const subSelectId = tipo === 'novo' ? 'novo-especialista-sub-especialidade' : 'editar-especialista-sub-especialidade';
+    const prodSelectId = tipo === 'novo' ? 'novo-especialista-produto' : 'editar-especialista-produto';
     const topDoc = window.top.document;
     const sel = topDoc.getElementById(selectId);
     const subSel = topDoc.getElementById(subSelectId);
+    const prodSel = topDoc.getElementById(prodSelectId);
     if (!sel) return;
 
     try {
@@ -2926,12 +2928,13 @@ async function carregarEspecialidadesNoModal(tipo) {
             codigoempresa: userCodigoEmpresa
         });
         if (res.sucesso && res.dados && res.dados.length > 0) {
-            sel.innerHTML = '<option value="">Selecione a Especialidade...</option>' +
+            sel.innerHTML = '<option value="">Especialidade...</option>' +
                 res.dados.map(e => `<option value="${e.id}">${escapeHtml(e.nome)}</option>`).join('');
         } else {
             sel.innerHTML = '<option value="">Nenhuma especialidade cadastrada</option>';
         }
-        if (subSel) subSel.innerHTML = '<option value="">Selecione a Especialidade primeiro</option>';
+        if (subSel) subSel.innerHTML = '<option value="">Sub-especialidade...</option>';
+        if (prodSel) prodSel.innerHTML = '<option value="">Produto...</option>';
     } catch (e) {
         if (e.message !== 'SESSION_EXPIRED') console.error('❌ [LOAD ESPECIALIDADES MODAL]:', e);
         if (sel) sel.innerHTML = '<option value="">Erro ao carregar</option>';
@@ -2944,14 +2947,18 @@ async function carregarEspecialidadesNoModal(tipo) {
 async function onChangeEspecialidadeModal(tipo) {
     const selectId = tipo === 'novo' ? 'novo-especialista-especialidade' : 'editar-especialista-especialidade';
     const subSelectId = tipo === 'novo' ? 'novo-especialista-sub-especialidade' : 'editar-especialista-sub-especialidade';
+    const prodSelectId = tipo === 'novo' ? 'novo-especialista-produto' : 'editar-especialista-produto';
     const topDoc = window.top.document;
     const sel = topDoc.getElementById(selectId);
     const subSel = topDoc.getElementById(subSelectId);
+    const prodSel = topDoc.getElementById(prodSelectId);
     if (!sel || !subSel) return;
+
+    if (prodSel) prodSel.innerHTML = '<option value="">Produto...</option>';
 
     const especialidadeId = sel.value;
     if (!especialidadeId) {
-        subSel.innerHTML = '<option value="">Selecione a Especialidade primeiro</option>';
+        subSel.innerHTML = '<option value="">Sub-especialidade...</option>';
         return;
     }
 
@@ -2959,13 +2966,13 @@ async function onChangeEspecialidadeModal(tipo) {
 
     try {
         const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
-            acao: 'listar_sub_especialidades_v2',
+            acao: 'listar_sub_especialidades',
             codigoempresa: userCodigoEmpresa,
             especialidade_id: especialidadeId
         });
         if (res.sucesso && res.dados && res.dados.length > 0) {
-            subSel.innerHTML = '<option value="">Selecione a Sub-Especialidade...</option>' +
-                res.dados.map(s => `<option value="${escapeHtml(s.nome)}">${escapeHtml(s.nome)}</option>`).join('');
+            subSel.innerHTML = '<option value="">Sub-especialidade...</option>' +
+                res.dados.map(s => `<option value="${escapeHtml(s.id)}" data-nome="${escapeHtml(s.nome)}">${escapeHtml(s.nome)}</option>`).join('');
         } else {
             subSel.innerHTML = '<option value="">Nenhuma sub-especialidade encontrada</option>';
         }
@@ -2973,6 +2980,64 @@ async function onChangeEspecialidadeModal(tipo) {
         if (e.message !== 'SESSION_EXPIRED') console.error('❌ [LOAD SUB-ESP MODAL]:', e);
         subSel.innerHTML = '<option value="">Erro ao carregar</option>';
     }
+}
+
+async function onChangeSubEspecialidadeModal(tipo) {
+    const subSelectId = tipo === 'novo' ? 'novo-especialista-sub-especialidade' : 'editar-especialista-sub-especialidade';
+    const prodSelectId = tipo === 'novo' ? 'novo-especialista-produto' : 'editar-especialista-produto';
+    const topDoc = window.top.document;
+    const subSel = topDoc.getElementById(subSelectId);
+    const prodSel = topDoc.getElementById(prodSelectId);
+    if (!subSel || !prodSel) return;
+
+    const subId = subSel.value;
+    if (!subId) {
+        prodSel.innerHTML = '<option value="">Produto...</option>';
+        return;
+    }
+
+    prodSel.innerHTML = '<option value="">Carregando...</option>';
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'listar_produtos_por_sub',
+            codigoempresa: userCodigoEmpresa,
+            sub_id: subId
+        });
+        if (res.sucesso && res.dados && res.dados.length > 0) {
+            prodSel.innerHTML = '<option value="">Selecione o produto...</option>' +
+                res.dados.map(p => {
+                    const label = `${escapeHtml(p.nome_especialidade)} > ${escapeHtml(p.nome_sub)} > ${escapeHtml(p.nome_produto)}`;
+                    return `<option value="${label}">${label}</option>`;
+                }).join('');
+        } else {
+            prodSel.innerHTML = '<option value="">Nenhum produto encontrado</option>';
+        }
+    } catch (e) {
+        if (e.message !== 'SESSION_EXPIRED') console.error('❌ [LOAD PRODUTOS MODAL]:', e);
+        prodSel.innerHTML = '<option value="">Erro ao carregar</option>';
+    }
+}
+
+function adicionarProdutoTag(tipo) {
+    const prodSelectId = tipo === 'novo' ? 'novo-especialista-produto' : 'editar-especialista-produto';
+    const topDoc = window.top.document;
+    const prodSel = topDoc.getElementById(prodSelectId);
+    if (!prodSel) return;
+
+    const val = prodSel.value;
+    if (!val || val === 'Selecione o produto...') return;
+
+    if (tipo === 'novo') {
+        if (!window._tagsEspecialistaPendente) window._tagsEspecialistaPendente = [];
+        if (!window._tagsEspecialistaPendente.includes(val)) window._tagsEspecialistaPendente.push(val);
+    } else {
+        if (!window._tagsEspecialistaEdicao) window._tagsEspecialistaEdicao = [];
+        if (!window._tagsEspecialistaEdicao.includes(val)) window._tagsEspecialistaEdicao.push(val);
+    }
+
+    prodSel.value = '';
+    renderizarTagsEspecialista(tipo);
 }
 
 /**
