@@ -696,6 +696,21 @@
         </div>
     </div>
 
+    <!-- Modal: Conflito ao cadastrar especialista -->
+    <div id="modal-conflito-especialista" class="modal-overlay" style="z-index:60000; display:none;">
+        <div class="modal-box" style="max-width:380px; text-align:center;">
+            <span class="material-icons modal-close-x" onclick="fecharModalConflitoEspecialista()">close</span>
+            <div style="display:flex; justify-content:center; margin-bottom:12px;">
+                <span class="material-icons" style="font-size:40px; color:#e53935;">warning</span>
+            </div>
+            <div class="modal-title" style="color:#e53935; margin-bottom:10px;">Dado(s) já cadastrado(s)</div>
+            <p id="conflito-especialista-msg" style="margin-bottom:20px; font-size:14px; color:#555; line-height:1.6;"></p>
+            <div class="modal-actions" style="justify-content:center;">
+                <button class="btn-modal" style="background:#e53935; color:white;" onclick="fecharModalConflitoEspecialista()">Entendido</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-mensagem" class="modal-overlay">
         <div class="modal-box" style="max-width:300px;text-align:center;">
             <span class="material-icons modal-close-x" onclick="fecharModalMensagem()">close</span>

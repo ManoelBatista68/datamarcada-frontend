@@ -2765,6 +2765,8 @@ async function salvarNovoEspecialista() {
                 window.top.document.getElementById('modal-novo-especialista').style.display = 'none';
             mostrarMensagem("Sucesso", "Especialista criado! Código gerado: " + (res.novoCodigo || ""));
             await carregarEspecialistas();
+        } else if (res.conflito) {
+            abrirModalConflitoEspecialista(res.mensagem || "Dado(s) já cadastrado(s) para outro especialista.");
         } else {
             mostrarMensagem("Erro", res.erro || "Falha ao salvar especialista.");
         }
@@ -2773,6 +2775,20 @@ async function salvarNovoEspecialista() {
     } finally {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
     }
+}
+
+function abrirModalConflitoEspecialista(mensagem) {
+    const topDoc = window.top.document;
+    const el = topDoc.getElementById('conflito-especialista-msg');
+    if (el) el.textContent = mensagem;
+    const modal = topDoc.getElementById('modal-conflito-especialista');
+    if (modal) modal.style.display = 'flex';
+}
+
+function fecharModalConflitoEspecialista() {
+    const topDoc = window.top.document;
+    const modal = topDoc.getElementById('modal-conflito-especialista');
+    if (modal) modal.style.display = 'none';
 }
 
 /**
