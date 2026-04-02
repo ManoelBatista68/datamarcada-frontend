@@ -1607,125 +1607,13 @@ async function carregarEstruturaHierarquica() {
         if (!container) return;
 
         if (especialidades.length === 0) {
-            container.innerHTML = `
-                <div class="tw-p-10 tw-text-center tw-text-slate-400 tw-italic tw-bg-white tw-rounded-lg tw-border-2 tw-border-dashed tw-border-slate-100">
-                    Nenhuma especialidade cadastrada ainda. Use o botão acima para começar.
-                </div>`;
+            container.innerHTML = renderHierarquiaVazia();
             return;
         }
 
-        let html = '';
-        especialidades.forEach(esp => {
-            const subs = subMap[esp.id] || [];
-            const espContainerId = `subs-esp-${esp.id}`;
-            const espIconId = `icon-esp-${esp.id}`;
-
-            html += `
-            <section class="tw-space-y-6 tw-mb-12 tw-fade-in-smooth">
-                <!-- CARD ESPECIALIDADE -->
-                <div class="tw-bg-white tw-p-6 tw-rounded-xl tw-flex tw-items-center tw-justify-between tw-shadow-sm tw-border-l-4 tw-border-primary tw-group hover:tw-shadow-md tw-transition-shadow" style="border-left-color: #3F76CB;">
-                    <div class="tw-flex tw-items-center tw-gap-5">
-                        <div class="tw-w-12 tw-h-12 tw-rounded-full tw-bg-primary-fixed tw-flex tw-items-center tw-justify-center tw-text-primary group-hover:tw-scale-110 tw-transition-transform">
-                            <span class="material-symbols-outlined tw-text-2xl">stethoscope</span>
-                        </div>
-                        <div>
-                            <h3 class="tw-font-bold tw-text-on-surface tw-flex tw-items-center tw-text-lg">
-                                ${escapeHtml(esp.nome)} 
-                                <span class="material-symbols-outlined tw-text-xl tw-text-slate-400 hover:tw-text-primary tw-ml-3 tw-cursor-pointer tw-transition-colors" title="Editar Especialidade"
-                                    onclick="window.parent.prepararEdicaoEspecialidade('${esp.id}', '${escapeHtml(esp.nome)}')">settings</span>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="tw-flex tw-items-center tw-gap-3">
-                        <button onclick="window.parent.prepararNovoSubEspecialidade('${esp.id}', '${escapeHtml(esp.nome)}')" 
-                            class="tw-h-[36px] tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-2 tw-px-4 tw-bg-blue-50 tw-text-primary hover:tw-bg-blue-100 tw-transition-colors tw-border-none tw-cursor-pointer">
-                            <span class="material-symbols-outlined tw-text-lg">add_circle</span> Adicionar Sub
-                        </button>
-                        <div class="tw-h-8 tw-w-[1px] tw-bg-outline-variant/30"></div>
-                        <button onclick="window.parent.toggleHierarquia('${espContainerId}', '${espIconId}')" 
-                            class="tw-ml-4 tw-p-2 tw-rounded-lg tw-text-outline hover:tw-text-primary hover:tw-bg-primary-fixed/30 tw-transition-all tw-flex tw-items-center tw-justify-center tw-w-12 tw-h-12 tw-border-none tw-bg-transparent tw-cursor-pointer" title="Expandir/Recolher">
-                            <span id="${espIconId}" class="material-symbols-outlined tw-text-2xl">visibility_off</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- CONTAINER SUBS -->
-                <div class="tw-ml-12 tw-space-y-8 diagnostic-thread tw-hidden" id="${espContainerId}">
-                    ${subs.length > 0 ? subs.map(sub => {
-                const subProds = prodMap[sub.codigo_sub_especialidade] || prodMap[sub.id] || prodMap[sub.nome] || [];
-                const subContainerId = `prod-sub-${sub.id}`;
-                const subIconId = `icon-sub-${sub.id}`;
-
-                return `
-                <div class="tw-space-y-4">
-                    <!-- HEADER SUB-ESPECIALIDADE -->
-                    <div class="tw-bg-white tw-flex tw-items-center tw-justify-between tw-p-5 tw-rounded-xl tw-shadow-sm tw-border-l-4 tw-border-blue-500 tw-border-y tw-border-r tw-border-slate-100">
-                        <div class="tw-flex tw-items-center tw-gap-2">
-                            <span class="material-symbols-outlined tw-text-outline">subdirectory_arrow_right</span>
-                            <h4 class="tw-font-bold tw-text-on-surface-variant tw-text-base">
-                                ${escapeHtml(sub.nome)} 
-                                <span class="material-symbols-outlined tw-text-xl tw-text-slate-400 hover:tw-text-primary tw-ml-2 tw-cursor-pointer tw-transition-colors" title="Editar Sub"
-                                    onclick="window.parent.prepararEdicaoSubEspecialidade('${sub.id}', '${escapeHtml(sub.nome)}', '${esp.id}')">settings</span>
-                            </h4>
-                        </div>
-                        <div class="tw-flex tw-items-center tw-gap-3">
-                            <button onclick="window.parent.prepararNovoProduto('${sub.id}', '${escapeHtml(sub.nome)}', '${esp.id}', '${escapeHtml(esp.nome)}')" 
-                                class="tw-h-[36px] tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-2 tw-px-4 tw-bg-primary tw-text-white hover:tw-bg-blue-700 tw-transition-colors tw-border-none tw-cursor-pointer">
-                                <span class="material-symbols-outlined tw-text-lg">add</span> Novo Produto
-                            </button>
-                            <div class="tw-h-8 tw-w-[1px] tw-bg-outline-variant/30"></div>
-                            <button type="button" onclick="window.parent.toggleHierarquia('${subContainerId}', '${subIconId}')" 
-                                class="tw-p-2 tw-rounded-lg tw-text-outline hover:tw-text-primary hover:tw-bg-primary-fixed/30 tw-transition-all tw-flex tw-items-center tw-justify-center tw-w-10 tw-h-10 tw-border-none tw-bg-transparent tw-cursor-pointer" title="Expandir/Recolher">
-                                <span id="${subIconId}" class="material-symbols-outlined tw-text-2xl">visibility_off</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- GRID PRODUTOS -->
-                    <div id="${subContainerId}" class="tw-hidden tw-grid tw-grid-cols-1 md:tw-grid-cols-2 xl:tw-grid-cols-3 tw-gap-6 tw-transition-all">
-                        ${subProds.length > 0 ? subProds.map(prod => `
-                        <div class="tw-bg-white tw-p-5 tw-rounded-xl tw-shadow-sm tw-border tw-border-outline-variant/10 hover:tw-border-secondary/30 hover:tw-shadow-lg tw-transition-all tw-group">
-                            <div class="tw-flex tw-justify-between tw-items-start tw-mb-4">
-                                <div class="tw-p-2 tw-rounded-lg tw-bg-surface-container-low tw-text-primary">
-                                    <span class="material-symbols-outlined">${prod.forma_atendimento === 'On-Line' ? 'videocam' : 'ecg'}</span>
-                                </div>
-                                <div class="tw-flex tw-gap-1 tw-opacity-0 group-hover:tw-opacity-100 tw-transition-opacity">
-                                    <button onclick="window.parent.prepararEdicaoProduto('${prod.id}')" 
-                                        class="tw-p-1.5 hover:tw-bg-slate-100 tw-rounded tw-text-slate-400 hover:tw-text-primary tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
-                                        <span class="material-symbols-outlined tw-text-xl">settings</span>
-                                    </button>
-                                    <button onclick="window.parent.prepararExclusaoProduto('${prod.id}', '${escapeHtml(prod.nome_produto)}')" 
-                                        class="tw-p-1.5 hover:tw-bg-error-container tw-rounded tw-text-slate-400 hover:tw-text-error tw-transition-colors tw-border-none tw-bg-transparent tw-cursor-pointer">
-                                        <span class="material-symbols-outlined tw-text-xl">delete</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <h5 class="tw-font-bold tw-text-on-surface tw-mb-1 tw-text-base">${escapeHtml(prod.nome_produto)}</h5>
-                            <div class="tw-flex tw-items-center tw-justify-between tw-mt-4 tw-pt-4 tw-border-t tw-border-outline-variant/10">
-                                <div>
-                                    <span class="tw-text-xs tw-text-outline tw-font-medium tw-block tw-uppercase">Preço</span>
-                                    <span class="tw-text-primary tw-font-extrabold">R$ ${prod.valor_prom || prod.valor_real}</span>
-                                </div>
-                                <div class="tw-text-right">
-                                    <span class="tw-text-xs tw-text-outline tw-font-medium tw-block tw-uppercase">Tipo</span>
-                                    <span class="tw-text-on-surface tw-text-sm tw-font-semibold">${escapeHtml(prod.forma_atendimento)}</span>
-                                </div>
-                            </div>
-                        </div>
-                        `).join('') : `
-                        <div class="tw-col-span-full tw-p-4 tw-text-center tw-text-slate-400 tw-text-xs tw-italic tw-border tw-border-dashed tw-border-slate-100 tw-rounded-lg">Nenhum produto cadastrado neste nível.</div>
-                        `}
-                    </div>
-                </div>
-                `;
-            }).join('') : `
-                <div class="tw-p-4 tw-text-center tw-text-slate-400 tw-text-xs tw-italic tw-bg-slate-50/50 tw-rounded-lg">Nenhuma sub-especialidade vinculada.</div>
-            `}
-                </div>
-            </section>`;
-        });
-
-        container.innerHTML = html;
+        container.innerHTML = especialidades.map(esp =>
+            renderCardEspecialidade(esp, subMap[esp.id] || [], prodMap)
+        ).join('');
 
         // Auto-sincronização de altura
         if (iframe.contentWindow && typeof iframe.contentWindow.sendHeight === 'function') {
