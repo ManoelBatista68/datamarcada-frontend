@@ -2645,8 +2645,8 @@ async function carregarEspecialistas() {
         }
 
         tbody.innerHTML = especialistas.map(esp => {
-            const subs = Array.isArray(esp.sub_especialidades) ? esp.sub_especialidades :
-                (typeof esp.sub_especialidades === 'string' ? esp.sub_especialidades.split(',').map(s => s.trim()).filter(Boolean) : []);
+            const subs = Array.isArray(esp.servicoQueAtende) ? esp.servicoQueAtende :
+                (typeof esp.servicoQueAtende === 'string' ? esp.servicoQueAtende.split(',').map(s => s.trim()).filter(Boolean) : []);
 
             return `
             <tr class="hover:tw-bg-[#eff6ff]/50 tw-transition-colors">
@@ -2754,7 +2754,7 @@ async function salvarNovoEspecialista() {
             nome,
             email,
             celular,
-            sub_especialidades: window._tagsEspecialistaPendente || [],
+            servicoQueAtende: window._tagsEspecialistaPendente || [],
             admin: !!window.top.document.getElementById('novo-especialista-admin')?.checked,
             silenciar_notificacao: !!window.top.document.getElementById('novo-especialista-silenciar')?.checked,
             ativo: !!window.top.document.getElementById('novo-especialista-ativo')?.checked,
@@ -2824,9 +2824,9 @@ async function prepararEdicaoEspecialista(id) {
         if (wAtivo) wAtivo.style.display = isAdmin ? '' : 'none';
 
         // Renderiza tags existentes
-        window._tagsEspecialistaEdicao = Array.isArray(esp.sub_especialidades)
-            ? esp.sub_especialidades
-            : (esp.sub_especialidades ? esp.sub_especialidades.split(',').map(s => s.trim()).filter(Boolean) : []);
+        window._tagsEspecialistaEdicao = Array.isArray(esp.servicoQueAtende)
+            ? esp.servicoQueAtende
+            : (esp.servicoQueAtende ? esp.servicoQueAtende.split(',').map(s => s.trim()).filter(Boolean) : []);
         renderizarTagsEspecialista('editar');
 
         // Carrega seletores encadeados
@@ -2863,7 +2863,7 @@ async function salvarEdicaoEspecialista() {
             email,
             celular,
             codigo_especialista: codigo,
-            sub_especialidades: window._tagsEspecialistaEdicao || [],
+            servicoQueAtende: window._tagsEspecialistaEdicao || [],
             admin: !!window.top.document.getElementById('editar-especialista-admin')?.checked,
             silenciar_notificacao: !!window.top.document.getElementById('editar-especialista-silenciar')?.checked,
             ativo: !!window.top.document.getElementById('editar-especialista-ativo')?.checked,
