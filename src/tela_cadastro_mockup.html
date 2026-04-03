@@ -99,6 +99,11 @@
                     class="tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-transparent tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer">
                     Especialistas
                 </button>
+                <button id="tab-3" onclick="switchTab(3)"
+                    class="tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-transparent tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer tw-gap-1">
+                    <span class="material-symbols-outlined" style="font-size:16px">integration_instructions</span>
+                    Integração WhatsApp
+                </button>
             </div>
 
             <div id="content-1" class="tw-space-y-8">
@@ -121,6 +126,180 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ── TAB 3: Integração WhatsApp ─────────────────────────────── -->
+            <div id="content-3" style="display: none;" class="tw-fade-in-smooth">
+                <style>
+                    .wa-section { background:#fff; border-radius:10px; border:1px solid #e8ecef; padding:24px; margin-bottom:20px; }
+                    .wa-section-title { font-family:'Manrope',sans-serif; font-size:15px; font-weight:700; color:#1a73e8; display:flex; align-items:center; gap:8px; margin-bottom:18px; }
+                    .wa-field { margin-bottom:16px; }
+                    .wa-label { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:#40484f; margin-bottom:6px; }
+                    .wa-input { width:100%; height:38px; border:1px solid #cdd5df; border-radius:8px; padding:0 12px; font-size:13px; color:#191c1e; background:#fafbfc; box-sizing:border-box; }
+                    .wa-input:focus { outline:none; border-color:#1a73e8; background:#fff; }
+                    .wa-input[readonly] { background:#f4f7f6; color:#707880; cursor:default; }
+                    .wa-select { width:100%; height:38px; border:1px solid #cdd5df; border-radius:8px; padding:0 12px; font-size:13px; color:#191c1e; background:#fafbfc; box-sizing:border-box; }
+                    .wa-select:focus { outline:none; border-color:#1a73e8; }
+                    .wa-hint { font-size:11px; color:#707880; margin-top:4px; line-height:1.5; }
+                    .wa-tooltip-wrap { position:relative; display:inline-flex; align-items:center; }
+                    .wa-tooltip-icon { font-size:16px; color:#9aa5b4; cursor:help; }
+                    .wa-tooltip-box { display:none; position:absolute; left:24px; top:-4px; background:#2d3748; color:#fff; font-size:11px; line-height:1.5; border-radius:6px; padding:8px 10px; width:280px; z-index:9999; box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+                    .wa-tooltip-wrap:hover .wa-tooltip-box { display:block; }
+                    .wa-readonly-url { display:flex; align-items:center; gap:8px; }
+                    .wa-copy-btn { height:38px; padding:0 14px; background:#f0f4ff; border:1px solid #c7d7fd; border-radius:8px; font-size:12px; font-weight:600; color:#1a73e8; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:4px; }
+                    .wa-copy-btn:hover { background:#e0eaff; }
+                    .wa-toggle-wrap { display:flex; align-items:center; gap:12px; padding:14px 16px; background:#f8fafb; border:1px solid #e8ecef; border-radius:8px; }
+                    .wa-toggle { position:relative; width:44px; height:24px; flex-shrink:0; }
+                    .wa-toggle input { opacity:0; width:0; height:0; }
+                    .wa-toggle-slider { position:absolute; inset:0; background:#cdd5df; border-radius:12px; cursor:pointer; transition:0.3s; }
+                    .wa-toggle-slider:before { content:""; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:0.3s; }
+                    .wa-toggle input:checked + .wa-toggle-slider { background:#34a853; }
+                    .wa-toggle input:checked + .wa-toggle-slider:before { transform:translateX(20px); }
+                    .wa-save-btn { height:38px; padding:0 28px; background:#34a853; color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+                    .wa-save-btn:hover { filter:brightness(1.08); }
+                </style>
+
+                <div style="max-width:700px;">
+
+                    <!-- Seção 1: WhatsApp / Meta Business -->
+                    <div class="wa-section">
+                        <div class="wa-section-title">
+                            <span class="material-symbols-outlined">chat</span>
+                            WhatsApp — Meta Business
+                        </div>
+
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                Phone Number ID
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Encontre em: Meta for Developers → Seus Apps → [seu app] → WhatsApp → Configuração da API → campo "Phone Number ID".</div>
+                                </div>
+                            </div>
+                            <input id="wa-phone-number-id" type="text" class="wa-input" placeholder="Ex: 948759884986682" />
+                        </div>
+
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                Token Permanente
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Gere em: Meta for Developers → Configurações do Negócio → Usuários do Sistema → Adicionar → gere token → selecione o app e marque a permissão "whatsapp_business_messaging". Use um token permanente, não temporário.</div>
+                                </div>
+                            </div>
+                            <input id="wa-token" type="password" class="wa-input" placeholder="••••••••••••••••" autocomplete="new-password" />
+                            <div class="wa-hint">Atenção: o token é visível apenas no momento de geração. Guarde uma cópia segura.</div>
+                        </div>
+
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                Token de Verificação do Webhook
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Crie uma senha de sua escolha (ex: datamarcada2024). Você vai inserir esse mesmo valor no campo "Token de verificação" ao configurar o Webhook no painel da Meta.</div>
+                                </div>
+                            </div>
+                            <input id="wa-verify-token" type="text" class="wa-input" placeholder="Ex: datamarcada2024" autocomplete="off" />
+                        </div>
+
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                URL do Webhook (Callback URL)
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Copie esta URL e cole no campo "URL de callback" em: Meta for Developers → WhatsApp → Configuração → Webhook. Assine o evento "messages".</div>
+                                </div>
+                            </div>
+                            <div class="wa-readonly-url">
+                                <input id="wa-webhook-url" type="text" class="wa-input" readonly value="https://xugyekefbinusnrmzcrj.supabase.co/functions/v1/gerenciar-agendamentos" />
+                                <button type="button" class="wa-copy-btn" onclick="copiarCampo('wa-webhook-url')">
+                                    <span class="material-symbols-outlined" style="font-size:14px">content_copy</span> Copiar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                Modo de Operação
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">"nativo" — usa o bot integrado do DataMarcada. "n8n" — desativa o bot para uso de automação externa via n8n. "desativado" — silencia todas as respostas automáticas.</div>
+                                </div>
+                            </div>
+                            <select id="wa-modo" class="wa-select">
+                                <option value="nativo">🤖 Nativo — Bot integrado</option>
+                                <option value="n8n">⚙️ n8n — Automação externa</option>
+                                <option value="desativado">🔕 Desativado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Seção 2: Mercado Pago -->
+                    <div class="wa-section">
+                        <div class="wa-section-title">
+                            <span class="material-symbols-outlined">payments</span>
+                            Mercado Pago
+                        </div>
+
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                Token de Produção (Access Token)
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Encontre em: Mercado Pago Developers → Suas Integrações → [sua integração] → Credenciais de Produção → Access Token. Certifique-se de usar credenciais de PRODUÇÃO, não de teste.</div>
+                                </div>
+                            </div>
+                            <input id="wa-mp-token" type="password" class="wa-input" placeholder="APP_USR-••••••••••••••••" autocomplete="new-password" />
+                            <div class="wa-hint">Atenção: use credenciais de produção. Credenciais de teste não geram cobranças reais.</div>
+                        </div>
+
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                URL de Notificação IPN
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Copie esta URL e configure em: Mercado Pago Developers → Suas Integrações → [sua integração] → IPN → URL do site em produção. Selecione o evento "Pagamentos".</div>
+                                </div>
+                            </div>
+                            <div class="wa-readonly-url">
+                                <input id="wa-mp-url" type="text" class="wa-input" readonly value="https://xugyekefbinusnrmzcrj.supabase.co/functions/v1/gerenciar-agendamentos" />
+                                <button type="button" class="wa-copy-btn" onclick="copiarCampo('wa-mp-url')">
+                                    <span class="material-symbols-outlined" style="font-size:14px">content_copy</span> Copiar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                Exigir Pagamento Antecipado
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Quando ativado: o cliente recebe um link do Mercado Pago ao agendar e o status fica "Pagamento Pendente" até a confirmação. Quando desativado: o agendamento é confirmado diretamente sem cobrança.</div>
+                                </div>
+                            </div>
+                            <div class="wa-toggle-wrap">
+                                <label class="wa-toggle">
+                                    <input type="checkbox" id="wa-exigir-pagamento" checked />
+                                    <span class="wa-toggle-slider"></span>
+                                </label>
+                                <div>
+                                    <div style="font-size:13px; font-weight:600; color:#191c1e;">Exigir pagamento via Mercado Pago ao agendar</div>
+                                    <div style="font-size:11px; color:#707880;">Desative para clínicas que preferem cobrar presencialmente ou por outro meio.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botão salvar -->
+                    <div style="display:flex; justify-content:flex-end; padding-bottom:24px;">
+                        <button type="button" class="wa-save-btn" onclick="window.parent.salvarConfigWhatsapp()">
+                            <span class="material-symbols-outlined" style="font-size:18px">save</span>
+                            Salvar Configurações
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+            <!-- ─────────────────────────────────────────────────────────────── -->
 
             <div id="content-2" style="display: none;">
                 <div class="tw-mt-12">
@@ -179,33 +358,36 @@
             resizeTimer = setTimeout(sendHeight, 150);
         };
 
+        const activeClass   = "tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-[#1a73e8] tw-text-white tw-font-bold tw-shadow-sm tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer hover:tw-brightness-110 tw-gap-1";
+        const inactiveClass = "tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-transparent tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer tw-gap-1";
+
         function switchTab(tab) {
-            const btn1 = document.getElementById('tab-1');
-            const btn2 = document.getElementById('tab-2');
-            const content1 = document.getElementById('content-1');
-            const content2 = document.getElementById('content-2');
+            [1, 2, 3].forEach(i => {
+                document.getElementById('tab-' + i).className = inactiveClass;
+                document.getElementById('content-' + i).style.display = "none";
+            });
+            document.getElementById('tab-' + tab).className = activeClass;
+            const content = document.getElementById('content-' + tab);
+            content.style.display = "block";
+            content.className = (tab === 1 ? "tw-space-y-8 " : "") + "tw-fade-in-smooth";
 
-            const activeClass = "tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-[#1a73e8] tw-text-white tw-font-bold tw-shadow-sm tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer hover:tw-brightness-110";
-            const inactiveClass = "tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-transparent tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer";
-
-            if (tab === 1) {
-                btn1.className = activeClass;
-                btn2.className = inactiveClass;
-                content1.style.display = "block";
-                content1.className = "tw-space-y-8 tw-fade-in-smooth";
-                content2.style.display = "none";
-            } else {
-                btn2.className = activeClass;
-                btn1.className = inactiveClass;
-                content1.style.display = "none";
-                content2.style.display = "block";
-                content2.className = "tw-fade-in-smooth";
-                // Carrega especialistas ao alternar para a aba
-                if (window.parent && typeof window.parent.carregarEspecialistas === 'function') {
-                    window.parent.carregarEspecialistas();
-                }
+            if (tab === 2 && window.parent && typeof window.parent.carregarEspecialistas === 'function') {
+                window.parent.carregarEspecialistas();
+            }
+            if (tab === 3 && window.parent && typeof window.parent.carregarConfigWhatsapp === 'function') {
+                window.parent.carregarConfigWhatsapp();
             }
             debouncedSendHeight();
+        }
+
+        function copiarCampo(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            navigator.clipboard.writeText(el.value).then(() => {
+                if (window.parent && typeof window.parent.mostrarMensagem === 'function') {
+                    window.parent.mostrarMensagem("Copiado!", "URL copiada para a área de transferência.", "sucesso");
+                }
+            });
         }
 
         window.onload = () => {

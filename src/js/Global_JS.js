@@ -2616,6 +2616,75 @@ async function confirmarExclusaoProduto() {
 /**
  * Busca a lista de especialistas e renderiza a tabela no Iframe de Cadastro Geral.
  */
+// ── Integração WhatsApp ───────────────────────────────────────────────────────
+
+async function carregarConfigWhatsapp() {
+    if (!userCodigoEmpresa) userCodigoEmpresa = localStorage.getItem('appAgendaUserCodigoEmpresa') || "";
+    const iframe = document.querySelector('iframe[src*="tela_cadastro_mockup"]');
+    if (!iframe) return;
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', {
+            acao: 'carregar_config_whatsapp',
+            codigoempresa: userCodigoEmpresa
+        });
+        if (!res.sucesso || !res.config) return;
+        const c = res.config;
+        const set = (id, val) => { const el = doc.getElementById(id); if (el && val != null) el.value = val; };
+        set('wa-phone-number-id', c.phone_number_id);
+        set('wa-token',           c.whatsapp_token ? '••••••••' : '');
+        set('wa-verify-token',    c.verify_token);
+        set('wa-mp-token',        c.mp_access_token ? '••••••••' : '');
+        const modoEl = doc.getElementById('wa-modo');
+        if (modoEl && c.modo) modoEl.value = c.modo;
+        const togEl = doc.getElementById('wa-exigir-pagamento');
+        if (togEl) togEl.checked = c.exigir_pagamento !== false;
+    } catch (e) {
+        mostrarMensagem("Erro", "Falha ao carregar configuração WhatsApp: " + e.message, "erro");
+    }
+}
+
+async function salvarConfigWhatsapp() {
+    if (!userCodigoEmpresa) userCodigoEmpresa = localStorage.getItem('appAgendaUserCodigoEmpresa') || "";
+    const iframe = document.querySelector('iframe[src*="tela_cadastro_mockup"]');
+    if (!iframe) return;
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const get = (id) => { const el = doc.getElementById(id); return el ? el.value.trim() : ''; };
+
+    const phone_number_id = get('wa-phone-number-id');
+    if (!phone_number_id) { mostrarMensagem("Atenção", "Informe o Phone Number ID.", "aviso"); return; }
+
+    const waTokenRaw = get('wa-token');
+    const mpTokenRaw = get('wa-mp-token');
+    const modoEl = doc.getElementById('wa-modo');
+    const togEl  = doc.getElementById('wa-exigir-pagamento');
+
+    const payload = {
+        acao: 'salvar_config_whatsapp',
+        codigoempresa:    userCodigoEmpresa,
+        phone_number_id,
+        verify_token:     get('wa-verify-token') || null,
+        modo:             modoEl ? modoEl.value : 'nativo',
+        ativo:            true,
+        exigir_pagamento: togEl ? togEl.checked : true,
+        whatsapp_token:   (waTokenRaw && !waTokenRaw.includes('•')) ? waTokenRaw : undefined,
+        mp_access_token:  (mpTokenRaw && !mpTokenRaw.includes('•')) ? mpTokenRaw : undefined,
+    };
+
+    try {
+        const res = await ApiClient.post('/functions/v1/gerenciar-agendamentos', payload);
+        if (res.sucesso) {
+            mostrarMensagem("Salvo!", "Configurações WhatsApp salvas com sucesso.", "sucesso");
+        } else {
+            mostrarMensagem("Erro", res.erro || "Falha ao salvar.", "erro");
+        }
+    } catch (e) {
+        mostrarMensagem("Erro", "Falha ao salvar configuração: " + e.message, "erro");
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 async function carregarEspecialistas() {
     if (!userCodigoEmpresa) userCodigoEmpresa = localStorage.getItem('appAgendaUserCodigoEmpresa') || "";
     console.log("👥 [ESPECIALISTAS] Carregando corpo clínico...");
