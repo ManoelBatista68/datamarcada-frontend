@@ -233,6 +233,48 @@
                         </div>
                     </div>
 
+                    <!-- Seção: Flows de Cadastro -->
+                    <div class="wa-section">
+                        <div class="wa-section-title">
+                            <span class="material-symbols-outlined">dynamic_form</span>
+                            Formulário de Cadastro (Meta Flows)
+                        </div>
+                        <p style="font-size:13px;color:#666;margin-bottom:12px;">
+                            Quando um cliente sem cadastro tentar agendar, o bot enviará este formulário interativo.
+                            Para criar um Flows, acesse <strong>Meta Business Suite → WhatsApp Manager → Flows → [+] Novo</strong>.
+                        </p>
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                ID do Flows
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Encontrado em WhatsApp Manager → Flows → selecionar o flow → copiar ID. Deixe vazio para desativar o formulário automático.</div>
+                                </div>
+                            </div>
+                            <input id="wa-flow-id-cadastro" type="text" class="wa-input" placeholder="Ex: 1234567890123456" />
+                        </div>
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                Texto do Botão (CTA)
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Texto exibido no botão da mensagem do bot. Máx. 20 caracteres.</div>
+                                </div>
+                            </div>
+                            <input id="wa-flow-cta-cadastro" type="text" class="wa-input" placeholder="Preencher Cadastro" maxlength="20" />
+                        </div>
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                ID da Tela Inicial do Flows
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Deve corresponder ao campo <code>"id"</code> da primeira tela no JSON do Flows (ex: "TELA_CADASTRO").</div>
+                                </div>
+                            </div>
+                            <input id="wa-flow-screen-cadastro" type="text" class="wa-input" placeholder="TELA_CADASTRO" />
+                        </div>
+                    </div>
+
                     <!-- Seção 2: Mercado Pago -->
                     <div class="wa-section">
                         <div class="wa-section-title">

@@ -2639,6 +2639,9 @@ async function carregarConfigWhatsapp() {
         if (modoEl && c.modo) modoEl.value = c.modo;
         const togEl = doc.getElementById('wa-exigir-pagamento');
         if (togEl) togEl.checked = c.exigir_pagamento !== false;
+        set('wa-flow-id-cadastro', c.flow_id_cadastro);
+        set('wa-flow-cta-cadastro', c.flow_cta_cadastro);
+        set('wa-flow-screen-cadastro', c.flow_screen_cadastro);
     } catch (e) {
         mostrarMensagem("Erro", "Falha ao carregar configuração WhatsApp: " + e.message, "erro");
     }
@@ -2661,14 +2664,17 @@ async function salvarConfigWhatsapp() {
 
     const payload = {
         acao: 'salvar_config_whatsapp',
-        codigoempresa:    userCodigoEmpresa,
+        codigoempresa:         userCodigoEmpresa,
         phone_number_id,
-        verify_token:     get('wa-verify-token') || null,
-        modo:             modoEl ? modoEl.value : 'nativo',
-        ativo:            true,
-        exigir_pagamento: togEl ? togEl.checked : true,
-        whatsapp_token:   (waTokenRaw && !waTokenRaw.includes('•')) ? waTokenRaw : undefined,
-        mp_access_token:  (mpTokenRaw && !mpTokenRaw.includes('•')) ? mpTokenRaw : undefined,
+        verify_token:          get('wa-verify-token') || null,
+        modo:                  modoEl ? modoEl.value : 'nativo',
+        ativo:                 true,
+        exigir_pagamento:      togEl ? togEl.checked : true,
+        whatsapp_token:        (waTokenRaw && !waTokenRaw.includes('•')) ? waTokenRaw : undefined,
+        mp_access_token:       (mpTokenRaw && !mpTokenRaw.includes('•')) ? mpTokenRaw : undefined,
+        flow_id_cadastro:      get('wa-flow-id-cadastro') || null,
+        flow_cta_cadastro:     get('wa-flow-cta-cadastro') || null,
+        flow_screen_cadastro:  get('wa-flow-screen-cadastro') || null,
     };
 
     try {
