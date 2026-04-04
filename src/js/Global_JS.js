@@ -2644,6 +2644,7 @@ async function carregarConfigWhatsapp() {
         set('wa-flow-screen-cadastro', c.flow_screen_cadastro);
         set('wa-delay-inicial', c.delay_inicial_ms != null ? Math.round(c.delay_inicial_ms / 1000) : 3);
         set('wa-palavras-por-minuto', c.palavras_por_minuto != null ? c.palavras_por_minuto : 200);
+        set('wa-link-acesso-app', c.link_acesso_app || '');
     } catch (e) {
         mostrarMensagem("Erro", "Falha ao carregar configuração WhatsApp: " + e.message, "erro");
     }
@@ -2679,6 +2680,7 @@ async function salvarConfigWhatsapp() {
         flow_screen_cadastro:  get('wa-flow-screen-cadastro') || null,
         delay_inicial_ms:      (parseInt(get('wa-delay-inicial')) || 3) * 1000,
         palavras_por_minuto:   parseInt(get('wa-palavras-por-minuto')) || 200,
+        link_acesso_app:       get('wa-link-acesso-app') || null,
     };
 
     try {
