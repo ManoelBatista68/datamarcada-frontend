@@ -378,6 +378,17 @@
                             <input id="wa-palavras-por-minuto" type="number" class="wa-input" placeholder="200" min="50" max="600" value="200" />
                             <div class="wa-hint">Ex.: 200 palavras/min → mensagem de 20 palavras gera 6s de espera (mínimo: delay inicial).</div>
                         </div>
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                Horas de antecedência (Apresentar Agenda)
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Horários de agenda com menos de X horas para o início são removidos automaticamente. Ex.: 4 = remove horários com menos de 4h de antecedência. Padrão: 4h.</div>
+                                </div>
+                            </div>
+                            <input id="wa-horas-antecedencia" type="number" class="wa-input" placeholder="4" min="0" max="72" value="4" />
+                            <div class="wa-hint">Define também o corte mínimo para exibir horários disponíveis no bot.</div>
+                        </div>
                     </div>
 
                     <!-- Botão salvar -->
