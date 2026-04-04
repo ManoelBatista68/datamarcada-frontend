@@ -331,6 +331,36 @@
                         </div>
                     </div>
 
+                    <!-- Seção: Comportamento do Bot -->
+                    <div class="wa-section">
+                        <div class="wa-section-title">
+                            <span class="material-symbols-outlined">timer</span>
+                            Comportamento do Bot
+                        </div>
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                Delay inicial (segundos)
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Tempo de espera antes de enviar a primeira mensagem de cada resposta. Simula o bot "digitando". Padrão: 3 segundos.</div>
+                                </div>
+                            </div>
+                            <input id="wa-delay-inicial" type="number" class="wa-input" placeholder="3" min="0" max="30" value="3" />
+                            <div class="wa-hint">Valor mínimo aplicado a todas as mensagens da sessão.</div>
+                        </div>
+                        <div class="wa-field">
+                            <div class="wa-label">
+                                Velocidade de leitura (palavras/min)
+                                <div class="wa-tooltip-wrap">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Define o tempo de espera entre mensagens consecutivas, baseado na quantidade de palavras da mensagem anterior. Padrão: 200 palavras/min. Menor valor = mais tempo para ler.</div>
+                                </div>
+                            </div>
+                            <input id="wa-palavras-por-minuto" type="number" class="wa-input" placeholder="200" min="50" max="600" value="200" />
+                            <div class="wa-hint">Ex.: 200 palavras/min → mensagem de 20 palavras gera 6s de espera (mínimo: delay inicial).</div>
+                        </div>
+                    </div>
+
                     <!-- Botão salvar -->
                     <div style="display:flex; justify-content:flex-end; padding-bottom:24px;">
                         <button type="button" class="wa-save-btn" onclick="window.parent.salvarConfigWhatsapp()">
