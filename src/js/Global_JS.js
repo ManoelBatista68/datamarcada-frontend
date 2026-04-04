@@ -1240,14 +1240,14 @@ function renderizar(dados, containerAlvo) {
             if (item.status === "Confirmado") { rowCls = "status-confirmado"; badgeCls = "badge-confirmado"; if (dtObj && dtObj < agora) { isExpired = true; rowCls += " bg-vencido"; } }
             else if (item.status === "Cancelado" || item.status === "Adiado") { rowCls = "status-cancelado"; badgeCls = "badge-cancelado"; } else if (item.status === "Atendido" || item.status === "Arquivado") { rowCls = "status-atendido"; badgeCls = "badge-atendido"; } else if (item.status === "Disponível") { rowCls = "status-disponivel"; } else if (item.status === "Não confirmado") { rowCls = "status-nao-confirmado"; badgeCls = "badge-nao-confirmado"; } else if (item.status === "Indefinido") { rowCls = "status-indefinido"; badgeCls = "badge-padrao"; }
 
-            let podeEditar = (item.status === "Disponível" || item.status === "Indefinido" || isExpired); const podeExcluir = ["Disponível", "Indefinido"].includes(item.status);
+            let podeEditar = (item.status === "Disponível" || item.status === "Indefinido" || isExpired || item.status === "Confirmado"); const podeExcluir = ["Disponível", "Indefinido"].includes(item.status);
             let valorFmt = ""; if (!isClient() && !podeEditar && item.valor) { valorFmt = '<span class="valor-display">' + getValorNumerico(item.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</span>'; }
 
             let statusContent = "";
 
             if (podeEditar) {
                 let opts = '<option value="Disponível" ' + (item.status === "Disponível" ? 'selected' : '') + '>Disponível</option><option value="Indefinido" ' + (item.status === "Indefinido" ? 'selected' : '') + '>Indefinido</option>';
-                if (isExpired && item.status === "Confirmado") { opts = '<option value="Confirmado" selected>Confirmado (Vencido)</option><option value="Atendido">Atendido</option><option value="Adiado">Adiado</option><option value="Cancelado">Cancelado</option>'; }
+                if (isExpired && item.status === "Confirmado") { opts = '<option value="Confirmado" selected>Confirmado (Vencido)</option><option value="Atendido">Atendido</option><option value="Adiado">Adiado</option><option value="Cancelado">Cancelado</option>'; } else if (item.status === "Confirmado") { opts = '<option value="Confirmado" selected>Confirmado</option><option value="Atendido">Atendido</option><option value="Adiado">Adiado</option><option value="Cancelado">Cancelado</option>'; }
                 statusContent = '<select id="status_' + item.id_unico + '" style="height:32px;width:auto;cursor:pointer;border-radius:6px;border:1px solid var(--border-color);font-size:12px;padding:0 8px;" onclick="event.stopPropagation()">' + opts + '</select>';
             } else {
                 statusContent = '<span class="status-badge ' + badgeCls + '">' + item.status + '</span><input type="hidden" id="status_' + item.id_unico + '" value="' + item.status + '">';
