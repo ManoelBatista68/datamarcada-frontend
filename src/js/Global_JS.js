@@ -2646,6 +2646,7 @@ async function carregarConfigWhatsapp() {
         set('wa-palavras-por-minuto', c.palavras_por_minuto != null ? c.palavras_por_minuto : 200);
         set('wa-link-acesso-app', c.link_acesso_app || '');
         set('wa-horas-antecedencia', c.horas_antecedencia_agenda != null ? c.horas_antecedencia_agenda : 4);
+        set('wa-alertas-horas', c.alertas_horas || '48,24,1');
     } catch (e) {
         mostrarMensagem("Erro", "Falha ao carregar configuração WhatsApp: " + e.message, "erro");
     }
@@ -2683,6 +2684,7 @@ async function salvarConfigWhatsapp() {
         palavras_por_minuto:        parseInt(get('wa-palavras-por-minuto')) || 200,
         link_acesso_app:            get('wa-link-acesso-app') || null,
         horas_antecedencia_agenda:  parseInt(get('wa-horas-antecedencia')) ?? 4,
+        alertas_horas:              get('wa-alertas-horas') || '48,24,1',
     };
 
     try {

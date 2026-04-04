@@ -391,6 +391,25 @@
                         </div>
                     </div>
 
+                    <!-- Seção: Alertas de Consultas -->
+                    <div class="wa-section">
+                        <div class="wa-section-title">
+                            <span class="material-symbols-outlined" style="font-size:20px;color:#34a853">notifications_active</span>
+                            ⏰ Alerta de Consultas à confirmar
+                        </div>
+                        <div class="wa-field">
+                            <div class="wa-label-row">
+                                <label class="wa-label" for="wa-alertas-horas">Horas de antecedência para alertar</label>
+                                <div class="wa-tooltip">
+                                    <span class="material-symbols-outlined wa-tooltip-icon">info</span>
+                                    <div class="wa-tooltip-box">Informe as horas de antecedência separadas por vírgula. Ex.: 48,24,1 = enviar alerta 48h, 24h e 1h antes da consulta. Deixe em branco para desativar.</div>
+                                </div>
+                            </div>
+                            <input id="wa-alertas-horas" type="text" class="wa-input" placeholder="48,24,1" />
+                            <div class="wa-hint">Use vírgula para múltiplos alertas. Requer templates aprovados: <b>lembrete_consulta_presencial2</b> e <b>lembrete_consulta_online2</b>.</div>
+                        </div>
+                    </div>
+
                     <!-- Botão salvar -->
                     <div style="display:flex; justify-content:flex-end; padding-bottom:24px;">
                         <button type="button" class="wa-save-btn" onclick="window.parent.salvarConfigWhatsapp()">
