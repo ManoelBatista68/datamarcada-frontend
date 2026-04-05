@@ -15,7 +15,7 @@ function renderCardEspecialidade(esp, subs, prodMap) {
 
     return `
     <section class="tw-space-y-6 tw-mb-12 tw-fade-in-smooth">
-        <div class="tw-bg-white tw-p-3 md:tw-p-6 tw-rounded-xl tw-flex tw-items-center tw-justify-between tw-shadow-sm tw-border-l-4 tw-border-primary tw-group hover:tw-shadow-md tw-transition-shadow" style="border-left-color: #3F76CB;">
+        <div class="tw-bg-white tw-p-3 md:tw-p-6 tw-rounded-xl tw-flex tw-items-center tw-justify-between tw-shadow-sm tw-border tw-border-[#bfdbfe] tw-group hover:tw-shadow-md tw-transition-shadow" style="border-left: 5px solid #3b82f6;">
             <div class="tw-flex tw-items-center tw-gap-2 md:tw-gap-5">
                 <div class="tw-w-9 tw-h-9 md:tw-w-12 md:tw-h-12 tw-rounded-full tw-bg-primary-fixed tw-flex tw-items-center tw-justify-center tw-text-primary group-hover:tw-scale-110 tw-transition-transform tw-shrink-0">
                     <span class="material-symbols-outlined tw-text-xl md:tw-text-2xl">stethoscope</span>
