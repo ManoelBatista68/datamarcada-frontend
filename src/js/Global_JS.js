@@ -132,13 +132,13 @@ async function iniciarApp() {
         console.log("🎭 Role detectada:", tipoUsuarioAtual);
 
         const btnCadastro = document.getElementById('btn-cadastro-geral');
-        if (btnCadastro) {
-            const roleNormalizada = (tipoUsuarioAtual || "").toString().trim().toLowerCase();
-            const eAdmin = roleNormalizada === 'admim';
+        const btnCadastroMobile = document.getElementById('btn-cadastro-geral-mobile');
+        const roleNormalizada = (tipoUsuarioAtual || "").toString().trim().toLowerCase();
+        const eAdmin = roleNormalizada === 'admim';
 
-            console.log("🛡️ RBAC Match ('admim'):", eAdmin);
-            btnCadastro.style.display = eAdmin ? 'flex' : 'none';
-        }
+        console.log("🛡️ RBAC Match ('admim'):", eAdmin);
+        if (btnCadastro) btnCadastro.style.display = eAdmin ? 'flex' : 'none';
+        if (btnCadastroMobile) btnCadastroMobile.style.display = eAdmin ? 'flex' : 'none';
     }
 
     // Tick do Event Loop para garantir que o DOM e Storage estão estáveis
