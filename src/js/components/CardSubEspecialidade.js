@@ -24,7 +24,7 @@ function renderCardSubEspecialidade(sub, espId, espNome, produtos) {
             </div>
             <div class="tw-flex tw-items-center tw-gap-1 md:tw-gap-3 tw-shrink-0">
                 <button onclick="window.parent.prepararNovoProduto('${sub.id}', '${nomeSub}', '${espId}', '${nomeEsp}')"
-                    class="tw-h-[36px] tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-1 tw-px-2 md:tw-px-4 tw-bg-primary tw-text-white hover:tw-bg-blue-700 tw-transition-colors tw-border-none tw-cursor-pointer">
+                    class="tw-h-[36px] tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-1 tw-px-2 md:tw-px-4 tw-bg-blue-50 tw-text-primary hover:tw-bg-blue-100 tw-transition-colors tw-border-none tw-cursor-pointer">
                     <span class="material-symbols-outlined tw-text-lg">add</span>
                     <span class="tw-hidden sm:tw-inline">Novo Produto</span>
                 </button>
