@@ -82,28 +82,32 @@
 <body class="tw-bg-[#f4f7f6] tw-text-on-surface">
     <main class="tw-min-h-screen">
         <div class="tw-p-4 md:tw-p-8 tw-max-w-full tw-mx-auto">
-            <div class="tw-mb-10">
-                <h1 class="tw-text-3xl md:tw-text-4xl tw-font-extrabold tw-text-on-surface tw-tracking-tight tw-mb-2">
+            <div class="tw-mb-4 md:tw-mb-8">
+                <h1 class="tw-text-2xl md:tw-text-4xl tw-font-extrabold tw-text-on-surface tw-tracking-tight tw-mb-1">
                     Cadastro Geral</h1>
-                <p class="tw-text-on-surface-variant tw-font-medium">Gerenciamento centralizado de especialidades,
+                <p class="tw-text-on-surface-variant tw-font-medium tw-text-sm md:tw-text-base">Gerenciamento centralizado de especialidades,
                     produtos e corpo clínico.</p>
             </div>
 
-            <div
-                class="tw-flex tw-gap-1 tw-mb-8 tw-bg-white/50 tw-p-1 tw-rounded-[8px] tw-w-fit tw-border tw-border-[#ddd]">
-                <button id="tab-1" onclick="switchTab(1)"
-                    class="tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-[#1a73e8] tw-text-white tw-font-bold tw-shadow-sm tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer hover:tw-brightness-110">
-                    Especialidades e Produtos
-                </button>
-                <button id="tab-2" onclick="switchTab(2)"
-                    class="tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-transparent tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer">
-                    Especialistas
-                </button>
-                <button id="tab-3" onclick="switchTab(3)"
-                    class="tw-h-[38px] tw-px-6 md:tw-px-8 tw-rounded-[8px] tw-bg-transparent tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer tw-gap-1">
-                    <span class="material-symbols-outlined" style="font-size:16px">integration_instructions</span>
-                    Integração WhatsApp
-                </button>
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; max-width: 100%; margin-bottom: 1.5rem;">
+                <div
+                    class="tw-flex tw-gap-1 tw-bg-white/50 tw-p-1 tw-rounded-[8px] tw-border tw-border-[#ddd]" style="width: max-content; min-width: 100%;">
+                    <button id="tab-1" onclick="switchTab(1)"
+                        class="tw-h-[38px] tw-px-4 md:tw-px-8 tw-rounded-[8px] tw-bg-[#1a73e8] tw-text-white tw-font-bold tw-shadow-sm tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer hover:tw-brightness-110 tw-whitespace-nowrap">
+                        <span class="tw-hidden sm:tw-inline">Especialidades e Produtos</span>
+                        <span class="sm:tw-hidden">Especialidades</span>
+                    </button>
+                    <button id="tab-2" onclick="switchTab(2)"
+                        class="tw-h-[38px] tw-px-4 md:tw-px-8 tw-rounded-[8px] tw-bg-transparent tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer tw-whitespace-nowrap">
+                        Especialistas
+                    </button>
+                    <button id="tab-3" onclick="switchTab(3)"
+                        class="tw-h-[38px] tw-px-4 md:tw-px-8 tw-rounded-[8px] tw-bg-transparent tw-text-slate-600 tw-font-medium hover:tw-bg-[#e0f2fe] hover:tw-text-primary tw-transition-all tw-duration-200 tw-text-sm tw-inline-flex tw-items-center tw-justify-center tw-border-none tw-cursor-pointer tw-gap-1 tw-whitespace-nowrap">
+                        <span class="material-symbols-outlined" style="font-size:16px">integration_instructions</span>
+                        <span class="tw-hidden sm:tw-inline">Integração WhatsApp</span>
+                        <span class="sm:tw-hidden">WhatsApp</span>
+                    </button>
+                </div>
             </div>
 
             <div id="content-1" class="tw-space-y-8">

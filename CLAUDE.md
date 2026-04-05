@@ -56,6 +56,18 @@ Browser → ApiClient.js → Supabase Edge Function (index.ts) → PostgreSQL (S
 
 ## Regras Críticas de UI/UX
 
+### Responsividade — Mobile e Tablet obrigatório
+
+**Toda tela, modal ou componente novo deve funcionar em celular (≥ 320px) e tablet (≥ 768px).** Checklist antes de finalizar qualquer implementação de UI:
+
+- Containers com altura fixa (`height: 100vh`): usar `min-height` para permitir crescimento do conteúdo
+- Listas horizontais (tabs, menus): `overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none`
+- Textos longos em botões/tabs: `tw-hidden sm:tw-inline` para desktop, abreviado no mobile
+- Tabelas: sempre envolver com `overflow-x: auto` + `min-width` mínimo
+- iFrames: container pai **nunca** com `height` fixo — usar `min-height` + PostMessage para dimensionamento
+- Modais: garantir `max-width: calc(100vw - 32px)` em telas pequenas
+- Fontes e espaçamentos: classes responsivas (`tw-text-sm md:tw-text-base`, `tw-p-4 md:tw-p-8`)
+
 ### Design (paridade visual absoluta — não inovar)
 - Botões de ação primária circular: copiar `.action-add` (`border-radius: 50%`, 40×40px) — nunca usar botão quadrado Tailwind
 - Botões de modal: usar **sempre** `class="btn-modal"` + cor inline obrigatória:
