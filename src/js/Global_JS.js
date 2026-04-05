@@ -367,7 +367,12 @@ function enviarCodigo() {
         if (document.getElementById('recup-step-2')) document.getElementById('recup-step-2').style.display = 'block';
     }).catch(err => {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
-        mostrarMensagem("Erro", "Falha ao enviar e-mail: " + err);
+        const msg = String(err);
+        if (msg.includes('429')) {
+            mostrarMensagem("Aviso", "Limite de envios atingido. Aguarde alguns minutos e tente novamente.");
+        } else {
+            mostrarMensagem("Erro", "Falha ao enviar e-mail. Tente novamente em instantes.");
+        }
     });
 }
 function verificarHashRecuperacao() {
