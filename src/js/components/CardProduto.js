@@ -5,7 +5,7 @@ function renderCardProduto(prod) {
     const icone = prod.forma_atendimento === 'On-Line' ? 'videocam' : 'ecg';
     const preco = prod.valor_prom || prod.valor_real;
     return `
-    <div class="tw-bg-white tw-p-5 tw-rounded-xl tw-shadow-sm tw-border tw-border-outline-variant/10 hover:tw-border-secondary/30 hover:tw-shadow-lg tw-transition-all tw-group">
+    <div class="tw-bg-white tw-p-5 tw-rounded-xl tw-shadow-sm tw-border tw-border-outline-variant/10 hover:tw-border-secondary/30 hover:tw-shadow-lg tw-transition-all tw-group" data-prod-nome="${escapeHtml(prod.nome_produto).toLowerCase()}">
         <div class="tw-flex tw-justify-between tw-items-start tw-mb-4">
             <div class="tw-p-2 tw-rounded-lg tw-bg-surface-container-low tw-text-primary">
                 <span class="material-symbols-outlined">${icone}</span>

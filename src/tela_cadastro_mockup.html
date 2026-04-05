@@ -123,6 +123,13 @@
                         Nova Especialidade
                     </button>
                 </div>
+                <div class="tw-relative tw-mb-2">
+                    <span class="material-symbols-outlined" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:18px; color:#9aa5b4; pointer-events:none;">search</span>
+                    <input type="text" id="busca-hierarquia" oninput="filtrarHierarquia(this.value)" placeholder="Buscar especialidade, sub ou produto..."
+                        style="width:100%; height:38px; border:1px solid #e2e8f0; border-radius:8px; padding:0 12px 0 36px; font-size:13px; color:#191c1e; background:#fff; box-sizing:border-box; outline:none;"
+                        onfocus="this.style.borderColor='#1a73e8'" onblur="this.style.borderColor='#e2e8f0'">
+                </div>
+
                 <div id="container-hierarquia" class="tw-space-y-6">
                     <!-- Cards de Especialidade e Sub-especialidade injetados dinamicamente aqui -->
                     <div class="tw-p-10 tw-text-center tw-text-slate-400 tw-italic tw-text-sm">
@@ -513,6 +520,65 @@
             if (tab === 3 && window.parent && typeof window.parent.carregarConfigWhatsapp === 'function') {
                 window.parent.carregarConfigWhatsapp();
             }
+            debouncedSendHeight();
+        }
+
+        function filtrarHierarquia(query) {
+            const q = (query || '').trim().toLowerCase();
+            const container = document.getElementById('container-hierarquia');
+            if (!container) return;
+
+            container.querySelectorAll(':scope > section').forEach(section => {
+                if (!q) {
+                    section.style.display = '';
+                    const subsContainer = section.querySelector('[id^="subs-esp-"]');
+                    if (subsContainer) {
+                        subsContainer.classList.add('tw-hidden');
+                        subsContainer.querySelectorAll('[data-sub-nome]').forEach(s => s.style.display = '');
+                        subsContainer.querySelectorAll('[id^="prod-sub-"]').forEach(pc => {
+                            pc.classList.add('tw-hidden');
+                            pc.style.display = '';
+                            pc.querySelectorAll('[data-prod-nome]').forEach(p => p.style.display = '');
+                        });
+                    }
+                    return;
+                }
+
+                const espNome = section.getAttribute('data-esp-nome') || '';
+                const espMatch = espNome.includes(q);
+                const subsContainer = section.querySelector('[id^="subs-esp-"]');
+                const subDivs = subsContainer ? subsContainer.querySelectorAll(':scope > [data-sub-nome]') : [];
+                let anySubVisible = false;
+
+                subDivs.forEach(subDiv => {
+                    const subNome = subDiv.getAttribute('data-sub-nome') || '';
+                    const subMatch = subNome.includes(q);
+                    const prodContainer = subDiv.querySelector('[id^="prod-sub-"]');
+                    const prodCards = prodContainer ? prodContainer.querySelectorAll(':scope > [data-prod-nome]') : [];
+                    let anyProdVisible = false;
+
+                    prodCards.forEach(prodCard => {
+                        const show = espMatch || subMatch || (prodCard.getAttribute('data-prod-nome') || '').includes(q);
+                        prodCard.style.display = show ? '' : 'none';
+                        if (show) anyProdVisible = true;
+                    });
+
+                    const showSub = espMatch || subMatch || anyProdVisible;
+                    subDiv.style.display = showSub ? '' : 'none';
+                    if (showSub) {
+                        anySubVisible = true;
+                        if (prodContainer && anyProdVisible) {
+                            prodContainer.classList.remove('tw-hidden');
+                            prodContainer.style.display = 'grid';
+                        }
+                    }
+                });
+
+                const showEsp = espMatch || anySubVisible;
+                section.style.display = showEsp ? '' : 'none';
+                if (showEsp && subsContainer) subsContainer.classList.remove('tw-hidden');
+            });
+
             debouncedSendHeight();
         }
 

@@ -12,7 +12,7 @@ function renderCardSubEspecialidade(sub, espId, espNome, produtos) {
         : renderGradeProdutosVazia();
 
     return `
-    <div class="tw-space-y-4">
+    <div class="tw-space-y-4" data-sub-nome="${escapeHtml(sub.nome).toLowerCase()}">
         <div class="tw-bg-white tw-flex tw-items-center tw-justify-between tw-p-3 md:tw-p-5 tw-rounded-xl tw-shadow-sm tw-border-l-4 tw-border-blue-500 tw-border-y tw-border-r tw-border-slate-100">
             <div class="tw-flex tw-items-center tw-gap-2">
                 <span class="material-symbols-outlined tw-text-outline tw-shrink-0">subdirectory_arrow_right</span>
