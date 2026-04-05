@@ -357,35 +357,53 @@ function voltarStep1() {
     if (document.getElementById('recup-step-2')) document.getElementById('recup-step-2').style.display = 'none';
 }
 function enviarCodigo() {
-    const e = document.getElementById('recup-email') ? document.getElementById('recup-email').value : "";
-    if (!e) return alert("E-mail inválido");
+    const e = document.getElementById('recup-email') ? document.getElementById('recup-email').value.trim() : "";
+    if (!e) return mostrarMensagem("Aviso", "Digite seu e-mail.");
     if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
 
-    ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'enviarCodigoRecuperacao', email: e }).then(res => {
+    ApiClient.post('/auth/v1/recover', { email: e }, { skipAuth: true }).then(() => {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
-        if (res.sucesso) {
-            if (document.getElementById('recup-step-1')) document.getElementById('recup-step-1').style.display = 'none';
-            if (document.getElementById('recup-step-2')) document.getElementById('recup-step-2').style.display = 'block';
-        } else alert(res.erro || "Erro ao enviar código");
+        if (document.getElementById('recup-step-1')) document.getElementById('recup-step-1').style.display = 'none';
+        if (document.getElementById('recup-step-2')) document.getElementById('recup-step-2').style.display = 'block';
     }).catch(err => {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
-        alert("Falha de conexão: " + err);
+        mostrarMensagem("Erro", "Falha ao enviar e-mail: " + err);
     });
 }
-function confirmarNovaSenha() {
-    const e = document.getElementById('recup-email') ? document.getElementById('recup-email').value : "";
-    const c = document.getElementById('recup-codigo') ? document.getElementById('recup-codigo').value : "";
-    const n = document.getElementById('recup-nova-senha') ? document.getElementById('recup-nova-senha').value : "";
-
-    if (!c) return alert("Preencha tudo");
+function verificarHashRecuperacao() {
+    const hash = window.location.hash;
+    if (!hash.includes('type=recovery')) return;
+    const params = new URLSearchParams(hash.substring(1));
+    const token = params.get('access_token');
+    if (!token) return;
+    window._recoveryToken = token;
+    history.replaceState(null, '', window.location.pathname);
+    const modal = document.getElementById('modal-nova-senha-recovery');
+    if (modal) modal.style.display = 'flex';
+}
+function salvarNovaSenhaRecuperacao() {
+    const n = document.getElementById('recup-nova-senha-recovery') ? document.getElementById('recup-nova-senha-recovery').value.trim() : "";
+    if (!n || n.length < 6) return mostrarMensagem("Aviso", "A senha deve ter pelo menos 6 caracteres.");
     if (document.getElementById('loader')) document.getElementById('loader').style.display = 'flex';
 
-    ApiClient.post('/functions/v1/gerenciar-agendamentos', { acao: 'redefinirSenhaComCodigo', email: e, codigo: c, novaSenha: n }).then(res => {
+    fetch(SUPABASE_URL + '/auth/v1/user', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + window._recoveryToken
+        },
+        body: JSON.stringify({ password: n })
+    }).then(function(res) { return res.json(); }).then(function(data) {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
-        if (res.sucesso) { alert("Sucesso! Pode fazer login."); fecharModalRecuperar(); } else alert(res.erro || "Falha");
-    }).catch(err => {
+        if (data.error) { mostrarMensagem("Erro", data.error.message || "Falha ao redefinir senha."); return; }
+        const modal = document.getElementById('modal-nova-senha-recovery');
+        if (modal) modal.style.display = 'none';
+        window._recoveryToken = null;
+        mostrarMensagem("Sucesso", "Senha redefinida com sucesso! Faça login.");
+    }).catch(function(err) {
         if (document.getElementById('loader')) document.getElementById('loader').style.display = 'none';
-        alert("Falha de conexão: " + err);
+        mostrarMensagem("Erro", "Falha de conexão: " + err);
     });
 }
 function abrirModalTrocaSenha() {

@@ -516,6 +516,37 @@
         cursor: pointer
     }
 
+    .login-tooltip-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color: #9aa5b4;
+        cursor: help;
+        z-index: 1
+    }
+
+    .login-tooltip-box {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 6px);
+        background: #2d3748;
+        color: #fff;
+        font-size: 11px;
+        line-height: 1.5;
+        border-radius: 6px;
+        padding: 8px 10px;
+        width: 220px;
+        z-index: 9999;
+        box-shadow: 0 4px 12px rgba(0,0,0,.2)
+    }
+
+    .login-input-group:hover .login-tooltip-box {
+        display: block
+    }
+
     .app-header-wrapper {
         background: var(--bg-body);
         z-index: 1000;

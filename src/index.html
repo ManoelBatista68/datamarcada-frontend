@@ -61,6 +61,8 @@
                 <div class="login-input-group">
                     <input type="email" id="login-email" class="login-input" placeholder="Seu e-mail"
                         autocomplete="email" name="email" required>
+                    <span class="material-icons login-tooltip-icon">info_outline</span>
+                    <div class="login-tooltip-box">Este é o email cadastrado no whatsApp</div>
                 </div>
                 <div class="login-input-group">
                     <input type="password" id="login-senha" class="login-input" placeholder="Sua senha"
@@ -743,14 +745,21 @@
                         style="background:#1a73e8; color:white;" onclick="enviarCodigo()">Enviar</button></div>
             </div>
             <div id="recup-step-2" style="display:none;">
-                <p style="font-size:12px;color:var(--text-sec);margin-bottom:10px;">Verifique seu e-mail e digite o
-                    código.</p>
-                <input type="text" id="recup-codigo" class="modal-input" placeholder="Código">
-                <input type="password" id="recup-nova-senha" class="modal-input" placeholder="Nova Senha">
-                <div class="modal-actions"><button class="btn-modal" style="background:#e0e0e0; color:#333;"
-                        onclick="voltarStep1()">Voltar</button><button class="btn-modal"
-                        style="background:#34a853; color:white;" onclick="confirmarNovaSenha()">Salvar</button></div>
+                <p style="font-size:14px;color:var(--text-main);margin-bottom:6px;">✅ E-mail enviado!</p>
+                <p style="font-size:12px;color:var(--text-sec);margin-bottom:16px;">Verifique sua caixa de entrada e clique no link para redefinir sua senha.</p>
+                <div class="modal-actions"><button type="button" class="btn-modal" style="background:#e0e0e0; color:#333;"
+                        onclick="fecharModalRecuperar()">Fechar</button></div>
             </div>
+        </div>
+    </div>
+
+    <div id="modal-nova-senha-recovery" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-title">Redefinir Senha</div>
+            <p style="font-size:12px;color:var(--text-sec);margin-bottom:10px;">Digite sua nova senha.</p>
+            <input type="password" id="recup-nova-senha-recovery" class="modal-input" placeholder="Nova senha (mín. 6 caracteres)">
+            <div class="modal-actions"><button type="button" class="btn-modal" style="background:#34a853; color:white;"
+                    onclick="salvarNovaSenhaRecuperacao()">Salvar</button></div>
         </div>
     </div>
 
@@ -775,11 +784,11 @@
         </div>
     </div>
 
-    <script src="./js/ApiClient.js?v=131"></script>
-    <script src="./js/Global_JS.js?v=131"></script>
-    <script src="./js/components/CardProduto.js?v=131"></script>
-    <script src="./js/components/CardSubEspecialidade.js?v=131"></script>
-    <script src="./js/components/CardEspecialidade.js?v=131"></script>
+    <script src="./js/ApiClient.js?v=132"></script>
+    <script src="./js/Global_JS.js?v=132"></script>
+    <script src="./js/components/CardProduto.js?v=132"></script>
+    <script src="./js/components/CardSubEspecialidade.js?v=132"></script>
+    <script src="./js/components/CardEspecialidade.js?v=132"></script>
     <script>
         function abrirModal(id) {
             const modal = document.getElementById(id);
@@ -799,6 +808,9 @@
                 if (id === 'modal-novo-produto') delete window._currentNovoProdutoSubId;
             }
         }
+
+        // Detecção de link de recuperação de senha
+        if (typeof verificarHashRecuperacao === 'function') verificarHashRecuperacao();
 
         // REDIMENSIONAMENTO DINÂMICO (Hotfix Anti-Loop)
         let lastIframeHeight = 0;
