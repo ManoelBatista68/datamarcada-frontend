@@ -58,7 +58,13 @@ Browser → ApiClient.js → Supabase Edge Function (index.ts) → PostgreSQL (S
 
 ### Design (paridade visual absoluta — não inovar)
 - Botões de ação primária circular: copiar `.action-add` (`border-radius: 50%`, 40×40px) — nunca usar botão quadrado Tailwind
-- Botões de modal: Salvar `background:#34a853; color:white` | Cancelar `background:#e0e0e0; color:#333`
+- Botões de modal: usar **sempre** `class="btn-modal"` + cor inline obrigatória:
+  - Salvar/Confirmar: `style="background:#34a853; color:white"`
+  - Cancelar/Fechar/Secundário: `style="background:#e0e0e0; color:#333"`
+  - Aviso/Destrutivo: `style="background:#e53935; color:white"`
+  - Informativo/OK: `style="background:#1a73e8; color:white"`
+  - O CSS base de `.btn-modal` (shape, border-radius, hover) está em `Global_CSS.css` — NÃO recriar inline
+  - **NUNCA** deixar `<button class="btn-modal">` sem `style="background:...; color:..."` — ficará com aparência de botão browser padrão
 - Inputs, selects e formulários: sempre `height: 38px; border-radius: 8px`
 - Proibido `style="font-size:..."` — usar `tw-text-lg` (especialidades), `tw-text-base` (subs e produtos)
 - Botões de ação em cards não têm borda (`tw-border` proibido neles)

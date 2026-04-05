@@ -1520,6 +1520,27 @@
         margin-top: 15px
     }
 
+    .btn-modal {
+        height: 38px;
+        padding: 0 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: opacity .2s;
+        white-space: nowrap
+    }
+
+    .btn-modal:hover {
+        opacity: .85
+    }
+
+    .btn-modal:disabled {
+        opacity: .5;
+        cursor: not-allowed
+    }
+
     .modal-input {
         width: 100%;
         padding: 12px;
