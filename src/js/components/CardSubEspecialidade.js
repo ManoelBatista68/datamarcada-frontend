@@ -13,19 +13,20 @@ function renderCardSubEspecialidade(sub, espId, espNome, produtos) {
 
     return `
     <div class="tw-space-y-4">
-        <div class="tw-bg-white tw-flex tw-items-center tw-justify-between tw-p-5 tw-rounded-xl tw-shadow-sm tw-border-l-4 tw-border-blue-500 tw-border-y tw-border-r tw-border-slate-100">
+        <div class="tw-bg-white tw-flex tw-items-center tw-justify-between tw-p-3 md:tw-p-5 tw-rounded-xl tw-shadow-sm tw-border-l-4 tw-border-blue-500 tw-border-y tw-border-r tw-border-slate-100">
             <div class="tw-flex tw-items-center tw-gap-2">
-                <span class="material-symbols-outlined tw-text-outline">subdirectory_arrow_right</span>
-                <h4 class="tw-font-bold tw-text-on-surface-variant tw-text-base">
+                <span class="material-symbols-outlined tw-text-outline tw-shrink-0">subdirectory_arrow_right</span>
+                <h4 class="tw-font-bold tw-text-on-surface-variant tw-text-sm md:tw-text-base">
                     ${escapeHtml(sub.nome)}
                     <span class="material-symbols-outlined tw-text-xl tw-text-slate-400 hover:tw-text-primary tw-ml-2 tw-cursor-pointer tw-transition-colors" title="Editar Sub"
                         onclick="window.parent.prepararEdicaoSubEspecialidade('${sub.id}', '${nomeSub}', '${espId}')">settings</span>
                 </h4>
             </div>
-            <div class="tw-flex tw-items-center tw-gap-3">
+            <div class="tw-flex tw-items-center tw-gap-1 md:tw-gap-3 tw-shrink-0">
                 <button onclick="window.parent.prepararNovoProduto('${sub.id}', '${nomeSub}', '${espId}', '${nomeEsp}')"
-                    class="tw-h-[36px] tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-2 tw-px-4 tw-bg-primary tw-text-white hover:tw-bg-blue-700 tw-transition-colors tw-border-none tw-cursor-pointer">
-                    <span class="material-symbols-outlined tw-text-lg">add</span> Novo Produto
+                    class="tw-h-[36px] tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-1 tw-px-2 md:tw-px-4 tw-bg-primary tw-text-white hover:tw-bg-blue-700 tw-transition-colors tw-border-none tw-cursor-pointer">
+                    <span class="material-symbols-outlined tw-text-lg">add</span>
+                    <span class="tw-hidden sm:tw-inline">Novo Produto</span>
                 </button>
                 <div class="tw-h-8 tw-w-[1px] tw-bg-outline-variant/30"></div>
                 <button type="button" onclick="window.parent.toggleHierarquia('${subContainerId}', '${subIconId}')"
