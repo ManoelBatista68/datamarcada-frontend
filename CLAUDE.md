@@ -81,6 +81,29 @@ Browser → ApiClient.js → Supabase Edge Function (index.ts) → PostgreSQL (S
 - Proibido `style="font-size:..."` — usar `tw-text-lg` (especialidades), `tw-text-base` (subs e produtos)
 - Botões de ação em cards não têm borda (`tw-border` proibido neles)
 
+### Padrão de Cards por Nível — obrigatório copiar exatamente
+
+**Nível 1 — Card Principal** (ex: Especialidade, agendamento Confirmado)
+```html
+<div class="tw-bg-white tw-rounded-xl tw-border tw-border-[#bfdbfe] tw-shadow-sm"
+     style="border-left: 5px solid #3b82f6;">
+```
+
+**Nível 2 — Card Filho** (ex: Sub-especialidade)
+```html
+<div class="tw-bg-white tw-rounded-xl tw-border-l-4 tw-border-blue-500 tw-border-y tw-border-r tw-border-slate-100 tw-shadow-sm">
+```
+
+**Nível 3 — Card Neto** (ex: Produto)
+```html
+<div class="tw-bg-white tw-rounded-xl tw-border tw-border-slate-100 tw-shadow-sm">
+```
+
+- Padding responsivo: `tw-p-3 md:tw-p-6` — nunca padding fixo grande
+- Container de ações: sempre `tw-shrink-0` → botão olho nunca desaparece
+- Texto de botões em cards: `tw-hidden sm:tw-inline` no label → só ícone no mobile
+- Ícone toggle (olho): `material-symbols-outlined`, `visibility` / `visibility_off`
+
 ### Estrutura de modais (Rule 18 — SSOT)
 - Todos os modais ficam em `#medpavilion-modals-root` no `index.html`
 - Antes de criar novo modal: verificar e remover versão legada com mesmo ID
